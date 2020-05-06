@@ -20,7 +20,10 @@ markers from the stimulation panel.}
 
 \item{unstim_lab}{A character of unstim label(s).}
 
-\item{seed_val}{Seed value for k-means clustering.}
+\item{seed_val}{Seed value for \code{\link{kmeans}} clustering.}
+}
+\value{
+A tibble with the selected cells.
 }
 \description{
 Function to select cells from the stimulated samples that
@@ -35,5 +38,6 @@ stim_lab <- c("A", "T", "L", "G") # A for interferon alpha,
                                   # G for interferon gamma.
 unstim_lab <- "U"
 seed_val <- 123
+
 selected_cells <- stim_cell_selector(dat, state_markers, cluster_col, stim_lab, unstim_lab, seed_val = seed_val
 }
