@@ -4,8 +4,8 @@
 \alias{stim_cell_selector}
 \title{Stim Cell Selector}
 \usage{
-stim_cell_selector(dat, state_markers, cluster_col, stim_lab, unstim_lab,
-  seed_val = F)
+stim_cell_selector(dat, type_markers, state_markers, cluster_col, stim_lab,
+  unstim_lab, seed_val = F)
 }
 \arguments{
 \item{dat}{A tibble with the single cell data. Cells on rows
@@ -28,16 +28,4 @@ A tibble with the selected cells.
 \description{
 Function to select cells from the stimulated samples that
              have likely responded to the stimulant.
-}
-\examples{
-dat <- as_tibble(read.table(file.path("path/data.tsv"), sep = "\\t", headers = T))
-state_markers <- c("pSTAT1", "pSTAT5", "IkBa", "pCREB")
-cluster_col <- "cluster_id"
-stim_lab <- c("A", "T", "L", "G") # A for interferon alpha,
-                                  # T for TCR, L for LPS and
-                                  # G for interferon gamma.
-unstim_lab <- "U"
-seed_val <- 123
-
-selected_cells <- stim_cell_selector(dat, state_markers, cluster_col, stim_lab, unstim_lab, seed_val = seed_val
 }

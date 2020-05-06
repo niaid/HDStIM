@@ -12,19 +12,196 @@
 #' @param seed_val         Seed value for \code{\link{kmeans}} clustering.
 #'
 #' @return A tibble with the selected cells.
+#' @importFrom tibble as_tibble
+#' @import dplyr ggplot2
+#' @importFrom uwot umap
 #' @export
 #'
 #' @examples
-#' dat <- as_tibble(read.table(file.path("path/data.tsv"), sep = "\t", headers = T))
-#' state_markers <- c("pSTAT1", "pSTAT5", "IkBa", "pCREB")
-#' cluster_col <- "cluster_id"
-#' stim_lab <- c("A", "T", "L", "G") # A for interferon alpha,
-#'                                   # T for TCR, L for LPS and
-#'                                   # G for interferon gamma.
-#' unstim_lab <- "U"
-#' seed_val <- 123
-#'
-#' selected_cells <- stim_cell_selector(dat, state_markers, cluster_col, stim_lab, unstim_lab, seed_val = seed_val
-stim_cell_selector <- function(dat, state_markers, cluster_col, stim_lab, unstim_lab, seed_val = F){
 
-}
+# delete
+dat <- chi11_1k$expr_data
+type_markers <- chi11_1k$type_markers
+state_markers <- chi11_1k$state_markers
+cluster_col <- chi11_1k$cluster_col
+stim_lab <- chi11_1k$stim_label
+unstim_lab <- chi11_1k$unstim_label
+seed_val = F
+state_markers <- gsub("-", "_", state_markers)
+type_markers <- gsub("-", "_", type_markers)
+umap <- T
+# delete
+
+#stim_cell_selector <- function(dat, state_markers, cluster_col, stim_lab, unstim_lab, seed_val = F, umap = F){
+
+  # Get different sets of columnames for output data frames.
+  cols <- colnames(dat)
+  cols_no_state <- setdiff(cols, c(state_markers))
+
+  # Vectors for stimulation types and meta clusters.
+  clusters <- as.character(unique(dat[[cluster_col]]))
+
+  # Initialize empty output data frames.
+  df_out <- data.frame(matrix(ncol = length(cols), nrow = 0))
+  df_summary_out <- as_tibble(data.frame(matrix(ncol = 3 + length(state_markers), nrow = 0)))
+
+  # Set seed and initialze counters.
+  if(typeof(seed_val) != "logical"){
+    set.seed(as.numeric(seed_val))
+  }
+
+  sig_count <- 0
+  insig_count <- 0
+
+  for(stim in stim_lab[1]){ # Pick a stim type from the stim type vector.
+    for(cluster in clusters[2]){ # Pick a meta cluster from the cluster cluster vector.
+      # Initialize an empty temporay output data frame.
+      df_out_temp <- data.frame(matrix(ncol = length(cols), nrow = 0))
+
+      # For the selected meta cluster, select cells from the selected stim type and un-stimulated cells.
+      dat_stim_unstim <- dat[dat$stim_type == stim | dat$stim_type == unstim_lab, ]
+      dat_stim_unstim <- dat_stim_unstim[dat_stim_unstim[,cluster_col] == cluster,]
+
+      # Identify the index of the stimulated and unstimulated cells in the selected data frame.
+      stim_idx <- dat_stim_unstim$stim_type == stim
+      unstim_idx <- dat_stim_unstim$stim_type == unstim_lab
+
+      # From dat_stim_unstim data frame select expression values for all the state markers
+      # and carry out k-means (k = 2) clustering.
+      print(paste("Carrying out k-means for the cluster", cluster, "and stim type", stim))
+      dat_state <- dat_stim_unstim[, state_markers]
+      k_results <- kmeans(dat_state, 2)
+
+      # Get cluster IDs for stim and unstim cells.
+      clust_stim <- k_results$cluster[stim_idx]
+      clust_unstim <- k_results$cluster[unstim_idx]
+
+      # Fisher's Exact Test.
+      print("Carrying out Fisher's exact test.")
+
+      # Create a contingency table and carry out F-test.
+      # Count the number of stimulated and un-stimulated cells that belong to cluster 1 and 2.
+      stim_1 <- as.numeric(length(clust_stim[clust_stim == 1]))
+      stim_2 <- as.numeric(length(clust_stim[clust_stim == 2]))
+
+      unstim_1 <- as.numeric(length(clust_unstim[clust_unstim == 1]))
+      unstim_2 <- as.numeric(length(clust_unstim[clust_unstim == 2]))
+
+      total_stim_count <- as.numeric(nrow(dat_stim_unstim[stim_idx,]))
+      total_unstim_count <- as.numeric(nrow(dat_stim_unstim[unstim_idx,]))
+
+      con_tab <-  matrix(c(round((stim_1/total_stim_count) * 100), round((stim_2/total_stim_count) * 100), round((unstim_1/total_unstim_count) * 100), round((unstim_2/total_unstim_count) * 100)), nrow = 2, ncol = 2, dimnames = list(c("Cluster1", "Cluster2"), c("Stim", "Unstim")))
+
+      f_test <- fisher.test(con_tab) # Fisher's exact test.
+      f_p_val <- f_test$p.value
+
+      # Select cells and save data only for the combinations that pass
+      # F-test.
+      if(f_p_val < 0.05){
+        print("Significant F-test.")
+        sig_count <- sig_count + 1
+
+        # Identify un-stimulated cells cluster on the basis of the cluster that has a higher number of cells.
+        if(unstim_1 > unstim_2){
+          unstim_clust = 1
+          stim_clust = 2
+        } else {
+          unstim_clust = 2
+          stim_clust = 1
+        }
+
+        # Select median marker expression for each state marker for the selected stim cells.
+        tm <- dat_stim_unstim[k_results$cluster == stim_clust,]
+        tm <- tm[tm$stim_type == stim, state_markers]
+        med_exp <- apply(tm, 2, median)
+        med_exp <-  as.data.frame(t(med_exp))
+
+        # Fold change from non-responsive to responsive state for stim cells.
+        if(stim_clust == 1){
+          fc <- round((stim_1 - stim_2)/stim_1, digits = 2)
+        }else if(stim_clust == 2){
+          fc <- round((stim_2 - stim_1)/stim_2, digits = 2)
+        }
+
+        # Selected stimulated cells.
+        stim_cells <- dat_stim_unstim[k_results$cluster == stim_clust,]
+        stim_cells <- stim_cells[as.character(stim_cells$stim_type) == stim, ]
+
+        # Select stimulated cells that are clustered in un-stimulated cells cluster.
+        # These are the cells from the simulated samples that likely didn't respond
+        # to the stimulant.
+        stim_cells_no_resp <- dat_stim_unstim[k_results$cluster == unstim_clust,]
+        stim_cells_no_resp <- stim_cells_no_resp[as.character(stim_cells_no_resp$stim_type) == stim, ]
+
+        # Also select unstimulated cells to combine them later with the
+        # simulated cells for the UMAP.
+        unstim_cells <- dat_stim_unstim[k_results$cluster == unstim_clust,]
+        unstim_cells <- unstim_cells[as.character(unstim_cells$stim_type) == unstim_lab, ]
+
+        # Combine data in a data frame and also generate a summary table.
+        df_out <- rbind(df_out, stim_cells)
+
+        summary_table <- cbind(cluster = cluster, stim_type = stim, f_p_value = f_p_val, fold_change = fc, med_exp)
+        df_summary_out <- rbind(df_summary_out, summary_table)
+
+
+        # Stacked + percent bar plots with stim and unstim on the x-axis and cell counts
+        # in k-means clusters on the y-axis.
+        stacked_data <- data.frame(stim_status = c("unstim", "unstim", "stim", "stim"), cluster = c("cluster1", "cluster2", "cluster1", "cluster2"), count = c(unstim_1, unstim_2, stim_1, stim_2))
+
+        stacked_plot <- ggplot(stacked_data, aes(fill=cluster, y=count, x=stim_status)) +
+          geom_bar(position="fill", stat="identity") +
+          labs(title=paste("Cluster:", cluster, "; Stim type:", stim, "; Fisher's p-value:", f_p_val, "\nStim cluster:", stim_clust, "; Fold change:", fc ,  sep=" "), x ="Stim Status", y = "Cell Count %", fill = "K-means Cluster")
+        #ggsave(paste("figure33_", meta,"__", stim, ".png", sep = ""), plot = stacked_plot, device = "png", path = figures_folder, width = 10, height = 8)
+
+        # Generate UMAP on combined stim and unstim cells and colour them
+        # accordingly.
+        if(umap == TRUE){
+          stim_cells_label <- cbind(stim_cells, "type" = "stim_cells_resp")
+          stim_cells_no_resp_label <- cbind(stim_cells_no_resp, "type" = "stim_cells_no_resp")
+          unstim_cells_label <- cbind(unstim_cells, "type" = "unstim_cells")
+          comb_stim_unstim <- as_tibble(rbind(stim_cells_label, stim_cells_no_resp_label, unstim_cells_label))
+          tot_of_cells <- nrow(comb_stim_unstim)
+
+          # Take a minimum of 100k cells per cluster or the total no. of cells if the cluster size is smaller than 100k.
+          no_of_cells <- min(50000, tot_of_cells)
+          print(paste("No. of cells", no_of_cells))
+          comb_stim_unstim <-  sample_n(comb_stim_unstim, no_of_cells, replace = FALSE)
+          input_umap <- comb_stim_unstim[,state_markers]
+
+          # Run UMAP.
+          print(paste("Running UMAP for", cluster, stim))
+          u_res <- uwot::umap(input_umap)
+          colnames(u_res) <- c("UMAP1", "UMAP2")
+          d <- as_tibble(u_res)
+          print("Generating UMAP plot.")
+          umap_plot <- ggplot(d, aes(x = UMAP1, y = UMAP2, color = comb_stim_unstim$type)) +
+            geom_point(alpha = 0.25, size = 0.5) +
+            labs(color = "Cell Type", title = paste0("Cluster: ", cluster, "; Stim: ", stim, "\nTotal No. Cells: ", tot_of_cells,
+                                                     "; No. of Cells Plotted: ", no_of_cells))
+
+          #ggsave(paste(meta,"_", stim, ".png", sep = ""), plot = umap_plot, device = "png", path = file.path(figures_folder, "script6_7_umap"), width = 7, height = 5)
+        }
+
+      } else {
+        print("Insignificant F-test.")
+        insig_count <- insig_count + 1
+
+      }
+
+    }
+  }
+
+  return_list <- list("selected_expr_data" = df_out, "summary" = df_summary_out)
+#}
+
+
+dat <- chi11_1k$expr_data
+type_markers <- chi11_1k$type_markers
+state_markers <- chi11_1k$state_markers
+cluster_col <- chi11_1k$cluster_col
+stim_lab <- chi11_1k$stim_label
+unstim_lab <- chi11_1k$unstim_label
+seed_val = 123
+state_markers <- gsub("-", "_", state_markers)
+type_markers <- gsub("-", "_", type_markers)
