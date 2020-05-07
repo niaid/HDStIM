@@ -5,6 +5,8 @@
 
 <!-- badges: start -->
 
+[![Travis build
+status](https://travis-ci.com/rohitfarmer/stimcellselector.svg?branch=master)](https://travis-ci.org/rohitfarmer/stimcellselector)
 <!-- badges: end -->
 
 The goal of stimcellselector is to …
