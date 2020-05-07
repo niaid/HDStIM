@@ -3,5 +3,8 @@
 export(stim_cell_selector)
 import(dplyr)
 import(ggplot2)
+importFrom(stats,fisher.test)
+importFrom(stats,kmeans)
+importFrom(stats,median)
 importFrom(tibble,as_tibble)
 importFrom(uwot,umap)

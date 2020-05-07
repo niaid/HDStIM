@@ -40,6 +40,6 @@ To reduce verbosity use \code{suppressMessages(stim_cells_selector())}.
 \examples{
 selected_data <- stim_cell_selector(chi11_1k$expr_data, chi11_1k$state_markers,
                   chi11_1k$cluster_col, chi11_1k$stim_label,
-                  chi11_1k$unstim_label, seed_val = 123, umap = T)
+                  chi11_1k$unstim_label, seed_val = 123, umap = FALSE)
 
 }

@@ -18,13 +18,14 @@
 #'         data to plot stacked bar plots, and data to plot UMAP plots.
 #' @importFrom tibble as_tibble
 #' @import dplyr ggplot2
+#' @importFrom stats fisher.test kmeans median
 #' @importFrom uwot umap
 #' @export
 #'
 #' @examples
 #' selected_data <- stim_cell_selector(chi11_1k$expr_data, chi11_1k$state_markers,
 #'                   chi11_1k$cluster_col, chi11_1k$stim_label,
-#'                   chi11_1k$unstim_label, seed_val = 123, umap = T)
+#'                   chi11_1k$unstim_label, seed_val = 123, umap = FALSE)
 #'
 #' @note To reduce verbosity use \code{suppressMessages(stim_cells_selector())}.
 stim_cell_selector <- function(dat, state_markers, cluster_col, stim_lab, unstim_lab, seed_val = NULL, umap = F){
@@ -56,7 +57,7 @@ stim_cell_selector <- function(dat, state_markers, cluster_col, stim_lab, unstim
   counter <- 0
 
   # Main nest for loop.
-  for(stim in stim_lab[1]){
+  for(stim in stim_lab){
     for(cluster in clusters){
       counter <- counter + 1
       message(paste0("## Combination ", counter,"/",total_combinations,"."))

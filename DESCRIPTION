@@ -18,8 +18,10 @@ BugReports: https://github.com/rohitfarmer/stimcellselector/issues
 Imports: 
     tibble,
     ggplot2,
-    uwot
+    uwot,
+    dplyr
 Suggests: 
     knitr,
-    rmarkdown
+    rmarkdown,
+    testthat
 VignetteBuilder: knitr
