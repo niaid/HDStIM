@@ -9,53 +9,58 @@
 #' @param cluster_col      Column in the tibble with the cluster IDs.
 #' @param stim_lab         A character of stim label(s).
 #' @param unstim_lab       A character of unstim label(s).
-#' @param seed_val         Seed value for \code{\link{kmeans}} clustering.
+#' @param seed_val         Seed value (integer) for \code{\link{kmeans}} clustering.
+#'                         Default is NULL for no seed value.
+#' @param umap             Boolean (T/F) to carry out UMAP on the selected cells.
+#'                         Default is FALSE to skip UMAP calculation.
 #'
-#' @return A tibble with the selected cells.
+#' @return A list with tibbles for expression data for the selected cells,
+#'         data to plot stacked bar plots, and data to plot UMAP plots.
 #' @importFrom tibble as_tibble
 #' @import dplyr ggplot2
 #' @importFrom uwot umap
 #' @export
 #'
 #' @examples
+#' selected_data <- stim_cell_selector(chi11_1k$expr_data, chi11_1k$state_markers,
+#'                   chi11_1k$cluster_col, chi11_1k$stim_label,
+#'                   chi11_1k$unstim_label, seed_val = 123, umap = T)
+#'
+#' @note To reduce verbosity use \code{suppressMessages(stim_cells_selector())}.
+stim_cell_selector <- function(dat, state_markers, cluster_col, stim_lab, unstim_lab, seed_val = NULL, umap = F){
+  message(paste("Selection process started on", date()))
 
-# delete
-dat <- chi11_1k$expr_data
-type_markers <- chi11_1k$type_markers
-state_markers <- chi11_1k$state_markers
-cluster_col <- chi11_1k$cluster_col
-stim_lab <- chi11_1k$stim_label
-unstim_lab <- chi11_1k$unstim_label
-seed_val = F
-state_markers <- gsub("-", "_", state_markers)
-type_markers <- gsub("-", "_", type_markers)
-umap <- T
-# delete
-
-#stim_cell_selector <- function(dat, state_markers, cluster_col, stim_lab, unstim_lab, seed_val = F, umap = F){
-
-  # Get different sets of columnames for output data frames.
+    # Standardize column names and state marker labels.
+  state_markers <- gsub("-", "_", state_markers)
   cols <- colnames(dat)
-  cols_no_state <- setdiff(cols, c(state_markers))
+  cols <- gsub("-", "_", cols)
+  colnames(dat) <- cols
 
-  # Vectors for stimulation types and meta clusters.
+  # Fetch cluster labels from the expression data frame.
   clusters <- as.character(unique(dat[[cluster_col]]))
+
+  total_combinations <- length(clusters) * length(stim_lab)
+  message(paste0("Total combinations to go through: ", length(clusters), " clusters X ", length(stim_lab),
+                 " stimulation types = ", total_combinations,"."))
 
   # Initialize empty output data frames.
   df_out <- data.frame(matrix(ncol = length(cols), nrow = 0))
   df_summary_out <- as_tibble(data.frame(matrix(ncol = 3 + length(state_markers), nrow = 0)))
-
-  # Set seed and initialze counters.
-  if(typeof(seed_val) != "logical"){
-    set.seed(as.numeric(seed_val))
+  stacked_bar_plot_data <- data.frame(matrix(ncol = 5, nrow = 0))
+  if(umap){
+    umap_plot_data <- data.frame(matrix(ncol = 5, nrow = 0))
   }
 
-  sig_count <- 0
-  insig_count <- 0
+  # Set seed value for the k-means clustering.
+  set.seed(seed_val)
+  counter <- 0
 
-  for(stim in stim_lab[1]){ # Pick a stim type from the stim type vector.
-    for(cluster in clusters[2]){ # Pick a meta cluster from the cluster cluster vector.
-      # Initialize an empty temporay output data frame.
+  # Main nest for loop.
+  for(stim in stim_lab[1]){
+    for(cluster in clusters){
+      counter <- counter + 1
+      message(paste0("## Combination ", counter,"/",total_combinations,"."))
+      # Initialize an empty temporary output data frame.
       df_out_temp <- data.frame(matrix(ncol = length(cols), nrow = 0))
 
       # For the selected meta cluster, select cells from the selected stim type and un-stimulated cells.
@@ -68,7 +73,7 @@ umap <- T
 
       # From dat_stim_unstim data frame select expression values for all the state markers
       # and carry out k-means (k = 2) clustering.
-      print(paste("Carrying out k-means for the cluster", cluster, "and stim type", stim))
+      message(paste("Carrying out k-means clustering on cells from", cluster, "-", stim, "+ unstim."))
       dat_state <- dat_stim_unstim[, state_markers]
       k_results <- kmeans(dat_state, 2)
 
@@ -77,7 +82,7 @@ umap <- T
       clust_unstim <- k_results$cluster[unstim_idx]
 
       # Fisher's Exact Test.
-      print("Carrying out Fisher's exact test.")
+      message("Carrying out Fisher's exact test.")
 
       # Create a contingency table and carry out F-test.
       # Count the number of stimulated and un-stimulated cells that belong to cluster 1 and 2.
@@ -98,9 +103,7 @@ umap <- T
       # Select cells and save data only for the combinations that pass
       # F-test.
       if(f_p_val < 0.05){
-        print("Significant F-test.")
-        sig_count <- sig_count + 1
-
+        message("Fisher's exact test significant.")
         # Identify un-stimulated cells cluster on the basis of the cluster that has a higher number of cells.
         if(unstim_1 > unstim_2){
           unstim_clust = 1
@@ -147,13 +150,15 @@ umap <- T
 
         # Stacked + percent bar plots with stim and unstim on the x-axis and cell counts
         # in k-means clusters on the y-axis.
-        stacked_data <- data.frame(stim_status = c("unstim", "unstim", "stim", "stim"), cluster = c("cluster1", "cluster2", "cluster1", "cluster2"), count = c(unstim_1, unstim_2, stim_1, stim_2))
+        stacked_data <- data.frame(stim_status = c("unstim", "unstim", "stim", "stim"), k_cluster = c("cluster1", "cluster2", "cluster1", "cluster2"), count = c(unstim_1, unstim_2, stim_1, stim_2))
 
-        stacked_plot <- ggplot(stacked_data, aes(fill=cluster, y=count, x=stim_status)) +
-          geom_bar(position="fill", stat="identity") +
-          labs(title=paste("Cluster:", cluster, "; Stim type:", stim, "; Fisher's p-value:", f_p_val, "\nStim cluster:", stim_clust, "; Fold change:", fc ,  sep=" "), x ="Stim Status", y = "Cell Count %", fill = "K-means Cluster")
+        # stacked_plot <- ggplot(stacked_data, aes(fill=cluster, y=count, x=stim_status)) +
+        #   geom_bar(position="fill", stat="identity") +
+        #   labs(title=paste("Cluster:", cluster, "; Stim type:", stim, "; Fisher's p-value:", f_p_val, "\nStim cluster:", stim_clust, "; Fold change:", fc ,  sep=" "), x ="Stim Status", y = "Cell Count %", fill = "K-means Cluster")
         #ggsave(paste("figure33_", meta,"__", stim, ".png", sep = ""), plot = stacked_plot, device = "png", path = figures_folder, width = 10, height = 8)
 
+        stacked_temp <- cbind("cluster" = cluster, "stim_type" = stim, stacked_data)
+        stacked_bar_plot_data <- rbind(stacked_bar_plot_data, stacked_temp)
         # Generate UMAP on combined stim and unstim cells and colour them
         # accordingly.
         if(umap == TRUE){
@@ -165,43 +170,40 @@ umap <- T
 
           # Take a minimum of 100k cells per cluster or the total no. of cells if the cluster size is smaller than 100k.
           no_of_cells <- min(50000, tot_of_cells)
-          print(paste("No. of cells", no_of_cells))
           comb_stim_unstim <-  sample_n(comb_stim_unstim, no_of_cells, replace = FALSE)
           input_umap <- comb_stim_unstim[,state_markers]
 
           # Run UMAP.
-          print(paste("Running UMAP for", cluster, stim))
+          message(paste0("Running UMAP for ", cluster, " - ", stim,"."))
           u_res <- uwot::umap(input_umap)
           colnames(u_res) <- c("UMAP1", "UMAP2")
-          d <- as_tibble(u_res)
-          print("Generating UMAP plot.")
-          umap_plot <- ggplot(d, aes(x = UMAP1, y = UMAP2, color = comb_stim_unstim$type)) +
-            geom_point(alpha = 0.25, size = 0.5) +
-            labs(color = "Cell Type", title = paste0("Cluster: ", cluster, "; Stim: ", stim, "\nTotal No. Cells: ", tot_of_cells,
-                                                     "; No. of Cells Plotted: ", no_of_cells))
+          # d <- as_tibble(u_res)
+          # print("Generating UMAP plot.")
+          # umap_plot <- ggplot(d, aes(x = UMAP1, y = UMAP2, color = comb_stim_unstim$type)) +
+          #   geom_point(alpha = 0.25, size = 0.5) +
+          #   labs(color = "Cell Type", title = paste0("Cluster: ", cluster, "; Stim: ", stim, "\nTotal No. Cells: ", tot_of_cells,
+          #                                            "; No. of Cells Plotted: ", no_of_cells))
 
           #ggsave(paste(meta,"_", stim, ".png", sep = ""), plot = umap_plot, device = "png", path = file.path(figures_folder, "script6_7_umap"), width = 7, height = 5)
+
+          umap_temp <- cbind("cluster" = cluster, "stim_type" = stim, u_res)
+          umap_plot_data <- rbind(umap_plot_data, umap_temp)
         }
 
       } else {
-        print("Insignificant F-test.")
-        insig_count <- insig_count + 1
-
+        message("Fisher' exact test non-sgnificant. Skipping further steps.")
       }
-
     }
   }
 
-  return_list <- list("selected_expr_data" = df_out, "summary" = df_summary_out)
-#}
-
-
-dat <- chi11_1k$expr_data
-type_markers <- chi11_1k$type_markers
-state_markers <- chi11_1k$state_markers
-cluster_col <- chi11_1k$cluster_col
-stim_lab <- chi11_1k$stim_label
-unstim_lab <- chi11_1k$unstim_label
-seed_val = 123
-state_markers <- gsub("-", "_", state_markers)
-type_markers <- gsub("-", "_", type_markers)
+  if(umap){
+    return_list <- list("selected_expr_data" = as_tibble(df_out), "summary" = as_tibble(df_summary_out),
+                        "stacked_bar_plot_data" = as_tibble(stacked_bar_plot_data),
+                        "umap_plot_data" = as_tibble(umap_plot_data))
+  }else{
+    return_list <- list("selected_expr_data" = as_tibble(df_out), "summary" = as_tibble(df_summary_out),
+                        "stacked_bar_plot_data" = as_tibble(stacked_bar_plot_data))
+  }
+ message(paste("Selection process finished on", date()))
+ return(return_list)
+}

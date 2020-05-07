@@ -19,3 +19,4 @@ knitr::opts_chunk$set(
 ```{r setup}
 library(stimcellselector)
 ```
+Vignettes for this library will go here. 

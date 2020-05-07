@@ -4,8 +4,8 @@
 \alias{stim_cell_selector}
 \title{Stim Cell Selector}
 \usage{
-stim_cell_selector(dat, type_markers, state_markers, cluster_col, stim_lab,
-  unstim_lab, seed_val = F)
+stim_cell_selector(dat, state_markers, cluster_col, stim_lab, unstim_lab,
+  seed_val = NULL, umap = F)
 }
 \arguments{
 \item{dat}{A tibble with the single cell data. Cells on rows
@@ -20,12 +20,26 @@ markers from the stimulation panel.}
 
 \item{unstim_lab}{A character of unstim label(s).}
 
-\item{seed_val}{Seed value for \code{\link{kmeans}} clustering.}
+\item{seed_val}{Seed value (integer) for \code{\link{kmeans}} clustering.
+Default is NULL for no seed value.}
+
+\item{umap}{Boolean (T/F) to carry out UMAP on the selected cells.
+Default is FALSE to skip UMAP calculation.}
 }
 \value{
-A tibble with the selected cells.
+A list with tibbles for expression data for the selected cells,
+        data to plot stacked bar plots, and data to plot UMAP plots.
 }
 \description{
 Function to select cells from the stimulated samples that
              have likely responded to the stimulant.
+}
+\note{
+To reduce verbosity use \code{suppressMessages(stim_cells_selector())}.
+}
+\examples{
+selected_data <- stim_cell_selector(chi11_1k$expr_data, chi11_1k$state_markers,
+                  chi11_1k$cluster_col, chi11_1k$stim_label,
+                  chi11_1k$unstim_label, seed_val = 123, umap = T)
+
 }
