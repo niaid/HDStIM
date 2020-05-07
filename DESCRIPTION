@@ -4,11 +4,12 @@ Title: Selects Stimulated Cells
 Version: 0.1.0
 Author: Rohit Farmer
 Maintainer: Rohit Farmer <rohit.farmer@gmail.com>
-Description: To select cells from stimulated samples that have likely
-             responded to the stimulant. The selected cells would be 
-             significantly different from the unstimulated cells
-             but also different from other stimulated cells that have
-             likely not responded to the stimulant.
+Description: The goal of this package is to select cells from stimulated 
+             samples that have responded to the stimulant in CyTOF/Flow cytometry 
+             stimulation assays. Starting from the identified cell populations 
+             either through automated clustering such as FlowSOM or traditional 
+             cell gating, the primary function `stim_cell_selector()` follows a 
+             heuristic approach to group cells into responding and non-responding.
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
@@ -23,5 +24,6 @@ Imports:
 Suggests: 
     knitr,
     rmarkdown,
-    testthat
+    testthat,
+    covr
 VignetteBuilder: knitr

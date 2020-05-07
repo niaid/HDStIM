@@ -10,7 +10,8 @@ os:
   - osx
 
 r:
-  - 3.4
   - 3.6
   - release
-  - devel
+
+after_success:
+  - Rscript -e 'covr::codecov()'
