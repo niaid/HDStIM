@@ -5,7 +5,7 @@
 \title{Stim Cell Selector}
 \usage{
 stim_cell_selector(dat, state_markers, cluster_col, stim_lab, unstim_lab,
-  seed_val = NULL, umap = F)
+  seed_val = NULL, umap = F, umap_cells = NULL)
 }
 \arguments{
 \item{dat}{A tibble with the single cell data. Cells on rows
@@ -25,6 +25,10 @@ Default is NULL for no seed value.}
 
 \item{umap}{Boolean (T/F) to carry out UMAP on the selected cells.
 Default is FALSE to skip UMAP calculation.}
+
+\item{umap_cells}{An integer; for calculating UMAPs take a minimum of \code{umap_cells} per
+cluster or the total number of cells if the cluster size
+is smaller than \code{umap_cells}. Default is NULL.}
 }
 \value{
 A list with tibbles for expression data for the selected cells,
@@ -40,6 +44,6 @@ To reduce verbosity use \code{suppressMessages(stim_cells_selector())}.
 \examples{
 selected_data <- stim_cell_selector(chi11_1k$expr_data, chi11_1k$state_markers,
                   chi11_1k$cluster_col, chi11_1k$stim_label,
-                  chi11_1k$unstim_label, seed_val = 123, umap = FALSE)
+                  chi11_1k$unstim_label, seed_val = 123, umap = FALSE, umap_cells = NULL)
 
 }

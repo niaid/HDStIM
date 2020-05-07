@@ -13,6 +13,9 @@
 #'                         Default is NULL for no seed value.
 #' @param umap             Boolean (T/F) to carry out UMAP on the selected cells.
 #'                         Default is FALSE to skip UMAP calculation.
+#' @param umap_cells       An integer; for calculating UMAPs take a minimum of \code{umap_cells} per
+#'                         cluster or the total number of cells if the cluster size
+#'                         is smaller than \code{umap_cells}. Default is NULL.
 #'
 #' @return A list with tibbles for expression data for the selected cells,
 #'         data to plot stacked bar plots, and data to plot UMAP plots.
@@ -25,13 +28,18 @@
 #' @examples
 #' selected_data <- stim_cell_selector(chi11_1k$expr_data, chi11_1k$state_markers,
 #'                   chi11_1k$cluster_col, chi11_1k$stim_label,
-#'                   chi11_1k$unstim_label, seed_val = 123, umap = FALSE)
+#'                   chi11_1k$unstim_label, seed_val = 123, umap = FALSE, umap_cells = NULL)
 #'
 #' @note To reduce verbosity use \code{suppressMessages(stim_cells_selector())}.
-stim_cell_selector <- function(dat, state_markers, cluster_col, stim_lab, unstim_lab, seed_val = NULL, umap = F){
+stim_cell_selector <- function(dat, state_markers, cluster_col, stim_lab, unstim_lab, seed_val = NULL, umap = F, umap_cells = NULL){
+  # Check argument accuracy.
+  if(umap == TRUE & is.null(umap_cells)){
+    stop("If umap is set to TRUE then please pass a value for umap_cells.")
+  }
+
   message(paste("Selection process started on", date()))
 
-    # Standardize column names and state marker labels.
+  # Standardize column names and state marker labels.
   state_markers <- gsub("-", "_", state_markers)
   cols <- colnames(dat)
   cols <- gsub("-", "_", cols)
@@ -52,13 +60,14 @@ stim_cell_selector <- function(dat, state_markers, cluster_col, stim_lab, unstim
     umap_plot_data <- data.frame(matrix(ncol = 5, nrow = 0))
   }
 
-  # Set seed value for the k-means clustering.
-  set.seed(seed_val)
+  # Set counter for the number of combinations processed.
   counter <- 0
 
   # Main nest for loop.
   for(stim in stim_lab){
     for(cluster in clusters){
+      # Set seed value for the k-means clustering.
+      set.seed(seed_val)
       counter <- counter + 1
       message(paste0("## Combination ", counter,"/",total_combinations,"."))
       # Initialize an empty temporary output data frame.
@@ -170,7 +179,7 @@ stim_cell_selector <- function(dat, state_markers, cluster_col, stim_lab, unstim
           tot_of_cells <- nrow(comb_stim_unstim)
 
           # Take a minimum of 100k cells per cluster or the total no. of cells if the cluster size is smaller than 100k.
-          no_of_cells <- min(50000, tot_of_cells)
+          no_of_cells <- min(umap_cells, tot_of_cells)
           comb_stim_unstim <-  sample_n(comb_stim_unstim, no_of_cells, replace = FALSE)
           input_umap <- comb_stim_unstim[,state_markers]
 
