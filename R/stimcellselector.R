@@ -32,6 +32,16 @@
 #'
 #' @note To reduce verbosity use \code{suppressMessages(stim_cells_selector())}.
 stim_cell_selector <- function(dat, state_markers, cluster_col, stim_lab, unstim_lab, seed_val = NULL, umap = F, umap_cells = NULL){
+  # For debugging.
+  # dat <- chi11_1k$expr_data
+  # state_markers <- chi11_1k$state_markers
+  # cluster_col <- chi11_1k$cluster_col
+  # stim_lab <- chi11_1k$stim_label
+  # unstim_lab <- chi11_1k$unstim_label
+  # seed_val <- 123
+  # umap <- TRUE
+  # umap_cells <- 50
+
   # Check argument accuracy.
   if(umap == TRUE & is.null(umap_cells)){
     stop("If umap is set to TRUE then please pass a value for umap_cells.")
@@ -55,9 +65,9 @@ stim_cell_selector <- function(dat, state_markers, cluster_col, stim_lab, unstim
   # Initialize empty output data frames.
   df_out <- data.frame(matrix(ncol = length(cols), nrow = 0))
   df_summary_out <- as_tibble(data.frame(matrix(ncol = 3 + length(state_markers), nrow = 0)))
-  stacked_bar_plot_data <- data.frame(matrix(ncol = 5, nrow = 0))
+  stacked_bar_plot_data <- data.frame(matrix(ncol = 8, nrow = 0))
   if(umap){
-    umap_plot_data <- data.frame(matrix(ncol = 5, nrow = 0))
+    umap_plot_data <- data.frame(matrix(ncol = 7, nrow = 0))
   }
 
   # Set counter for the number of combinations processed.
@@ -160,15 +170,14 @@ stim_cell_selector <- function(dat, state_markers, cluster_col, stim_lab, unstim
 
         # Stacked + percent bar plots with stim and unstim on the x-axis and cell counts
         # in k-means clusters on the y-axis.
-        stacked_data <- data.frame(stim_status = c("unstim", "unstim", "stim", "stim"), k_cluster = c("cluster1", "cluster2", "cluster1", "cluster2"), count = c(unstim_1, unstim_2, stim_1, stim_2))
+        stacked_data <- data.frame(stim_status = c("unstim", "unstim", "stim", "stim"),
+                                   k_cluster = c("cluster1", "cluster2", "cluster1", "cluster2"),
+                                   count = c(unstim_1, unstim_2, stim_1, stim_2))
 
-        # stacked_plot <- ggplot(stacked_data, aes(fill=cluster, y=count, x=stim_status)) +
-        #   geom_bar(position="fill", stat="identity") +
-        #   labs(title=paste("Cluster:", cluster, "; Stim type:", stim, "; Fisher's p-value:", f_p_val, "\nStim cluster:", stim_clust, "; Fold change:", fc ,  sep=" "), x ="Stim Status", y = "Cell Count %", fill = "K-means Cluster")
-        #ggsave(paste("figure33_", meta,"__", stim, ".png", sep = ""), plot = stacked_plot, device = "png", path = figures_folder, width = 10, height = 8)
-
-        stacked_temp <- cbind("cluster" = cluster, "stim_type" = stim, stacked_data)
+        stacked_temp <- cbind("cluster" = cluster, "stim_type" = stim, "f_p_val" = f_p_val,
+                              "stim_clust" = stim_clust, "fold_change" = fc, stacked_data)
         stacked_bar_plot_data <- rbind(stacked_bar_plot_data, stacked_temp)
+
         # Generate UMAP on combined stim and unstim cells and colour them
         # accordingly.
         if(umap == TRUE){
@@ -186,18 +195,14 @@ stim_cell_selector <- function(dat, state_markers, cluster_col, stim_lab, unstim
           # Run UMAP.
           message(paste0("Running UMAP for ", cluster, " - ", stim,"."))
           u_res <- uwot::umap(input_umap)
-          colnames(u_res) <- c("UMAP1", "UMAP2")
-          # d <- as_tibble(u_res)
-          # print("Generating UMAP plot.")
-          # umap_plot <- ggplot(d, aes(x = UMAP1, y = UMAP2, color = comb_stim_unstim$type)) +
-          #   geom_point(alpha = 0.25, size = 0.5) +
-          #   labs(color = "Cell Type", title = paste0("Cluster: ", cluster, "; Stim: ", stim, "\nTotal No. Cells: ", tot_of_cells,
-          #                                            "; No. of Cells Plotted: ", no_of_cells))
 
-          #ggsave(paste(meta,"_", stim, ".png", sep = ""), plot = umap_plot, device = "png", path = file.path(figures_folder, "script6_7_umap"), width = 7, height = 5)
-
-          umap_temp <- cbind("cluster" = cluster, "stim_type" = stim, u_res)
+          umap_temp <- cbind("cluster" = cluster, "stim_type" = stim,
+                             "tot_of_cells" = tot_of_cells, "no_of_cells" = no_of_cells,
+                             "UMAP1" = u_res[,1], "UMAP2" = u_res[,2],
+                             "cell_type" = as.character(comb_stim_unstim$type))
           umap_plot_data <- rbind(umap_plot_data, umap_temp)
+          umap_plot_data$UMAP1 <- as.numeric(umap_plot_data$UMAP1)
+          umap_plot_data$UMAP2 <- as.numeric(umap_plot_data$UMAP2)
         }
 
       } else {
@@ -217,3 +222,5 @@ stim_cell_selector <- function(dat, state_markers, cluster_col, stim_lab, unstim
  message(paste("Selection process finished on", date()))
  return(return_list)
 }
+
+

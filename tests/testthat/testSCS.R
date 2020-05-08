@@ -3,5 +3,5 @@ test_that("Whether stim_cell_selector selects the same number of cells.",{
                                                 chi11_1k$cluster_col, chi11_1k$stim_label,
                                                 chi11_1k$unstim_label, seed_val = 123,
                                                 umap = TRUE, umap_cells = 50)
-  expect_equal(nrow(selected_data$selected_expr_data), 14873)
+  expect_equal(nrow(selected_data$selected_expr_data), 16023)
 })

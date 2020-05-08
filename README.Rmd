@@ -15,9 +15,10 @@ knitr::opts_chunk$set(
 # stimcellselector
 
 <!-- badges: start -->
-[![Travis build status](https://travis-ci.com/rohitfarmer/stimcellselector.svg?branch=master)](https://travis-ci.com/rohitfarmer/stimcellselector)
+[![Travis build status](https://travis-ci.com/rohitfarmer/stimcellselector.svg?token=qfD7QGsvB4b3CHB1xKYE&branch=master)](https://travis-ci.com/rohitfarmer/stimcellselector)
 [![AppVeyor build status](https://ci.appveyor.com/api/projects/status/github/rohitfarmer/stimcellselector?branch=master&svg=true)](https://ci.appveyor.com/project/rohitfarmer/stimcellselector)
 [![Codecov test coverage](https://codecov.io/gh/rohitfarmer/stimcellselector/branch/master/graph/badge.svg)](https://codecov.io/gh/rohitfarmer/stimcellselector?branch=master)
+[![](https://img.shields.io/github/languages/code-size/rohitfarmer/stimcellselector.svg)](https://github.com/rohitfarmer/stimcellselector)
 <!-- badges: end -->
 
 The goal of this package is to select cells from stimulated samples that have responded to the stimulant in CyTOF/Flow cytometry stimulation assays. Starting from the identified cell populations either through automated clustering such as FlowSOM or traditional cell gating, the primary function `stim_cell_selector()` follows a heuristic approach to group cells into responding and non-responding. 
@@ -25,7 +26,8 @@ The goal of this package is to select cells from stimulated samples that have re
 For a combination of cell population and stimulation type (e.g., CD127+ T-helper cells and interferon-alpha), `stim_cell_selector()` starts by performing k-means clustering on the combined set of cells from stimulated and unstimulated samples. K-means clustering is performed on expression data of all the state markers combined. Upon clustering using a contingency table as drawn below, a Fisher's exact test determines the effect size and the statistical significance of partitioning. Cells form the combinations that pass the Fisher's exact test are considered as responding. An optional UMAP plot can also be generated to verify the cell partitioning in responding and non-responding groups visually.
 
 ```{r con_table}
-matrix(nrow = 2, ncol = 2, dimnames = list(c("Cluster1", "Cluster2"), c("Stim", "Unstim")))
+matrix(c(1500, 345, 230, 2500),nrow = 2, ncol = 2, 
+       dimnames = list(c("Cluster1", "Cluster2"), c("Stim", "Unstim")))
 ```
 
 An optional UMAP plot can also be generated to verify the cell partitioning in responding and non-responding groups visually.
@@ -50,42 +52,16 @@ An example using the sample CyTOF data set `chi11_1k` included in the package.
 `suppressMessages()` is used to reduce the verbosity of the `stim_cell_selector`
 function.
 
-```{r example}
+``` r
 library(stimcellselector)
 
 selected_data <- suppressMessages(stim_cell_selector(chi11_1k$expr_data, chi11_1k$state_markers,
                   chi11_1k$cluster_col, chi11_1k$stim_label,
                   chi11_1k$unstim_label, seed_val = 123, umap = TRUE, umap_cells = 50))
-
-class(selected_data)
-
-attributes(selected_data)
 ```
 
-### Output
-
-`stim_cell_selector()` returns a list with the selected expression data, a summary, data to plot stacked 
-bar plots to visualize the k-means and Fisher's exact test results and data to plot the optional UMAPs. 
-
-```{r head_expr}
-head(selected_data$selected_expr_data)
-```
-
-```{r head_summary}
-head(selected_data$summary)
-```
-```{r head_stacked}
-head(selected_data$stacked_bar_plot_data)
-```
-```{r head_umap}
-head(selected_data$umap_plot_data)
-```
-
-You can also embed plots, for example:
-
-```{r pressure, echo = FALSE}
-plot(pressure)
-```
+For more information on the interpredation of the output and how to generate relevant figures
+please visit the package website at 
 
 ## Contact
 Rohit Farmer: [rohit.farmer@gmail.com](mailto:rohit.farmer@gmail.com)
