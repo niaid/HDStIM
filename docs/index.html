@@ -85,7 +85,8 @@
   <div class="contents col-md-9">
 <div id="stimcellselector" class="section level1">
 <div class="page-header"><h1 class="hasAnchor">
-<a href="#stimcellselector" class="anchor"></a>stimcellselector</h1></div>
+<a href="#stimcellselector" class="anchor"></a>stimcellselector <a href="https://rohitfarmer.github.io/stimcellselector/"><img src="reference/figures/sticker.png" align="right" height="200"></a>
+</h1></div>
 <!-- badges: start -->
 
 <p>The goal of this package is to select cells from stimulated samples that have responded to the stimulant in CyTOF/Flow cytometry stimulation assays. Starting from the identified cell populations either through automated clustering such as FlowSOM or traditional cell gating, the primary function <code><a href="reference/stim_cell_selector.html">stim_cell_selector()</a></code> follows a heuristic approach to group cells into responding and non-responding.</p>
@@ -114,7 +115,7 @@
 <span class="no">selected_data</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/message.html">suppressMessages</a></span>(<span class="fu"><a href="reference/stim_cell_selector.html">stim_cell_selector</a></span>(<span class="no">chi11_1k</span>$<span class="no">expr_data</span>, <span class="no">chi11_1k</span>$<span class="no">state_markers</span>,
                   <span class="no">chi11_1k</span>$<span class="no">cluster_col</span>, <span class="no">chi11_1k</span>$<span class="no">stim_label</span>,
                   <span class="no">chi11_1k</span>$<span class="no">unstim_label</span>, <span class="kw">seed_val</span> <span class="kw">=</span> <span class="fl">123</span>, <span class="kw">umap</span> <span class="kw">=</span> <span class="fl">TRUE</span>, <span class="kw">umap_cells</span> <span class="kw">=</span> <span class="fl">50</span>))</pre></div>
-<p>For more information on the interpredation of the output and how to generate relevant figures please visit the package website at</p>
+<p>For more information on the interpredation of the output and how to generate relevant figures please visit the package website at <a href="https://rohitfarmer.github.io/stimcellselector/" class="uri">https://rohitfarmer.github.io/stimcellselector/</a>.</p>
 </div>
 <div id="contact" class="section level2">
 <h2 class="hasAnchor">

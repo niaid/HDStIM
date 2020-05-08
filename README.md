@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# stimcellselector
+# stimcellselector <a href='https://rohitfarmer.github.io/stimcellselector/'><img src='man/figures/sticker.png' align="right" height="200" /></a>
 
 <!-- badges: start -->
 
@@ -75,6 +75,7 @@ selected_data <- suppressMessages(stim_cell_selector(chi11_1k$expr_data, chi11_1
 
 For more information on the interpredation of the output and how to
 generate relevant figures please visit the package website at
+<https://rohitfarmer.github.io/stimcellselector/>.
 
 ## Contact
 

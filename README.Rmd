@@ -12,7 +12,8 @@ knitr::opts_chunk$set(
   out.width = "100%"
 )
 ```
-# stimcellselector
+# stimcellselector <a href='https://rohitfarmer.github.io/stimcellselector/'><img src='man/figures/sticker.png' align="right" height="200" /></a>
+
 
 <!-- badges: start -->
 [![Travis build status](https://travis-ci.com/rohitfarmer/stimcellselector.svg?token=qfD7QGsvB4b3CHB1xKYE&branch=master)](https://travis-ci.com/rohitfarmer/stimcellselector)
@@ -61,7 +62,7 @@ selected_data <- suppressMessages(stim_cell_selector(chi11_1k$expr_data, chi11_1
 ```
 
 For more information on the interpredation of the output and how to generate relevant figures
-please visit the package website at 
+please visit the package website at [https://rohitfarmer.github.io/stimcellselector/](https://rohitfarmer.github.io/stimcellselector/).
 
 ## Contact
 Rohit Farmer: [rohit.farmer@gmail.com](mailto:rohit.farmer@gmail.com)
