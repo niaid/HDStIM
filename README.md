@@ -10,7 +10,7 @@ status](https://travis-ci.com/rohitfarmer/stimcellselector.svg?token=qfD7QGsvB4b
 [![AppVeyor build
 status](https://ci.appveyor.com/api/projects/status/github/rohitfarmer/stimcellselector?branch=master&svg=true)](https://ci.appveyor.com/project/rohitfarmer/stimcellselector)
 [![Codecov test
-coverage](https://codecov.io/gh/rohitfarmer/stimcellselector/branch/master/graph/badge.svg)](https://codecov.io/gh/rohitfarmer/stimcellselector?branch=master)
+coverage](https://codecov.io/gh/rohitfarmer/stimcellselector/branch/master/graph/badge.svg?token=IXR3EVFLXA)](https://codecov.io/gh/rohitfarmer/stimcellselector?branch=master)
 [![](https://img.shields.io/github/languages/code-size/rohitfarmer/stimcellselector.svg)](https://github.com/rohitfarmer/stimcellselector)
 <!-- badges: end -->
 
