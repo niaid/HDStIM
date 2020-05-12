@@ -10,7 +10,8 @@ os:
   - osx
 
 r:
-  - 3.6
+  - 3.5.3
+  - 3.6.3
   - release
 
 after_success:
