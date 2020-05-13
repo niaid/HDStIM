@@ -16,6 +16,7 @@
 #' @param umap_cells       An integer; for calculating UMAPs take a minimum of \code{umap_cells} per
 #'                         cluster or the total number of cells if the cluster size
 #'                         is smaller than \code{umap_cells}. Default is NULL.
+#' @param verbose          Logical. To make function more verbose. Default is FALSE.
 #'
 #' @return A list with tibbles for expression data for the selected cells,
 #'         data to plot stacked bar plots, and data to plot UMAP plots.
@@ -28,10 +29,11 @@
 #' @examples
 #' selected_data <- stim_cell_selector(chi11_1k$expr_data, chi11_1k$state_markers,
 #'                   chi11_1k$cluster_col, chi11_1k$stim_label,
-#'                   chi11_1k$unstim_label, seed_val = 123, umap = FALSE, umap_cells = NULL)
+#'                   chi11_1k$unstim_label, seed_val = 123, umap = FALSE, umap_cells = NULL,
+#'                   verbose = FALSE)
 #'
-#' @note To reduce verbosity use \code{suppressMessages(stim_cells_selector())}.
-stim_cell_selector <- function(dat, state_markers, cluster_col, stim_lab, unstim_lab, seed_val = NULL, umap = F, umap_cells = NULL){
+stim_cell_selector <- function(dat, state_markers, cluster_col, stim_lab, unstim_lab,
+                               seed_val = NULL, umap = FALSE, umap_cells = NULL, verbose = FALSE){
   # For debugging.
   # dat <- chi11_1k$expr_data
   # state_markers <- chi11_1k$state_markers
@@ -47,7 +49,7 @@ stim_cell_selector <- function(dat, state_markers, cluster_col, stim_lab, unstim
     stop("If umap is set to TRUE then please pass a value for umap_cells.")
   }
 
-  message(paste("Selection process started on", date()))
+  if(verbose == TRUE){message(paste("Selection process started on", date()))}
 
   # Standardize column names and state marker labels.
   state_markers <- gsub("-", "_", state_markers)
@@ -59,8 +61,8 @@ stim_cell_selector <- function(dat, state_markers, cluster_col, stim_lab, unstim
   clusters <- as.character(unique(dat[[cluster_col]]))
 
   total_combinations <- length(clusters) * length(stim_lab)
-  message(paste0("Total combinations to go through: ", length(clusters), " clusters X ", length(stim_lab),
-                 " stimulation types = ", total_combinations,"."))
+  if(verbose == TRUE){message(paste0("Total combinations to go through: ", length(clusters), " clusters X ", length(stim_lab),
+                 " stimulation types = ", total_combinations,"."))}
 
   # Initialize empty output data frames.
   df_out <- data.frame(matrix(ncol = length(cols), nrow = 0))
@@ -79,7 +81,7 @@ stim_cell_selector <- function(dat, state_markers, cluster_col, stim_lab, unstim
       # Set seed value for the k-means clustering.
       set.seed(seed_val)
       counter <- counter + 1
-      message(paste0("## Combination ", counter,"/",total_combinations,"."))
+      if(verbose == TRUE){message(paste0("## Combination ", counter,"/",total_combinations,"."))}
       # Initialize an empty temporary output data frame.
       df_out_temp <- data.frame(matrix(ncol = length(cols), nrow = 0))
 
@@ -93,7 +95,7 @@ stim_cell_selector <- function(dat, state_markers, cluster_col, stim_lab, unstim
 
       # From dat_stim_unstim data frame select expression values for all the state markers
       # and carry out k-means (k = 2) clustering.
-      message(paste("Carrying out k-means clustering on cells from", cluster, "-", stim, "+ unstim."))
+      if(verbose == TRUE){message(paste("Carrying out k-means clustering on cells from", cluster, "-", stim, "+ unstim."))}
       dat_state <- dat_stim_unstim[, state_markers]
       k_results <- kmeans(dat_state, 2)
 
@@ -102,7 +104,7 @@ stim_cell_selector <- function(dat, state_markers, cluster_col, stim_lab, unstim
       clust_unstim <- k_results$cluster[unstim_idx]
 
       # Fisher's Exact Test.
-      message("Carrying out Fisher's exact test.")
+      if(verbose == TRUE){message("Carrying out Fisher's exact test.")}
 
       # Create a contingency table and carry out F-test.
       # Count the number of stimulated and un-stimulated cells that belong to cluster 1 and 2.
@@ -123,7 +125,7 @@ stim_cell_selector <- function(dat, state_markers, cluster_col, stim_lab, unstim
       # Select cells and save data only for the combinations that pass
       # F-test.
       if(f_p_val < 0.05){
-        message("Fisher's exact test significant.")
+        if(verbose == TRUE){message("Fisher's exact test significant.")}
         # Identify un-stimulated cells cluster on the basis of the cluster that has a higher number of cells.
         if(unstim_1 > unstim_2){
           unstim_clust = 1
@@ -193,7 +195,7 @@ stim_cell_selector <- function(dat, state_markers, cluster_col, stim_lab, unstim
           input_umap <- comb_stim_unstim[,state_markers]
 
           # Run UMAP.
-          message(paste0("Running UMAP for ", cluster, " - ", stim,"."))
+          if(verbose == TRUE){message(paste0("Running UMAP for ", cluster, " - ", stim,"."))}
           u_res <- uwot::umap(input_umap)
 
           umap_temp <- cbind("cluster" = cluster, "stim_type" = stim,
@@ -206,7 +208,7 @@ stim_cell_selector <- function(dat, state_markers, cluster_col, stim_lab, unstim
         }
 
       } else {
-        message("Fisher' exact test non-sgnificant. Skipping further steps.")
+        if(verbose == TRUE){message("Fisher' exact test non-sgnificant. Skipping further steps.")}
       }
     }
   }
@@ -219,7 +221,7 @@ stim_cell_selector <- function(dat, state_markers, cluster_col, stim_lab, unstim
     return_list <- list("selected_expr_data" = as_tibble(df_out), "summary" = as_tibble(df_summary_out),
                         "stacked_bar_plot_data" = as_tibble(stacked_bar_plot_data))
   }
- message(paste("Selection process finished on", date()))
+ if(verbose == TRUE){message(paste("Selection process finished on", date()))}
  return(return_list)
 }
 

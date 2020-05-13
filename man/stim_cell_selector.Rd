@@ -5,7 +5,8 @@
 \title{Stim Cell Selector}
 \usage{
 stim_cell_selector(dat, state_markers, cluster_col, stim_lab, unstim_lab,
-  seed_val = NULL, umap = F, umap_cells = NULL)
+  seed_val = NULL, umap = FALSE, umap_cells = NULL,
+  verbose = FALSE)
 }
 \arguments{
 \item{dat}{A tibble with the single cell data. Cells on rows
@@ -29,6 +30,8 @@ Default is FALSE to skip UMAP calculation.}
 \item{umap_cells}{An integer; for calculating UMAPs take a minimum of \code{umap_cells} per
 cluster or the total number of cells if the cluster size
 is smaller than \code{umap_cells}. Default is NULL.}
+
+\item{verbose}{Logical. To make function more verbose. Default is FALSE.}
 }
 \value{
 A list with tibbles for expression data for the selected cells,
@@ -38,12 +41,10 @@ A list with tibbles for expression data for the selected cells,
 Function to select cells from the stimulated samples that
              have likely responded to the stimulant.
 }
-\note{
-To reduce verbosity use \code{suppressMessages(stim_cells_selector())}.
-}
 \examples{
 selected_data <- stim_cell_selector(chi11_1k$expr_data, chi11_1k$state_markers,
                   chi11_1k$cluster_col, chi11_1k$stim_label,
-                  chi11_1k$unstim_label, seed_val = 123, umap = FALSE, umap_cells = NULL)
+                  chi11_1k$unstim_label, seed_val = 123, umap = FALSE, umap_cells = NULL,
+                  verbose = FALSE)
 
 }

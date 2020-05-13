@@ -37,9 +37,9 @@ suppressMessages(library(dplyr))
 suppressMessages(library(tibble))
 suppressMessages(library(ggplot2))
 
-selected_data <- suppressMessages(stim_cell_selector(chi11_1k$expr_data, chi11_1k$state_markers,
+selected_data <-  stim_cell_selector(chi11_1k$expr_data, chi11_1k$state_markers,
                   chi11_1k$cluster_col, chi11_1k$stim_label,
-                  chi11_1k$unstim_label, seed_val = 123, umap = TRUE, umap_cells = 500))
+                  chi11_1k$unstim_label, seed_val = 123, umap = TRUE, umap_cells = 500, verbose = FALSE)
 
 class(selected_data)
 
@@ -76,7 +76,14 @@ exact test after the k-means clustering. For each combination plot data also con
 p-value for the Fisher's exact test and the fold change of the cells from the stimulated
 samples that responded.
 
-The code below plots a stacked bar plot for the first combination from the output above.
+You can either use the function `plot_sbp` provided in the package to plot for all the
+combinations of cluster and stimulation types in a specified folder like below
+
+```r
+plot_sbp(selected_data, path, verbose = FALSE)
+```
+or use the backend code below to plot only for the combinations of interest or with custom
+aesthetics. The code below only plots the first combination.
 
 ```{r stacked_plot, fig.width = 7, fig.height = 5}
 # Group data according to clusters and stimulation type.
@@ -104,12 +111,18 @@ the `stim_cell_selector()` function.
 
 UMAP plots can be useful for visually inspecting how well selection method has 
 separated responding and non-responding cells for a cluster and stimulation type
-combination. 
-
-The code below plots a UMAP for first combination using the output above.
-The plot shows all the cells from the unstimulated samples that fell in the
+combination. The plots below shows all the cells from the unstimulated samples that fell in the
 unstim cluster and responding and non-responding cells from the stimulated 
 samples that fell in the stim and unstim clusters respectively. 
+
+You can either use the function `plot_umap` provided in the package to plot for all the
+combinations of cluster and stimulation types in a specified folder like below
+
+```r
+plot_umap(selected_data, path, verbose = FALSE)
+```
+or use the backend code below to plot only for the combinations of interest or with custom
+aesthetics. The code below plots a UMAP for first combination using the output above.
 
 ```{r umap_plot, fig.width = 7, fig.height = 5}
 # Group data according to clusters and stimulation type.
