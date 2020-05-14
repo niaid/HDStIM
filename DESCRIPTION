@@ -21,7 +21,8 @@ Imports:
     tibble,
     ggplot2,
     uwot,
-    dplyr
+    dplyr,
+    tidyr
 Suggests: 
     knitr,
     rmarkdown,

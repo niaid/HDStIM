@@ -160,8 +160,13 @@ stim_cell_selector <- function(dat, state_markers, cluster_col, stim_lab, unstim
 
         # Also select unstimulated cells to combine them later with the
         # simulated cells for the UMAP.
-        unstim_cells <- dat_stim_unstim[k_results$cluster == unstim_clust,]
-        unstim_cells <- unstim_cells[as.character(unstim_cells$stim_type) == unstim_lab, ]
+        #unstim_cells <- dat_stim_unstim[k_results$cluster == unstim_clust,]
+        #unstim_cells <- unstim_cells[as.character(unstim_cells$stim_type) == unstim_lab, ]
+        unstim_cells <- dat_stim_unstim[as.character(dat_stim_unstim$stim_type) == unstim_lab, ]
+
+        # Select the unstim cell that clustered in the stim cluster.
+        # unstim_cells_resp <- dat_stim_unstim[k_results$cluster == stim_clust,]
+        # unstim_cells_resp <- unstim_cells_resp[as.character(unstim_cells_resp$stim_type) == unstim_lab, ]
 
         # Combine data in a data frame and also generate a summary table.
         df_out <- rbind(df_out, stim_cells)
@@ -186,6 +191,7 @@ stim_cell_selector <- function(dat, state_markers, cluster_col, stim_lab, unstim
           stim_cells_label <- cbind(stim_cells, "type" = "stim_cells_resp")
           stim_cells_no_resp_label <- cbind(stim_cells_no_resp, "type" = "stim_cells_no_resp")
           unstim_cells_label <- cbind(unstim_cells, "type" = "unstim_cells")
+          #unstim_cells_resp_label <- cbind(unstim_cells_resp, type = "unstim_cells_resp")
           comb_stim_unstim <- as_tibble(rbind(stim_cells_label, stim_cells_no_resp_label, unstim_cells_label))
           tot_of_cells <- nrow(comb_stim_unstim)
 
