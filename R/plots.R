@@ -144,7 +144,7 @@ plot_kde <- function(original_data, selected_data, state_markers, cluster_col, p
     temp_df <- cbind(temp_df, marker_dat, "distribution" = "original")
     gather_ori_dat <- rbind(gather_ori_dat, temp_df)
   }
-  gather_ori_dat <- rename(gather_ori_dat, "cluster" = cluster_col)
+  gather_ori_dat <- rename(as_tibble(gather_ori_dat), "cluster" = cluster_col)
 
   # Convert the post k-means data from wide to long form for the state markers.
   selec_data <- selected_data$selected_expr_data
@@ -156,7 +156,7 @@ plot_kde <- function(original_data, selected_data, state_markers, cluster_col, p
     temp_df <- cbind(temp_df, marker_dat, "distribution" = "selected")
     gather_selec_dat <- rbind(gather_selec_dat, temp_df)
   }
-  gather_selec_dat <- rename(gather_selec_dat, "cluster" = cluster_col)
+  gather_selec_dat <- rename(as_tibble(gather_selec_dat), "cluster" = cluster_col)
 
   summary <- selected_data$summary
   for(i in 1:nrow(summary)){
