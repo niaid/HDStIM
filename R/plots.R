@@ -137,19 +137,19 @@ plot_kde <- function(original_data, selected_data, state_markers, cluster_col, p
 
   # Convert the pre k-means data from wide to long form for the state markers.
   original_data <- original_data[, c(cluster_col, "stim_type", state_markers)]
-  gather_ori_dat <- data.frame(matrix(nrow = 0, ncol = 5))
+  gather_ori_dat <- as_tibble(data.frame(matrix(nrow = 0, ncol = 5)))
   for(state in state_markers){
     temp_df <- original_data[c(cluster_col, "stim_type")]
     marker_dat <- gather(as_tibble(original_data[state]), key = "state_marker", value = "marker_exp")
     temp_df <- cbind(temp_df, marker_dat, "distribution" = "original")
     gather_ori_dat <- rbind(gather_ori_dat, temp_df)
   }
-  gather_ori_dat <- rename(gather_ori_dat, "cluster" = cluster_col )
+  gather_ori_dat <- rename(gather_ori_dat, "cluster" = cluster_col)
 
   # Convert the post k-means data from wide to long form for the state markers.
   selec_data <- selected_data$selected_expr_data
   selec_data <- selec_data[, c(cluster_col, "stim_type", state_markers)]
-  gather_selec_dat <- data.frame(matrix(nrow = 0, ncol = 5))
+  gather_selec_dat <- as_tibble(data.frame(matrix(nrow = 0, ncol = 5)))
   for(state in state_markers){
     temp_df <- selec_data[c(cluster_col, "stim_type")]
     marker_dat <- gather(as_tibble(selec_data[state]), key = "state_marker", value = "marker_exp")
