@@ -35,7 +35,8 @@ is smaller than \code{umap_cells}. Default is NULL.}
 }
 \value{
 A list with tibbles for expression data for the selected cells,
-        data to plot stacked bar plots, and data to plot UMAP plots.
+        data to plot stacked bar plots, data to plot UMAP plots, and
+        parameters passed to the function.
 }
 \description{
 Function to select cells from the stimulated samples that

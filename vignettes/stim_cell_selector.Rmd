@@ -148,8 +148,7 @@ You can either use the function `plot_kde` provided in the package to plot for a
 combinations of cluster and stimulation types in a specified folder like below
 
 ```r
-plot_kde(original_data, selected_data, state_markers, cluster_col, path,
-  verbose = FALSE)
+plot_kde(original_data, selected_data, path,verbose = FALSE)
 ```
 or use the backend code below to plot only for the combinations of interest or with custom
 aesthetics. The code below plots a distribution plot for the first combination using the output above.

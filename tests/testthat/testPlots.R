@@ -24,6 +24,6 @@ test_that("If plot_kde returns 0.",{
                                       chi11_1k$unstim_label, seed_val = 123,
                                       umap = FALSE)
 
-  k <- plot_kde(chi11_1k$expr_data, selected_data, chi11_1k$state_markers, chi11_1k$cluster_col, path = NULL, verbose = TRUE)
+  k <- plot_kde(chi11_1k$expr_data, selected_data, path = NULL, verbose = TRUE)
   expect_equal(k, 0)
 })

@@ -19,7 +19,8 @@
 #' @param verbose          Logical. To make function more verbose. Default is FALSE.
 #'
 #' @return A list with tibbles for expression data for the selected cells,
-#'         data to plot stacked bar plots, and data to plot UMAP plots.
+#'         data to plot stacked bar plots, data to plot UMAP plots, and
+#'         parameters passed to the function.
 #' @importFrom tibble as_tibble
 #' @import dplyr ggplot2
 #' @importFrom stats fisher.test kmeans median
@@ -52,6 +53,7 @@ stim_cell_selector <- function(dat, state_markers, cluster_col, stim_lab, unstim
   if(verbose == TRUE){message(paste("Selection process started on", date()))}
 
   # Standardize column names and state marker labels.
+  if(verbose == TRUE){message("Relacing - with _ in state marker labels and expression data column names.")}
   state_markers <- gsub("-", "_", state_markers)
   cols <- colnames(dat)
   cols <- gsub("-", "_", cols)
@@ -66,6 +68,7 @@ stim_cell_selector <- function(dat, state_markers, cluster_col, stim_lab, unstim
 
   # Initialize empty output data frames.
   df_out <- data.frame(matrix(ncol = length(cols), nrow = 0))
+  df_unstim_out <- data.frame(matrix(ncol = length(cols), nrow = 0))
   df_summary_out <- as_tibble(data.frame(matrix(ncol = 3 + length(state_markers), nrow = 0)))
   stacked_bar_plot_data <- data.frame(matrix(ncol = 8, nrow = 0))
   if(umap){
@@ -75,7 +78,7 @@ stim_cell_selector <- function(dat, state_markers, cluster_col, stim_lab, unstim
   # Set counter for the number of combinations processed.
   counter <- 0
 
-  # Main nest for loop.
+  # Main nested for loop.
   for(stim in stim_lab){
     for(cluster in clusters){
       # Set seed value for the k-means clustering.
@@ -160,8 +163,8 @@ stim_cell_selector <- function(dat, state_markers, cluster_col, stim_lab, unstim
 
         # Also select unstimulated cells to combine them later with the
         # simulated cells for the UMAP.
-        #unstim_cells <- dat_stim_unstim[k_results$cluster == unstim_clust,]
-        #unstim_cells <- unstim_cells[as.character(unstim_cells$stim_type) == unstim_lab, ]
+        unstim_cells_no_resp <- dat_stim_unstim[k_results$cluster == unstim_clust,]
+        unstim_cells_no_resp <- unstim_cells_no_resp[as.character(unstim_cells_no_resp$stim_type) == unstim_lab, ]
         unstim_cells <- dat_stim_unstim[as.character(dat_stim_unstim$stim_type) == unstim_lab, ]
 
         # Select the unstim cell that clustered in the stim cluster.
@@ -170,6 +173,8 @@ stim_cell_selector <- function(dat, state_markers, cluster_col, stim_lab, unstim
 
         # Combine data in a data frame and also generate a summary table.
         df_out <- rbind(df_out, stim_cells)
+        df_unstim_out <- rbind(df_unstim_out, unstim_cells_no_resp)
+
 
         summary_table <- cbind(cluster = cluster, stim_type = stim, f_p_value = f_p_val, fold_change = fc, med_exp)
         df_summary_out <- rbind(df_summary_out, summary_table)
@@ -219,13 +224,24 @@ stim_cell_selector <- function(dat, state_markers, cluster_col, stim_lab, unstim
     }
   }
 
+  # Select only unique cells from unstim samples.
+  df_unstim_out <- unique(df_unstim_out)
+
   if(umap){
     return_list <- list("selected_expr_data" = as_tibble(df_out), "summary" = as_tibble(df_summary_out),
                         "stacked_bar_plot_data" = as_tibble(stacked_bar_plot_data),
-                        "umap_plot_data" = as_tibble(umap_plot_data))
+                        "umap_plot_data" = as_tibble(umap_plot_data),
+                        "unstim_cells" = as_tibble(df_unstim_out),
+                        "state_markers" = state_markers, "cluster_col" = cluster_col,
+                        "stim_label" = stim_lab, "unstim_label" = unstim_lab,
+                        "seed_val" = seed_val, "umap" = umap, "umap_cells" = umap_cells)
   }else{
     return_list <- list("selected_expr_data" = as_tibble(df_out), "summary" = as_tibble(df_summary_out),
-                        "stacked_bar_plot_data" = as_tibble(stacked_bar_plot_data))
+                        "stacked_bar_plot_data" = as_tibble(stacked_bar_plot_data),
+                        "unstim_cells" = as_tibble(df_unstim_out),
+                        "state_markers" = state_markers, "cluster_col" = cluster_col,
+                        "stim_label" = stim_lab, "unstim_label" = unstim_lab,
+                        "seed_val" = seed_val)
   }
  if(verbose == TRUE){message(paste("Selection process finished on", date()))}
  return(return_list)

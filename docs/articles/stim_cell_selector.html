@@ -82,7 +82,7 @@
       <h1 data-toc-skip>Stim Cell Selector</h1>
                         <h4 class="author">Rohit Farmer</h4>
             
-            <h4 class="date">2020-05-18</h4>
+            <h4 class="date">2020-05-28</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/rohitfarmer/stimcellselector/blob/master/vignettes/stim_cell_selector.Rmd"><code>vignettes/stim_cell_selector.Rmd</code></a></small>
       <div class="hidden name"><code>stim_cell_selector.Rmd</code></div>
@@ -116,8 +116,12 @@
 
 <span class="fu"><a href="https://rdrr.io/r/base/attributes.html">attributes</a></span>(<span class="no">selected_data</span>)
 <span class="co">#&gt; $names</span>
-<span class="co">#&gt; [1] "selected_expr_data"    "summary"               "stacked_bar_plot_data"</span>
-<span class="co">#&gt; [4] "umap_plot_data"</span></pre></body></html></div>
+<span class="co">#&gt;  [1] "selected_expr_data"    "summary"              </span>
+<span class="co">#&gt;  [3] "stacked_bar_plot_data" "umap_plot_data"       </span>
+<span class="co">#&gt;  [5] "unstim_cells"          "state_markers"        </span>
+<span class="co">#&gt;  [7] "cluster_col"           "stim_label"           </span>
+<span class="co">#&gt;  [9] "unstim_label"          "seed_val"             </span>
+<span class="co">#&gt; [11] "umap"                  "umap_cells"</span></pre></body></html></div>
 <div id="output" class="section level3">
 <h3 class="hasAnchor">
 <a href="#output" class="anchor"></a>Output</h3>
@@ -231,8 +235,7 @@
 <h4 class="hasAnchor">
 <a href="#distribution-plots-for-individual-state-marker-before-and-after-selection" class="anchor"></a>Distribution plots for Individual State Marker before and after Selection</h4>
 <p>You can either use the function <code>plot_kde</code> provided in the package to plot for all the combinations of cluster and stimulation types in a specified folder like below</p>
-<div class="sourceCode" id="cb11"><html><body><pre class="r"><span class="fu"><a href="../reference/plot_kde.html">plot_kde</a></span>(<span class="no">original_data</span>, <span class="no">selected_data</span>, <span class="no">state_markers</span>, <span class="no">cluster_col</span>, <span class="no">path</span>,
-  <span class="kw">verbose</span> <span class="kw">=</span> <span class="fl">FALSE</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb11"><html><body><pre class="r"><span class="fu"><a href="../reference/plot_kde.html">plot_kde</a></span>(<span class="no">original_data</span>, <span class="no">selected_data</span>, <span class="no">path</span>,<span class="kw">verbose</span> <span class="kw">=</span> <span class="fl">FALSE</span>)</pre></body></html></div>
 <p>or use the backend code below to plot only for the combinations of interest or with custom aesthetics. The code below plots a distribution plot for the first combination using the output above.</p>
 <div class="sourceCode" id="cb12"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">tidyr</span>)
 
