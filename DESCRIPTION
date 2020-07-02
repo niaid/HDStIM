@@ -22,7 +22,8 @@ Imports:
     ggplot2,
     uwot,
     dplyr,
-    tidyr
+    tidyr,
+    ggridges
 Suggests: 
     knitr,
     rmarkdown,
