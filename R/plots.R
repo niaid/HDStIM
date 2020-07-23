@@ -45,7 +45,7 @@ plot_sbp <- function(selected_data, path, verbose = FALSE){
              x ="Stim Status", y = "Cell Count %", fill = "K-means Cluster")
 
       if(!is.null(path)){
-        ggsave(paste0("plot_sbp_",clust,"_", stim, ".png"),
+        ggsave(paste0("plot_sbp_",clust,"_", stim, "_",state,".png"),
                plot = stacked_plot, device = "png", path = file.path(path), width = 6, height = 4, dpi = 300)
       }
     }

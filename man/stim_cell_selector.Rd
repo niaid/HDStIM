@@ -17,7 +17,7 @@ markers from the stimulation panel.}
 
 \item{cluster_col}{Column in the tibble with the cluster IDs.}
 
-\item{stim_lab}{A character of stim label(s).}
+\item{stim_lab}{A character vector of stim label(s).}
 
 \item{unstim_lab}{A character of unstim label(s).}
 

@@ -23,7 +23,9 @@ Imports:
     uwot,
     dplyr,
     tidyr,
-    ggridges
+    ggridges,
+    lme4,
+    skmeans
 Suggests: 
     knitr,
     rmarkdown,

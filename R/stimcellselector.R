@@ -7,7 +7,7 @@
 #' @param state_markers    A character vector with the labels of state
 #'                         markers from the stimulation panel.
 #' @param cluster_col      Column in the tibble with the cluster IDs.
-#' @param stim_lab         A character of stim label(s).
+#' @param stim_lab         A character vector of stim label(s).
 #' @param unstim_lab       A character of unstim label(s).
 #' @param seed_val         Seed value (integer) for \code{\link{kmeans}} clustering.
 #'                         Default is NULL for no seed value.
@@ -24,6 +24,7 @@
 #' @importFrom tibble as_tibble
 #' @import dplyr ggplot2
 #' @importFrom stats fisher.test kmeans median
+#' @import skmeans
 #' @importFrom uwot umap
 #' @export
 #'
@@ -44,6 +45,8 @@ stim_cell_selector <- function(dat, state_markers, cluster_col, stim_lab, unstim
   # seed_val <- 123
   # umap <- TRUE
   # umap_cells <- 50
+
+  dat <- dat[which(rowSums(dat[state_markers]) > 0),]
 
   # Check argument accuracy.
   if(umap == TRUE & is.null(umap_cells)){
@@ -98,9 +101,10 @@ stim_cell_selector <- function(dat, state_markers, cluster_col, stim_lab, unstim
 
       # From dat_stim_unstim data frame select expression values for all the state markers
       # and carry out k-means (k = 2) clustering.
-      if(verbose == TRUE){message(paste("Carrying out k-means clustering on cells from", cluster, "-", stim, "+ unstim."))}
+      if(verbose == TRUE){message(paste("Carrying out S k-means clustering on cells from", cluster, "-", stim, "+ unstim."))}
       dat_state <- dat_stim_unstim[, state_markers]
-      k_results <- kmeans(dat_state, 2)
+      #k_results <- kmeans(dat_state, 2)
+      k_results <- skmeans(as.matrix(dat_state), 2)
 
       # Get cluster IDs for stim and unstim cells.
       clust_stim <- k_results$cluster[stim_idx]
