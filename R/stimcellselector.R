@@ -46,7 +46,7 @@ stim_cell_selector <- function(dat, state_markers, cluster_col, stim_lab, unstim
   # umap <- TRUE
   # umap_cells <- 50
 
-  dat <- dat[which(rowSums(dat[state_markers]) > 0),]
+  # dat <- dat[which(rowSums(dat[state_markers]) != 0),]
 
   # Check argument accuracy.
   if(umap == TRUE & is.null(umap_cells)){
@@ -101,10 +101,10 @@ stim_cell_selector <- function(dat, state_markers, cluster_col, stim_lab, unstim
 
       # From dat_stim_unstim data frame select expression values for all the state markers
       # and carry out k-means (k = 2) clustering.
-      if(verbose == TRUE){message(paste("Carrying out S k-means clustering on cells from", cluster, "-", stim, "+ unstim."))}
+      if(verbose == TRUE){message(paste("Carrying out k-means clustering on cells from", cluster, "-", stim, "+ unstim."))}
       dat_state <- dat_stim_unstim[, state_markers]
-      #k_results <- kmeans(dat_state, 2)
-      k_results <- skmeans(as.matrix(dat_state), 2)
+      k_results <- kmeans(dat_state, 2)
+      #k_results <- skmeans(as.matrix(dat_state), 2)
 
       # Get cluster IDs for stim and unstim cells.
       clust_stim <- k_results$cluster[stim_idx]
