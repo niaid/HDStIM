@@ -12,7 +12,9 @@ if(R.Version()$minor == "5.3"){
                                         chi11_1k$cluster_col, chi11_1k$stim_label,
                                         chi11_1k$unstim_label, seed_val = 123,
                                         umap = TRUE, umap_cells = 50, verbose = TRUE)
-    expect_equal(nrow(selected_data$selected_expr_data), 16023)
+    #expect_equal(nrow(selected_data$selected_expr_data), 16023)
+    expect_equal(nrow(selected_data$selected_expr_data), 17218)
+
   })
 }
 

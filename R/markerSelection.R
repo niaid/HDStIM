@@ -34,8 +34,8 @@ state_marker_selection <- function(dat, state_markers, cluster_col, stim_lab, un
   # unstim_lab <- chi11_1k$unstim_label
   # REML <- FALSE
   # verbose <- TRUE
-  # df_out <- data.frame(matrix(nrow = 0, ncol = 3))
 
+  df_out <- data.frame(matrix(nrow = 0, ncol = 3))
   for(stim in stim_lab){
     dat_stim_unstim <- dat[dat$stim_type == stim | dat$stim_type == unstim_lab,]
     for(state in state_markers){

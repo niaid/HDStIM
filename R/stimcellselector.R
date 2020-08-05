@@ -101,7 +101,7 @@ stim_cell_selector <- function(dat, state_markers, cluster_col, stim_lab, unstim
 
       # From dat_stim_unstim data frame select expression values for all the state markers
       # and carry out k-means (k = 2) clustering.
-      if(verbose == TRUE){message(paste("Carrying out k-means clustering on cells from", cluster, "-", stim, "+ unstim."))}
+      if(verbose == TRUE){message(paste("Carrying out k-means clustering NF on cells from", cluster, "-", stim, "+ unstim."))}
       dat_state <- dat_stim_unstim[, state_markers]
       k_results <- kmeans(dat_state, 2)
       #k_results <- skmeans(as.matrix(dat_state), 2)
@@ -115,14 +115,18 @@ stim_cell_selector <- function(dat, state_markers, cluster_col, stim_lab, unstim
 
       # Create a contingency table and carry out F-test.
       # Count the number of stimulated and un-stimulated cells that belong to cluster 1 and 2.
-      stim_1 <- as.numeric(length(clust_stim[clust_stim == 1]))
-      stim_2 <- as.numeric(length(clust_stim[clust_stim == 2]))
-
-      unstim_1 <- as.numeric(length(clust_unstim[clust_unstim == 1]))
-      unstim_2 <- as.numeric(length(clust_unstim[clust_unstim == 2]))
-
       total_stim_count <- as.numeric(nrow(dat_stim_unstim[stim_idx,]))
       total_unstim_count <- as.numeric(nrow(dat_stim_unstim[unstim_idx,]))
+
+      stim_1 <- as.numeric(length(clust_stim[clust_stim == 1]))
+      stim_1_ <- stim_1/total_stim_count
+      stim_2 <- as.numeric(length(clust_stim[clust_stim == 2]))
+      stim_2_ <- stim_2/total_stim_count
+
+      unstim_1 <- as.numeric(length(clust_unstim[clust_unstim == 1]))
+      unstim_1_ <- unstim_1/total_unstim_count
+      unstim_2 <- as.numeric(length(clust_unstim[clust_unstim == 2]))
+      unstim_2_ <- unstim_2/total_unstim_count
 
       con_tab <-  matrix(c(round((stim_1/total_stim_count) * 100), round((stim_2/total_stim_count) * 100), round((unstim_1/total_unstim_count) * 100), round((unstim_2/total_unstim_count) * 100)), nrow = 2, ncol = 2, dimnames = list(c("Cluster1", "Cluster2"), c("Stim", "Unstim")))
 
@@ -134,13 +138,22 @@ stim_cell_selector <- function(dat, state_markers, cluster_col, stim_lab, unstim
       if(f_p_val < 0.05){
         if(verbose == TRUE){message("Fisher's exact test significant.")}
         # Identify un-stimulated cells cluster on the basis of the cluster that has a higher number of cells.
-        if(unstim_1 > unstim_2){
-          unstim_clust = 1
-          stim_clust = 2
-        } else {
-          unstim_clust = 2
-          stim_clust = 1
+        clust_1_ratio <- stim_1_ / unstim_1_
+        clust_2_ratio <- stim_2_ / unstim_2_
+        if(clust_1_ratio > clust_2_ratio){
+            unstim_clust = 2
+            stim_clust = 1
+          } else {
+            unstim_clust = 1
+            stim_clust = 2
         }
+        # if(unstim_1 > unstim_2){
+        #   unstim_clust = 1
+        #   stim_clust = 2
+        # } else {
+        #   unstim_clust = 2
+        #   stim_clust = 1
+        # }
 
         # Select median marker expression for each state marker for the selected stim cells.
         tm <- dat_stim_unstim[k_results$cluster == stim_clust,]
