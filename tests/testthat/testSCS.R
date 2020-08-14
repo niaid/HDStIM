@@ -24,6 +24,6 @@ if(R.Version()$minor == "6.3"){
                                                       chi11_1k$cluster_col, chi11_1k$stim_label,
                                                       chi11_1k$unstim_label, seed_val = 123,
                                                       verbose = TRUE)
-    expect_equal(nrow(selected_data$selected_expr_data), 58727)
+    expect_equal(nrow(selected_data$selected_expr_data), 61103)
   })
 }

@@ -55,8 +55,7 @@ stim_cell_selector_single_marker <- function(dat, state_markers, cluster_col, st
                                      " stimulation types X ", length(state_markers), " state markers = ", total_combinations,"."))}
 
   # Initialize empty output data frames.
-  df_out <- data.frame(matrix(ncol = length(cols_not_state) + 2, nrow = 0))
-  # df_unstim_out <- data.frame(matrix(ncol = length(cols), nrow = 0))
+  df_stim_out <- data.frame(matrix(ncol = length(cols_not_state) + 2, nrow = 0))
   df_summary_out <- data.frame(matrix(ncol = 6, nrow = 0))
   stacked_bar_plot_data <- data.frame(matrix(ncol = 9, nrow = 0))
 
@@ -80,12 +79,12 @@ stim_cell_selector_single_marker <- function(dat, state_markers, cluster_col, st
         df_out_temp <- data.frame(matrix(ncol = length(cols), nrow = 0))
 
         # For the selected meta cluster, select cells from the selected stim type and un-stimulated cells.
-        dat_stim_unstim <- dat[dat$stim_type == stim | dat$stim_type == unstim_lab, ]
+        dat_stim_unstim <- dat[dat$stim_type == stim | dat$stim_type %in% unstim_lab, ]
         dat_stim_unstim <- dat_stim_unstim[dat_stim_unstim[,cluster_col] == cluster,]
 
         # Identify the index of the stimulated and unstimulated cells in the selected data frame.
         stim_idx <- dat_stim_unstim$stim_type == stim
-        unstim_idx <- dat_stim_unstim$stim_type == unstim_lab
+        unstim_idx <- dat_stim_unstim$stim_type %in% unstim_lab
 
         # From dat_stim_unstim data frame select expression values for all the state markers
         # and carry out k-means (k = 2) clustering.
@@ -102,16 +101,20 @@ stim_cell_selector_single_marker <- function(dat, state_markers, cluster_col, st
 
         # Create a contingency table and carry out F-test.
         # Count the number of stimulated and un-stimulated cells that belong to cluster 1 and 2.
-        stim_1 <- as.numeric(length(clust_stim[clust_stim == 1]))
-        stim_2 <- as.numeric(length(clust_stim[clust_stim == 2]))
-
-        unstim_1 <- as.numeric(length(clust_unstim[clust_unstim == 1]))
-        unstim_2 <- as.numeric(length(clust_unstim[clust_unstim == 2]))
-
         total_stim_count <- as.numeric(nrow(dat_stim_unstim[stim_idx,]))
         total_unstim_count <- as.numeric(nrow(dat_stim_unstim[unstim_idx,]))
 
-        con_tab <-  matrix(c(round((stim_1/total_stim_count) * 100), round((stim_2/total_stim_count) * 100), round((unstim_1/total_unstim_count) * 100), round((unstim_2/total_unstim_count) * 100)), nrow = 2, ncol = 2, dimnames = list(c("Cluster1", "Cluster2"), c("Stim", "Unstim")))
+        stim_1 <- as.numeric(length(clust_stim[clust_stim == 1]))
+        stim_1_ <- stim_1/total_stim_count
+        stim_2 <- as.numeric(length(clust_stim[clust_stim == 2]))
+        stim_2_ <- stim_2/total_stim_count
+
+        unstim_1 <- as.numeric(length(clust_unstim[clust_unstim == 1]))
+        unstim_1_ <- unstim_1/total_unstim_count
+        unstim_2 <- as.numeric(length(clust_unstim[clust_unstim == 2]))
+        unstim_2_ <- unstim_2/total_unstim_count
+
+        con_tab <-  matrix(c(round(stim_1_ * 100), round(stim_2_ * 100), round(unstim_1_ * 100), round(unstim_2_ * 100)), nrow = 2, ncol = 2, dimnames = list(c("Cluster1", "Cluster2"), c("Stim", "Unstim")))
 
         f_test <- fisher.test(con_tab) # Fisher's exact test.
         f_p_val <- f_test$p.value
@@ -120,36 +123,52 @@ stim_cell_selector_single_marker <- function(dat, state_markers, cluster_col, st
         # F-test.
         if(f_p_val < 0.05){
           if(verbose == TRUE){message("Fisher's exact test significant.")}
-          # Identify un-stimulated cells cluster on the basis of the cluster that has a higher number of cells.
-          if(unstim_1 > unstim_2){
-            unstim_clust = 1
-            stim_clust = 2
-          } else {
+
+          # Identify responding stimulated cells cluster.
+          clust_1_ratio <- stim_1_ / unstim_1_
+          clust_2_ratio <- stim_2_ / unstim_2_
+          if(clust_1_ratio > clust_2_ratio){
             unstim_clust = 2
             stim_clust = 1
+          } else {
+            unstim_clust = 1
+            stim_clust = 2
           }
+
+          # Fetch responding stimulated cells from the indentified cluster.
+          stim_cells_resp <- dat_stim_unstim[k_results$cluster == stim_clust,]
+          stim_cells_resp <- stim_cells_resp[stim_cells_resp$stim_type == stim, ]
 
           # Select median marker expression for each state marker for the selected stim cells.
-          tm <- dat_stim_unstim[k_results$cluster == stim_clust,]
-          tm <- tm[tm$stim_type == stim, state]
+          tm <- stim_cells_resp[stim_cells_resp$stim_type == stim, state]
           med_exp <- median(tm[[1]])
 
-          # Fold change from non-responsive to responsive state for stim cells.
+
+          # tm <- dat_stim_unstim[k_results$cluster == stim_clust,]
+          # tm <- tm[tm$stim_type == stim, state]
+          # med_exp <- median(tm[[1]])
+
+          # Calculate fold change from non-responsive to responsive state for stim cells.
           if(stim_clust == 1){
-            fc <- round((stim_1 - stim_2)/stim_1, digits = 2)
+            fc <- round((stim_1/stim_2), digits = 2)
           }else if(stim_clust == 2){
-            fc <- round((stim_2 - stim_1)/stim_2, digits = 2)
+            fc <- round((stim_2/stim_1), digits = 2)
           }
+          # if(stim_clust == 1){
+          #   fc <- round((stim_1 - stim_2)/stim_1, digits = 2)
+          # }else if(stim_clust == 2){
+          #   fc <- round((stim_2 - stim_1)/stim_2, digits = 2)
+          # }
 
           # Selected stimulated cells.
-          stim_cells <- dat_stim_unstim[k_results$cluster == stim_clust,]
-          stim_cells <- stim_cells[as.character(stim_cells$stim_type) == stim, ]
+          # stim_cells <- dat_stim_unstim[k_results$cluster == stim_clust,]
+          # stim_cells <- stim_cells[as.character(stim_cells$stim_type) == stim, ]
 
-          if(dim(stim_cells)[1] != 0){
+          if(dim(stim_cells_resp)[1] != 0){
             # Combine data in a data frame and also generate a summary table.
-            stim_cells_temp <- cbind(stim_cells[cols_not_state], "state_marker" =  state, stim_cells[state])
+            stim_cells_temp <- cbind(stim_cells_resp[cols_not_state], "state_marker" =  state, stim_cells_resp[state])
             names(stim_cells_temp)[names(stim_cells_temp) == state] <- "state_marker_exp"
-            df_out <- rbind(df_out, stim_cells_temp)
+            df_stim_out <- rbind(df_stim_out, stim_cells_temp)
 
             summary_table <- cbind(cluster = cluster, stim_type = stim, state_marker = state,
                                    f_p_value = f_p_val, fold_change = fc, state_maker_med_exp = med_exp)
@@ -159,7 +178,7 @@ stim_cell_selector_single_marker <- function(dat, state_markers, cluster_col, st
             # in k-means clusters on the y-axis.
             stacked_data <- data.frame(stim_status = c("unstim", "unstim", "stim", "stim"),
                                        k_cluster = c("cluster1", "cluster2", "cluster1", "cluster2"),
-                                       count = c(unstim_1, unstim_2, stim_1, stim_2))
+                                       count = c(unstim_1_, unstim_2_, stim_1_, stim_2_))
 
             stacked_temp <- cbind("cluster" = cluster, "stim_type" = stim, "state_marker" = state, "f_p_val" = f_p_val,
                                 "stim_clust" = stim_clust, "fold_change" = fc, stacked_data)
@@ -172,7 +191,7 @@ stim_cell_selector_single_marker <- function(dat, state_markers, cluster_col, st
     }
   }
 
-  return_list <- list("selected_expr_data" = as_tibble(df_out), "summary" = as_tibble(df_summary_out),
+  return_list <- list("selected_expr_data" = as_tibble(df_stim_out), "summary" = as_tibble(df_summary_out),
                       "stacked_bar_plot_data" = as_tibble(stacked_bar_plot_data),
                       "state_markers" = state_markers, "cluster_col" = cluster_col,
                       "stim_label" = stim_lab, "unstim_label" = unstim_lab,
