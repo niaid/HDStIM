@@ -30,9 +30,9 @@ stim_cell_selector_single_marker <- function(dat, state_markers, cluster_col, st
   # For debugging.
   # verbose <- TRUE
   # dat <- chi11_1k$expr_data
-  # state_markers <- chi11_1k$state_markers
+  # state_markers <- chi11_1k$state_markers[1]
   # cluster_col <- chi11_1k$cluster_col
-  # stim_lab <- chi11_1k$stim_label
+  # stim_lab <- chi11_1k$stim_label[1]
   # unstim_lab <- chi11_1k$unstim_label
   # seed_val <- 123
 
@@ -116,6 +116,8 @@ stim_cell_selector_single_marker <- function(dat, state_markers, cluster_col, st
 
         con_tab <-  matrix(c(round(stim_1_ * 100), round(stim_2_ * 100), round(unstim_1_ * 100), round(unstim_2_ * 100)), nrow = 2, ncol = 2, dimnames = list(c("Cluster1", "Cluster2"), c("Stim", "Unstim")))
 
+        message(con_tab)
+        message(unstim_lab)
         f_test <- fisher.test(con_tab) # Fisher's exact test.
         f_p_val <- f_test$p.value
 

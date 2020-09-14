@@ -77,6 +77,7 @@ stim_cell_selector <- function(dat, state_markers, cluster_col, stim_lab, unstim
   if(umap){
     umap_plot_data <- data.frame(matrix(ncol = 7, nrow = 0))
   }
+  df_f_fail_out <- data.frame(matrix(ncol = 2, nrow = 0))
 
   # Set counter for the number of combinations processed.
   counter <- 0
@@ -221,6 +222,7 @@ stim_cell_selector <- function(dat, state_markers, cluster_col, stim_lab, unstim
 
       } else {
         if(verbose == TRUE){message("Fisher' exact test non-sgnificant. Skipping further steps.")}
+        df_f_fail_out <- rbind(df_f_fail_out, data.frame("stim_type" = stim, "cluster" = cluster))
       }
     }
   }
@@ -232,13 +234,14 @@ stim_cell_selector <- function(dat, state_markers, cluster_col, stim_lab, unstim
                         "umap_plot_data" = as_tibble(umap_plot_data),
                         "state_markers" = state_markers, "cluster_col" = cluster_col,
                         "stim_label" = stim_lab, "unstim_label" = unstim_lab,
-                        "seed_val" = seed_val, "umap" = umap, "umap_cells" = umap_cells)
+                        "seed_val" = seed_val, "umap" = umap, "umap_cells" = umap_cells,
+                        "fisher_test_fail" = as_tibble(df_f_fail_out))
   }else{
     return_list <- list("selected_expr_data" = as_tibble(df_stim_out), "summary" = as_tibble(df_summary_out),
                         "stacked_bar_plot_data" = as_tibble(stacked_bar_plot_data),
                         "state_markers" = state_markers, "cluster_col" = cluster_col,
                         "stim_label" = stim_lab, "unstim_label" = unstim_lab,
-                        "seed_val" = seed_val)
+                        "seed_val" = seed_val, "fisher_test_fail" = as_tibble(df_f_fail_out))
   }
 
  if(verbose == TRUE){message(paste("Selection process finished on", date()))}
