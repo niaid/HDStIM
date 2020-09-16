@@ -12,10 +12,11 @@ knitr::opts_chunk$set(
   out.width = "100%"
 )
 ```
-# stimcellselector <a href='https://rohitfarmer.github.io/stimcellselector/'><img src='man/figures/sticker.png' align="right" height="200" /></a>
+# stimcellselector <a href='https://niaid.github.io/stimcellselector/'><img src='man/figures/sticker.png' align="right" height="200" /></a>
 
 
 <!-- badges: start -->
+[![Actions Status](https://github.com/niaid/stimcellselector/workflows/R-CMD-check/badge.svg)](https://github.com/niaid/stimcellselector/actions?query=workflow%3AR-CMD-check)
 [![Travis build status](https://travis-ci.com/rohitfarmer/stimcellselector.svg?token=qfD7QGsvB4b3CHB1xKYE&branch=master)](https://travis-ci.com/rohitfarmer/stimcellselector)
 [![AppVeyor build status](https://ci.appveyor.com/api/projects/status/github/rohitfarmer/stimcellselector?branch=master&svg=true)](https://ci.appveyor.com/project/rohitfarmer/stimcellselector)
 [![Codecov test coverage](https://codecov.io/gh/rohitfarmer/stimcellselector/branch/master/graph/badge.svg?token=IXR3EVFLXA)](https://codecov.io/gh/rohitfarmer/stimcellselector?branch=master)
@@ -62,7 +63,7 @@ selected_data <- suppressMessages(stim_cell_selector(chi11_1k$expr_data, chi11_1
 ```
 
 For more information on the interpredation of the output and how to generate relevant figures
-please visit the package website at [https://rohitfarmer.github.io/stimcellselector/](https://rohitfarmer.github.io/stimcellselector/).
+please visit the package website at [https://niaid.github.io/stimcellselector/](https://niaid.github.io/stimcellselector/).
 
 ## Contact
-Rohit Farmer: [rohit.farmer@gmail.com](mailto:rohit.farmer@gmail.com)
+Rohit Farmer: [rohit.farmer@nih.gov](mailto:rohit.farmer@nih.gov)

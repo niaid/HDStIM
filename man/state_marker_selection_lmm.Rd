@@ -2,7 +2,7 @@
 % Please edit documentation in R/markerSelection.R
 \name{state_marker_selection_lmm}
 \alias{state_marker_selection_lmm}
-\title{State (signalling) Marker Selection}
+\title{State (signalling) Marker Selection Using Linear Mixed Effects Modelling}
 \usage{
 state_marker_selection_lmm(dat, state_markers, cluster_col, stim_lab,
   unstim_lab, REML = FALSE, verbose = FALSE)
@@ -13,6 +13,9 @@ and variables/markers on columns.}
 
 \item{state_markers}{A character vector with the labels of state
 markers from the stimulation panel.}
+
+\item{cluster_col}{Name (character) of the column with cluster/cell population names
+in the input tibble.}
 
 \item{stim_lab}{A character vector of stim label(s).}
 

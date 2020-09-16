@@ -7,6 +7,7 @@
 #'
 #' @importFrom tidyr gather
 #' @importFrom ggridges geom_density_ridges
+#' @importFrom stats as.formula p.adjust
 #' @return Generates plots in the specified folder and returns 0 upon successfull completion.
 #' @export
 plot_kde <- function(original_data, selected_data, path, verbose = FALSE){
@@ -19,6 +20,9 @@ plot_kde <- function(original_data, selected_data, path, verbose = FALSE){
       if(verbose){message(paste(path, "folder already exists. Output will be over written."))}
     }
   }
+
+  # Bind global variables.
+  cluster <- stim_type <- distribution <- marker_exp <- NULL
 
   # Define colors.
   cbPalette <- c("#E69F00", "#009E73", "#56B4E9", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
@@ -108,9 +112,6 @@ plot_kde <- function(original_data, selected_data, path, verbose = FALSE){
       }
     }
   } else{
-
-  # Bind global variables.
-  distribution <- marker_exp <- NULL
 
   state_markers <- selected_data$state_markers
   cluster_col  <- selected_data$cluster_col

@@ -3,7 +3,7 @@ Type: Package
 Title: Selects Stimulated Cells
 Version: 0.1.0
 Author: Rohit Farmer
-Maintainer: Rohit Farmer <rohit.farmer@gmail.com>
+Maintainer: Rohit Farmer <rohit.farmer@nih.gov>
 Description: The goal of this package is to select cells from stimulated 
              samples that have responded to the stimulant in CyTOF/Flow cytometry 
              stimulation assays. Starting from the identified cell populations 
