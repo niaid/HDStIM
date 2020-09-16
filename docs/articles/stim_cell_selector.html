@@ -61,7 +61,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/rohitfarmer/stimcellselector/">
+  <a href="https://github.com/niaid/stimcellselector/">
     <span class="fab fa fab fa-github fa-lg"></span>
      
   </a>
@@ -82,9 +82,9 @@
       <h1 data-toc-skip>Stim Cell Selector</h1>
                         <h4 class="author">Rohit Farmer</h4>
             
-            <h4 class="date">2020-08-25</h4>
+            <h4 class="date">2020-09-16</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/rohitfarmer/stimcellselector/blob/master/vignettes/stim_cell_selector.Rmd"><code>vignettes/stim_cell_selector.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/niaid/stimcellselector/blob/master/vignettes/stim_cell_selector.Rmd"><code>vignettes/stim_cell_selector.Rmd</code></a></small>
       <div class="hidden name"><code>stim_cell_selector.Rmd</code></div>
 
     </div>
@@ -121,7 +121,7 @@
 <span class="co">#&gt;  [5] "state_markers"         "cluster_col"          </span>
 <span class="co">#&gt;  [7] "stim_label"            "unstim_label"         </span>
 <span class="co">#&gt;  [9] "seed_val"              "umap"                 </span>
-<span class="co">#&gt; [11] "umap_cells"</span></pre></body></html></div>
+<span class="co">#&gt; [11] "umap_cells"            "fisher_test_fail"</span></pre></body></html></div>
 <div id="output" class="section level3">
 <h3 class="hasAnchor">
 <a href="#output" class="anchor"></a>Output</h3>
@@ -187,17 +187,17 @@
 <div class="sourceCode" id="cb7"><html><body><pre class="r"><span class="fu"><a href="../reference/plot_sbp.html">plot_sbp</a></span>(<span class="no">selected_data</span>, <span class="no">path</span>, <span class="kw">verbose</span> <span class="kw">=</span> <span class="fl">FALSE</span>)</pre></body></html></div>
 <p>or use the backend code below to plot only for the combinations of interest or with custom aesthetics. The code below only plots the first combination.</p>
 <div class="sourceCode" id="cb8"><html><body><pre class="r"><span class="co"># Group data according to clusters and stimulation type.</span>
-<span class="no">group_data</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/group_by.html">group_by</a></span>(<span class="no">selected_data</span>$<span class="no">stacked_bar_plot_data</span>, <span class="no">cluster</span>, <span class="no">stim_type</span>)
+<span class="no">group_data</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span>(<span class="no">selected_data</span>$<span class="no">stacked_bar_plot_data</span>, <span class="no">cluster</span>, <span class="no">stim_type</span>)
 
 <span class="co"># Split groups into a list of individual tables.</span>
-<span class="no">split_groups</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/group_split.html">group_split</a></span>(<span class="no">group_data</span>)
+<span class="no">split_groups</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_split.html">group_split</a></span>(<span class="no">group_data</span>)
 
 <span class="co"># Create ggplot for a single group.</span>
 <span class="no">cbPalette</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"#E69F00"</span>, <span class="st">"#56B4E9"</span>)
-<span class="no">stacked_plot</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/ggplot.html">ggplot</a></span>(<span class="no">split_groups</span><span class="kw">[[</span><span class="fl">1</span>]], <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/aes.html">aes</a></span>(<span class="kw">fill</span> <span class="kw">=</span> <span class="no">k_cluster</span>, <span class="kw">y</span><span class="kw">=</span><span class="no">count</span>, <span class="kw">x</span><span class="kw">=</span><span class="no">stim_status</span>)) +
-  <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/geom_bar.html">geom_bar</a></span>(<span class="kw">position</span><span class="kw">=</span><span class="st">"fill"</span>, <span class="kw">stat</span><span class="kw">=</span><span class="st">"identity"</span>) +
-  <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/scale_manual.html">scale_fill_manual</a></span>(<span class="kw">values</span><span class="kw">=</span><span class="no">cbPalette</span>) +
-  <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/labs.html">labs</a></span>(<span class="kw">title</span><span class="kw">=</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste</a></span>(<span class="st">"Cluster:"</span>, <span class="fu"><a href="https://rdrr.io/r/base/unique.html">unique</a></span>(<span class="no">split_groups</span><span class="kw">[[</span><span class="fl">1</span>]]$<span class="no">cluster</span>),
+<span class="no">stacked_plot</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span>(<span class="no">split_groups</span><span class="kw">[[</span><span class="fl">1</span>]], <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="kw">fill</span> <span class="kw">=</span> <span class="no">k_cluster</span>, <span class="kw">y</span><span class="kw">=</span><span class="no">count</span>, <span class="kw">x</span><span class="kw">=</span><span class="no">stim_status</span>)) +
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_bar.html">geom_bar</a></span>(<span class="kw">position</span><span class="kw">=</span><span class="st">"fill"</span>, <span class="kw">stat</span><span class="kw">=</span><span class="st">"identity"</span>) +
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html">scale_fill_manual</a></span>(<span class="kw">values</span><span class="kw">=</span><span class="no">cbPalette</span>) +
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">labs</a></span>(<span class="kw">title</span><span class="kw">=</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste</a></span>(<span class="st">"Cluster:"</span>, <span class="fu"><a href="https://rdrr.io/r/base/unique.html">unique</a></span>(<span class="no">split_groups</span><span class="kw">[[</span><span class="fl">1</span>]]$<span class="no">cluster</span>),
                    <span class="st">"; Stim type:"</span>, <span class="fu"><a href="https://rdrr.io/r/base/unique.html">unique</a></span>(<span class="no">split_groups</span><span class="kw">[[</span><span class="fl">1</span>]]$<span class="no">stim_type</span>),
                    <span class="st">"\nFisher's p-value:"</span>, <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/unique.html">unique</a></span>(<span class="no">split_groups</span><span class="kw">[[</span><span class="fl">1</span>]]$<span class="no">f_p_val</span>),<span class="fl">3</span>),
                    <span class="st">"; Stim cluster:"</span>,<span class="fu"><a href="https://rdrr.io/r/base/unique.html">unique</a></span>(<span class="no">split_groups</span><span class="kw">[[</span><span class="fl">1</span>]]$<span class="no">stim_clust</span>),
@@ -216,22 +216,22 @@
 <div class="sourceCode" id="cb9"><html><body><pre class="r"><span class="fu"><a href="../reference/plot_umap.html">plot_umap</a></span>(<span class="no">selected_data</span>, <span class="no">path</span>, <span class="kw">verbose</span> <span class="kw">=</span> <span class="fl">FALSE</span>)</pre></body></html></div>
 <p>or use the backend code below to plot only for the combinations of interest or with custom aesthetics. The code below plots a UMAP for first combination using the output above.</p>
 <div class="sourceCode" id="cb10"><html><body><pre class="r"><span class="co"># Group data according to clusters and stimulation type.</span>
-<span class="no">group_data</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/group_by.html">group_by</a></span>(<span class="no">selected_data</span>$<span class="no">umap_plot_data</span>, <span class="no">cluster</span>, <span class="no">stim_type</span>)
+<span class="no">group_data</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span>(<span class="no">selected_data</span>$<span class="no">umap_plot_data</span>, <span class="no">cluster</span>, <span class="no">stim_type</span>)
 
 <span class="co"># Split groups into a list of individual tables.</span>
-<span class="no">split_groups</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/group_split.html">group_split</a></span>(<span class="no">group_data</span>)
+<span class="no">split_groups</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_split.html">group_split</a></span>(<span class="no">group_data</span>)
 
 <span class="co"># Create ggplot for a single group.</span>
 <span class="no">cbPalette</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"#009E73"</span>, <span class="st">"#E69F00"</span>, <span class="st">"#56B4E9"</span>)
-<span class="no">umap_plot</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/ggplot.html">ggplot</a></span>(<span class="no">split_groups</span><span class="kw">[[</span><span class="fl">1</span>]], <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/aes.html">aes</a></span>(<span class="kw">x</span> <span class="kw">=</span> <span class="no">UMAP1</span>, <span class="kw">y</span> <span class="kw">=</span> <span class="no">UMAP2</span>, <span class="kw">color</span> <span class="kw">=</span> <span class="no">cell_type</span>)) +
-    <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/geom_point.html">geom_point</a></span>(<span class="kw">size</span> <span class="kw">=</span> <span class="fl">1</span>) +
-    <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/scale_manual.html">scale_colour_manual</a></span>(<span class="kw">values</span><span class="kw">=</span><span class="no">cbPalette</span>) +
-    <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/labs.html">labs</a></span>(<span class="kw">color</span> <span class="kw">=</span> <span class="st">"Cell Type"</span>, <span class="kw">title</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span>(<span class="st">"Cluster: "</span>, <span class="no">split_groups</span><span class="kw">[[</span><span class="fl">1</span>]]$<span class="no">cluster</span>,
+<span class="no">umap_plot</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span>(<span class="no">split_groups</span><span class="kw">[[</span><span class="fl">1</span>]], <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="kw">x</span> <span class="kw">=</span> <span class="no">UMAP1</span>, <span class="kw">y</span> <span class="kw">=</span> <span class="no">UMAP2</span>, <span class="kw">color</span> <span class="kw">=</span> <span class="no">cell_type</span>)) +
+    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span>(<span class="kw">size</span> <span class="kw">=</span> <span class="fl">1</span>) +
+    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html">scale_colour_manual</a></span>(<span class="kw">values</span><span class="kw">=</span><span class="no">cbPalette</span>) +
+    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">labs</a></span>(<span class="kw">color</span> <span class="kw">=</span> <span class="st">"Cell Type"</span>, <span class="kw">title</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span>(<span class="st">"Cluster: "</span>, <span class="no">split_groups</span><span class="kw">[[</span><span class="fl">1</span>]]$<span class="no">cluster</span>,
                                            <span class="st">"; Stim: "</span>, <span class="no">split_groups</span><span class="kw">[[</span><span class="fl">1</span>]]$<span class="no">stim_type</span>,
                                             <span class="st">"\nTotal No. Cells: "</span>, <span class="no">split_groups</span><span class="kw">[[</span><span class="fl">1</span>]]$<span class="no">tot_of_cells</span>,
                                             <span class="st">"; No. of Cells Plotted: "</span>, <span class="no">split_groups</span><span class="kw">[[</span><span class="fl">1</span>]]$<span class="no">no_of_cells</span>)) +
-  <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/scale_continuous.html">scale_x_continuous</a></span>(<span class="st">"UMAP1"</span>) +
-  <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/scale_continuous.html">scale_y_continuous</a></span>(<span class="st">"UMAP2"</span>)
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html">scale_x_continuous</a></span>(<span class="st">"UMAP1"</span>) +
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html">scale_y_continuous</a></span>(<span class="st">"UMAP2"</span>)
 <span class="fu"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(<span class="no">umap_plot</span>)</pre></body></html></div>
 <p><img src="stim_cell_selector_files/figure-html/umap_plot-1.png" width="672"></p>
 </div>
@@ -261,7 +261,7 @@
   <span class="no">temp_df</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span>(<span class="no">temp_df</span>, <span class="no">marker_dat</span>, <span class="st">"distribution"</span> <span class="kw">=</span> <span class="st">"original"</span>)
   <span class="no">gather_ori_dat</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">rbind</a></span>(<span class="no">gather_ori_dat</span>, <span class="no">temp_df</span>)
 }
-<span class="no">gather_ori_dat</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/select.html">rename</a></span>(<span class="fu"><a href="https://tidyr.tidyverse.org/reference/reexports.html">as_tibble</a></span>(<span class="no">gather_ori_dat</span>), <span class="st">"cluster"</span> <span class="kw">=</span> <span class="no">cluster_col</span>)
+<span class="no">gather_ori_dat</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">rename</a></span>(<span class="fu"><a href="https://tidyr.tidyverse.org/reference/reexports.html">as_tibble</a></span>(<span class="no">gather_ori_dat</span>), <span class="st">"cluster"</span> <span class="kw">=</span> <span class="no">cluster_col</span>)
 <span class="co">#&gt; Note: Using an external vector in selections is ambiguous.</span>
 <span class="co">#&gt; ℹ Use `all_of(cluster_col)` instead of `cluster_col` to silence this message.</span>
 <span class="co">#&gt; ℹ See &lt;https://tidyselect.r-lib.org/reference/faq-external-vector.html&gt;.</span>
@@ -277,7 +277,7 @@
   <span class="no">temp_df</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span>(<span class="no">temp_df</span>, <span class="no">marker_dat</span>, <span class="st">"distribution"</span> <span class="kw">=</span> <span class="st">"selected"</span>)
   <span class="no">gather_selec_dat</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">rbind</a></span>(<span class="no">gather_selec_dat</span>, <span class="no">temp_df</span>)
 }
-<span class="no">gather_selec_dat</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/select.html">rename</a></span>(<span class="fu"><a href="https://tidyr.tidyverse.org/reference/reexports.html">as_tibble</a></span>(<span class="no">gather_selec_dat</span>), <span class="st">"cluster"</span> <span class="kw">=</span> <span class="no">cluster_col</span>)
+<span class="no">gather_selec_dat</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">rename</a></span>(<span class="fu"><a href="https://tidyr.tidyverse.org/reference/reexports.html">as_tibble</a></span>(<span class="no">gather_selec_dat</span>), <span class="st">"cluster"</span> <span class="kw">=</span> <span class="no">cluster_col</span>)
 
 <span class="no">summary</span> <span class="kw">&lt;-</span> <span class="no">selected_data</span>$<span class="no">summary</span>
 <span class="kw">for</span>(<span class="no">i</span> <span class="kw">in</span> <span class="fl">1</span>:<span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span>(<span class="no">summary</span>)[<span class="fl">1</span>]){
@@ -292,13 +292,13 @@
     <span class="no">clust_unstim_ori</span>$<span class="no">distribution</span> <span class="kw">&lt;-</span> <span class="st">"unstim"</span>
     <span class="no">clust_stim</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://tidyr.tidyverse.org/reference/reexports.html">as_tibble</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/cbind.html">rbind</a></span>(<span class="no">clust_stim_k</span>, <span class="no">clust_stim_ori</span>, <span class="no">clust_unstim_ori</span>))
     <span class="no">cbPalette</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"#E69F00"</span>, <span class="st">"#009E73"</span>, <span class="st">"#56B4E9"</span>)
-    <span class="no">p</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/ggplot.html">ggplot</a></span>(<span class="kw">data</span> <span class="kw">=</span> <span class="no">clust_stim</span>, <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/aes.html">aes</a></span>(<span class="kw">x</span> <span class="kw">=</span> <span class="no">marker_exp</span> , <span class="kw">y</span> <span class="kw">=</span> <span class="no">distribution</span>)) +
-      <span class="fu"><a href="https://rdrr.io/pkg/ggridges/man/geom_density_ridges.html">geom_density_ridges</a></span>(<span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/aes.html">aes</a></span>(<span class="kw">fill</span> <span class="kw">=</span> <span class="no">distribution</span>), <span class="kw">scale</span> <span class="kw">=</span> <span class="fl">1</span>) +
-      <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/scale_manual.html">scale_fill_manual</a></span>(<span class="kw">values</span><span class="kw">=</span><span class="no">cbPalette</span>) +
-      <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/labs.html">labs</a></span>(<span class="kw">x</span> <span class="kw">=</span> <span class="st">"marker expression"</span>, <span class="kw">title</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span>(<span class="st">"Cluster: "</span>, <span class="no">cl</span>, <span class="st">"; Stim Type: "</span>, <span class="no">st</span>))
+    <span class="no">p</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span>(<span class="kw">data</span> <span class="kw">=</span> <span class="no">clust_stim</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="kw">x</span> <span class="kw">=</span> <span class="no">marker_exp</span> , <span class="kw">y</span> <span class="kw">=</span> <span class="no">distribution</span>)) +
+      <span class="fu"><a href="https://rdrr.io/pkg/ggridges/man/geom_density_ridges.html">geom_density_ridges</a></span>(<span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="kw">fill</span> <span class="kw">=</span> <span class="no">distribution</span>), <span class="kw">scale</span> <span class="kw">=</span> <span class="fl">1</span>) +
+      <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html">scale_fill_manual</a></span>(<span class="kw">values</span><span class="kw">=</span><span class="no">cbPalette</span>) +
+      <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">labs</a></span>(<span class="kw">x</span> <span class="kw">=</span> <span class="st">"marker expression"</span>, <span class="kw">title</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span>(<span class="st">"Cluster: "</span>, <span class="no">cl</span>, <span class="st">"; Stim Type: "</span>, <span class="no">st</span>))
 
-    <span class="no">kde_plot</span> <span class="kw">&lt;-</span> <span class="no">p</span> + <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/facet_wrap.html">facet_wrap</a></span>( ~ <span class="no">state_marker</span>, <span class="kw">nrow</span> <span class="kw">=</span> <span class="fl">3</span>, <span class="kw">ncol</span> <span class="kw">=</span> <span class="fl">4</span>) +
-      <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/theme_get.html">theme_set</a></span>(<span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/ggtheme.html">theme_grey</a></span>(<span class="kw">base_size</span> <span class="kw">=</span> <span class="fl">20</span>))
+    <span class="no">kde_plot</span> <span class="kw">&lt;-</span> <span class="no">p</span> + <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html">facet_wrap</a></span>( ~ <span class="no">state_marker</span>, <span class="kw">nrow</span> <span class="kw">=</span> <span class="fl">3</span>, <span class="kw">ncol</span> <span class="kw">=</span> <span class="fl">4</span>) +
+      <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme_get.html">theme_set</a></span>(<span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_grey</a></span>(<span class="kw">base_size</span> <span class="kw">=</span> <span class="fl">20</span>))
 }
 <span class="fu"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(<span class="no">kde_plot</span>)
 <span class="co">#&gt; Picking joint bandwidth of 0.0266</span>
