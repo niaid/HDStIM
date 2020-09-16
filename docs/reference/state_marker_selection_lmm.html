@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>State (signalling) Marker Selection — state_marker_selection_lmm • stimcellselector</title>
+<title>State (signalling) Marker Selection Using Linear Mixed Effects Modelling — state_marker_selection_lmm • stimcellselector</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
@@ -36,7 +36,7 @@
 
 
 
-<meta property="og:title" content="State (signalling) Marker Selection — state_marker_selection_lmm" />
+<meta property="og:title" content="State (signalling) Marker Selection Using Linear Mixed Effects Modelling — state_marker_selection_lmm" />
 
 <meta property="og:description" content="Function to select state (signalling) markers that best discriminate
              stimulated cells from unstimulated cells per stimulation condition.
@@ -124,7 +124,7 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>State (signalling) Marker Selection</h1>
+    <h1>State (signalling) Marker Selection Using Linear Mixed Effects Modelling</h1>
     <small class="dont-index">Source: <a href='https://github.com/niaid/stimcellselector/blob/master/R/markerSelection.R'><code>R/markerSelection.R</code></a></small>
     <div class="hidden name"><code>state_marker_selection_lmm.Rd</code></div>
     </div>
@@ -154,6 +154,11 @@ and variables/markers on columns.</p></td>
       <th>state_markers</th>
       <td><p>A character vector with the labels of state
 markers from the stimulation panel.</p></td>
+    </tr>
+    <tr>
+      <th>cluster_col</th>
+      <td><p>Name (character) of the column with cluster/cell population names
+in the input tibble.</p></td>
     </tr>
     <tr>
       <th>stim_lab</th>

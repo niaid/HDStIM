@@ -31,19 +31,7 @@ expression data of all the state markers combined. Upon clustering using
 a contingency table as drawn below, a Fisher’s exact test determines the
 effect size and the statistical significance of partitioning. Cells form
 the combinations that pass the Fisher’s exact test are considered as
-responding. An optional UMAP plot can also be generated to verify the
-cell partitioning in responding and non-responding groups visually.
-
-``` r
-matrix(c(1500, 345, 230, 2500),nrow = 2, ncol = 2, 
-       dimnames = list(c("Cluster1", "Cluster2"), c("Stim", "Unstim")))
-#>          Stim Unstim
-#> Cluster1 1500    230
-#> Cluster2  345   2500
-```
-
-An optional UMAP plot can also be generated to verify the cell
-partitioning in responding and non-responding groups visually.
+responding.
 
 ## Installation
 
@@ -82,3 +70,18 @@ generate relevant figures please visit the package website at
 ## Contact
 
 Rohit Farmer: <rohit.farmer@nih.gov>
+
+## Disclaimer
+
+THE SOFTWARE IS PROVIDED “AS IS” AND ANY EXPRESS OR IMPLIED WARRANTIES,
+INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT
+ARE DISCLAIMED. IN NO EVENT SHALL THE NATIONAL CANCER INSTITUTE (THE
+PROVIDER), THE NATIONAL INSTITUTES OF HEALTH, THE U.S. GOVERNMENT OR THE
+INDIVIDUAL DEVELOPERS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.

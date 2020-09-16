@@ -85,42 +85,41 @@
   <div class="contents col-md-9">
 <div id="stimcellselector" class="section level1">
 <div class="page-header"><h1 class="hasAnchor">
-<a href="#stimcellselector" class="anchor"></a>stimcellselector <a href="https://rohitfarmer.github.io/stimcellselector/"><img src="reference/figures/sticker.png" align="right" height="200"></a>
+<a href="#stimcellselector" class="anchor"></a>stimcellselector <a href="https://niaid.github.io/stimcellselector/"><img src="reference/figures/sticker.png" align="right" height="200"></a>
 </h1></div>
 <!-- badges: start -->
 
 <p>The goal of this package is to select cells from stimulated samples that have responded to the stimulant in CyTOF/Flow cytometry stimulation assays. Starting from the identified cell populations either through automated clustering such as FlowSOM or traditional cell gating, the primary function <code><a href="reference/stim_cell_selector.html">stim_cell_selector()</a></code> follows a heuristic approach to group cells into responding and non-responding.</p>
-<p>For a combination of cell population and stimulation type (e.g., CD127+ T-helper cells and interferon-alpha), <code><a href="reference/stim_cell_selector.html">stim_cell_selector()</a></code> starts by performing k-means clustering on the combined set of cells from stimulated and unstimulated samples. K-means clustering is performed on expression data of all the state markers combined. Upon clustering using a contingency table as drawn below, a Fisher’s exact test determines the effect size and the statistical significance of partitioning. Cells form the combinations that pass the Fisher’s exact test are considered as responding. An optional UMAP plot can also be generated to verify the cell partitioning in responding and non-responding groups visually.</p>
-<div class="sourceCode" id="cb1"><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">1500</span>, <span class="fl">345</span>, <span class="fl">230</span>, <span class="fl">2500</span>),<span class="kw">nrow</span> <span class="kw">=</span> <span class="fl">2</span>, <span class="kw">ncol</span> <span class="kw">=</span> <span class="fl">2</span>,
-       <span class="kw">dimnames</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"Cluster1"</span>, <span class="st">"Cluster2"</span>), <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"Stim"</span>, <span class="st">"Unstim"</span>)))
-<span class="co">#&gt;          Stim Unstim</span>
-<span class="co">#&gt; Cluster1 1500    230</span>
-<span class="co">#&gt; Cluster2  345   2500</span></pre></div>
-<p>An optional UMAP plot can also be generated to verify the cell partitioning in responding and non-responding groups visually.</p>
+<p>For a combination of cell population and stimulation type (e.g., CD127+ T-helper cells and interferon-alpha), <code><a href="reference/stim_cell_selector.html">stim_cell_selector()</a></code> starts by performing k-means clustering on the combined set of cells from stimulated and unstimulated samples. K-means clustering is performed on expression data of all the state markers combined. Upon clustering using a contingency table as drawn below, a Fisher’s exact test determines the effect size and the statistical significance of partitioning. Cells form the combinations that pass the Fisher’s exact test are considered as responding.</p>
 <div id="installation" class="section level2">
 <h2 class="hasAnchor">
 <a href="#installation" class="anchor"></a>Installation</h2>
 <p>You can install the released version of stimcellselector from <a href="https://CRAN.R-project.org">CRAN</a> with:</p>
-<div class="sourceCode" id="cb2"><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span>(<span class="st">"stimcellselector"</span>)</pre></div>
+<div class="sourceCode" id="cb1"><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span>(<span class="st">"stimcellselector"</span>)</pre></div>
 <p>And the development version from <a href="https://github.com/">GitHub</a> with:</p>
-<div class="sourceCode" id="cb3"><pre class="r"><span class="co"># install.packages("devtools")</span>
+<div class="sourceCode" id="cb2"><pre class="r"><span class="co"># install.packages("devtools")</span>
 <span class="kw pkg">devtools</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/devtools/man/reexports.html">install_github</a></span>(<span class="st">"rohitfarmer/stimcellselector"</span>)</pre></div>
 </div>
 <div id="example" class="section level2">
 <h2 class="hasAnchor">
 <a href="#example" class="anchor"></a>Example</h2>
 <p>An example using the sample CyTOF data set <code>chi11_1k</code> included in the package. <code><a href="https://rdrr.io/r/base/message.html">suppressMessages()</a></code> is used to reduce the verbosity of the <code>stim_cell_selector</code> function.</p>
-<div class="sourceCode" id="cb4"><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">stimcellselector</span>)
+<div class="sourceCode" id="cb3"><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">stimcellselector</span>)
 
 <span class="no">selected_data</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/message.html">suppressMessages</a></span>(<span class="fu"><a href="reference/stim_cell_selector.html">stim_cell_selector</a></span>(<span class="no">chi11_1k</span>$<span class="no">expr_data</span>, <span class="no">chi11_1k</span>$<span class="no">state_markers</span>,
                   <span class="no">chi11_1k</span>$<span class="no">cluster_col</span>, <span class="no">chi11_1k</span>$<span class="no">stim_label</span>,
                   <span class="no">chi11_1k</span>$<span class="no">unstim_label</span>, <span class="kw">seed_val</span> <span class="kw">=</span> <span class="fl">123</span>, <span class="kw">umap</span> <span class="kw">=</span> <span class="fl">TRUE</span>, <span class="kw">umap_cells</span> <span class="kw">=</span> <span class="fl">50</span>))</pre></div>
-<p>For more information on the interpredation of the output and how to generate relevant figures please visit the package website at <a href="https://rohitfarmer.github.io/stimcellselector/" class="uri">https://rohitfarmer.github.io/stimcellselector/</a>.</p>
+<p>For more information on the interpredation of the output and how to generate relevant figures please visit the package website at <a href="https://niaid.github.io/stimcellselector/" class="uri">https://niaid.github.io/stimcellselector/</a>.</p>
 </div>
 <div id="contact" class="section level2">
 <h2 class="hasAnchor">
 <a href="#contact" class="anchor"></a>Contact</h2>
-<p>Rohit Farmer: <a href="mailto:rohit.farmer@gmail.com" class="email">rohit.farmer@gmail.com</a></p>
+<p>Rohit Farmer: <a href="mailto:rohit.farmer@nih.gov" class="email">rohit.farmer@nih.gov</a></p>
+</div>
+<div id="disclaimer" class="section level2">
+<h2 class="hasAnchor">
+<a href="#disclaimer" class="anchor"></a>Disclaimer</h2>
+<p>THE SOFTWARE IS PROVIDED “AS IS” AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT ARE DISCLAIMED. IN NO EVENT SHALL THE NATIONAL CANCER INSTITUTE (THE PROVIDER), THE NATIONAL INSTITUTES OF HEALTH, THE U.S. GOVERNMENT OR THE INDIVIDUAL DEVELOPERS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.</p>
 </div>
 </div>
   </div>
@@ -152,6 +151,7 @@
   <div class="dev-status">
 <h2>Dev status</h2>
 <ul class="list-unstyled">
+<li><a href="https://github.com/niaid/stimcellselector/actions?query=workflow%3AR-CMD-check"><img src="https://github.com/niaid/stimcellselector/workflows/R-CMD-check/badge.svg" alt="Actions Status"></a></li>
 <li><a href="https://travis-ci.com/rohitfarmer/stimcellselector"><img src="https://travis-ci.com/rohitfarmer/stimcellselector.svg?token=qfD7QGsvB4b3CHB1xKYE&amp;branch=master" alt="Travis build status"></a></li>
 <li><a href="https://ci.appveyor.com/project/rohitfarmer/stimcellselector"><img src="https://ci.appveyor.com/api/projects/status/github/rohitfarmer/stimcellselector?branch=master&amp;svg=true" alt="AppVeyor build status"></a></li>
 <li><a href="https://codecov.io/gh/rohitfarmer/stimcellselector?branch=master"><img src="https://codecov.io/gh/rohitfarmer/stimcellselector/branch/master/graph/badge.svg?token=IXR3EVFLXA" alt="Codecov test coverage"></a></li>
