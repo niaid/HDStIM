@@ -7,13 +7,9 @@
 
 [![Actions
 Status](https://github.com/niaid/stimcellselector/workflows/R-CMD-check/badge.svg)](https://github.com/niaid/stimcellselector/actions?query=workflow%3AR-CMD-check)
-[![Travis build
-status](https://travis-ci.com/rohitfarmer/stimcellselector.svg?token=qfD7QGsvB4b3CHB1xKYE&branch=master)](https://travis-ci.com/rohitfarmer/stimcellselector)
-[![AppVeyor build
-status](https://ci.appveyor.com/api/projects/status/github/rohitfarmer/stimcellselector?branch=master&svg=true)](https://ci.appveyor.com/project/rohitfarmer/stimcellselector)
 [![Codecov test
 coverage](https://codecov.io/gh/rohitfarmer/stimcellselector/branch/master/graph/badge.svg?token=IXR3EVFLXA)](https://codecov.io/gh/rohitfarmer/stimcellselector?branch=master)
-[![](https://img.shields.io/github/languages/code-size/rohitfarmer/stimcellselector.svg)](https://github.com/rohitfarmer/stimcellselector)
+[![](https://img.shields.io/github/languages/code-size/rohitfarmer/stimcellselector.svg)](https://github.com/niaid/stimcellselector)
 <!-- badges: end -->
 
 The goal of this package is to select cells from stimulated samples that
@@ -46,7 +42,7 @@ And the development version from [GitHub](https://github.com/) with:
 
 ``` r
 # install.packages("devtools")
-devtools::install_github("rohitfarmer/stimcellselector")
+devtools::install_github("niaid/stimcellselector")
 ```
 
 ## Example

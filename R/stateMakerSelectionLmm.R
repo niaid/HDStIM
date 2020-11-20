@@ -19,8 +19,8 @@
 #' @return A tibble with p-value from ANOVA per stim type and state marker.
 #' @importFrom tibble as_tibble rownames_to_column
 #' @import dplyr
-#' @importFrom stats anova
-#' @importFrom lme4 lmer
+#' @importFrom stats anova as.formula p.adjust
+#' @importFrom lme4 lmer lmerControl .makeCC
 #' @export
 #'
 #' @examples
@@ -52,7 +52,8 @@ state_marker_selection_lmm <- function(dat, state_markers, cluster_col, stim_lab
         lmm <- lmer(form, data = dat_stim_unstim, REML = REML)
 
         form_ran <- as.formula(paste(state, " ~ (1 | sample_id)"))
-        lmm_ran <- lmer(form_ran, data = dat_stim_unstim, REML = REML)
+        lmm_ran <- lmer(form_ran, data = dat_stim_unstim, REML = REML,
+                        control = lmerControl(check.conv.singular = .makeCC(action = "ignore",  tol = 1e-4)))
 
         med_stim <- median(dat_stim_unstim[dat_stim_unstim$stim_type == stim, ][[state]]) + 1
         med_unstim <- median(dat_stim_unstim[dat_stim_unstim$stim_type == unstim_lab, ][[state]]) + 1
@@ -82,8 +83,7 @@ state_marker_selection_lmm <- function(dat, state_markers, cluster_col, stim_lab
   return(list("df_fdr" = ungroup(df_out_adj), "df_anova" = df_anova))
 }
 
-# ARCHIVE
-
+# Deprecated Code - DELETE EVENTUALLY
 #state_marker_selection <- function(dat, state_markers, cluster_col, stim_lab, unstim_lab, REML = FALSE, verbose = FALSE){
   #for debugging
   # dat <- chi11_1k$expr_data
