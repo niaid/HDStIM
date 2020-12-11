@@ -1,28 +1,39 @@
-#' SCS Selected Marker Pipeline
+#' @title SCS Selected Marker Pipeline
+#' @description Meta function to run \code{stim_cell_selector} on
+#'              the markers selected by \code{state_marker_selection_lmm}
+#'              for each eligible stim type and cluster combination.
 #'
-#' @param dat
-#' @param selected_state_markers
-#' @param cluster_col
-#' @param stim_lab
-#' @param unstim_lab
-#' @param path
-#' @param anova_cutoff
-#' @param seed_val
-#' @param umap
-#' @param umap_cells
-#' @param verbose
-#'
-#' @return
+#' @param dat                      A tibble with the single cell data. Cells on rows
+#'                                 and variables/markers on columns.
+#' @param selected_state_markers   Output data from \code{state_marker_selection_lmm} function.
+#' @param cluster_col              Label for the column in the single cell data tibble that has the cluster information per cell.
+#' @param stim_lab                 A character vector of stim label(s) for the \code{stim_cell_selector} function.
+#' @param unstim_lab               A character of unstim label(s) for the \code{stim_cell_selector} function.
+#' @param path                     Path to the directory where the output for this meta function will be saved.
+#' @param anova_cutoff             FDR cutoff (Default is 0.05) to filter selected markers from \code{state_marker_selection_lmm} function.
+#' @param seed_val                 Seed value (integer; default is NULL) for \code{\link{kmeans}} clustering in \code{stim_cell_selector_function}.
+#' @param umap                     Boolean (T/F) to carry out UMAP on the selected cells. Default is FALSE to skip UMAP calculation.
+#' @param umap_cells               An integer; for calculating UMAPs take a minimum of \code{umap_cells} per cluster
+#'                                 or the total number of cells if the cluster size is smaller than \code{umap_cells}. Default is NULL.
+#' @param verbose                  Logical. To make function more verbose. Default is FALSE.
+#' @importFrom tibble as_tibble
+#' @return A tibble with all the combinations for stim type
+#'         and cluster that did not yield more than two
+#'         state markers for the given anova fdr p-value cutoff.
 #' @export
-#'
 #' @examples
-#' no_markers_comb <- scs_selected_markers(chi11_1k$expr_data, selected_state_markers, chi11_1k$cluster_col,
-#'                                         chi11_1k$stim_label, chi11_1k$unstim_label, path = NULL,
-#'                                         anova_cutoff = 0.05, seed_val = 123, umap = FALSE,
-#'                                         umap_cells = NULL, verbose = FALSE)
+#' \donttest{
+#' no_markers_comb <- scs_selected_markers(chi11_1k$expr_data, selected_state_markers,
+#'                                         chi11_1k$cluster_col, chi11_1k$stim_label,
+#'                                         chi11_1k$unstim_label, path = NULL,
+#'                                         anova_cutoff = 0.05, seed_val = 123,
+#'                                         umap = FALSE, umap_cells = NULL, verbose = FALSE)
+#'}
 scs_selected_markers <- function(dat, selected_state_markers, cluster_col, stim_lab, unstim_lab, path,
                                  anova_cutoff = 0.05, seed_val = NULL, umap = FALSE,
                                  umap_cells = NULL, verbose = FALSE){
+
+
   # For debugging.
   # dat <- chi11_1k$expr_data
   # anova_cutoff <- 0.05
@@ -43,7 +54,7 @@ scs_selected_markers <- function(dat, selected_state_markers, cluster_col, stim_
     } else {
       if(verbose){message(paste(path, "folder already exists. Output will be over written."))}
     }
-  } else {warning("No path provided. Output will not be saved.")}
+  } else {message("WARNING: No path provided. Output will not be saved.")}
 
   # Get the selected marker data from the list.
   selected_markers_in <- selected_state_markers$df_fdr
@@ -79,5 +90,5 @@ scs_selected_markers <- function(dat, selected_state_markers, cluster_col, stim_
     }
   }
 
-  return(df_no_markers)
+  return(as_tibble(df_no_markers))
 }

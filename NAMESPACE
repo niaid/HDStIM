@@ -3,6 +3,7 @@
 export(plot_kde)
 export(plot_sbp)
 export(plot_umap)
+export(scs_selected_markers)
 export(state_marker_selection_lmm)
 export(stim_cell_selector)
 export(stim_cell_selector_single_marker)
