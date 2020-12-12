@@ -24,9 +24,11 @@
 #' @export
 #'
 #' @examples
+#' \dontrun{
 #' selected_state_markers <- state_marker_selection_lmm(chi11_1k$expr_data, chi11_1k$state_markers,
 #'                  chi11_1k$cluster_col, chi11_1k$stim_label, chi11_1k$unstim_label,
 #'                  REML = FALSE, verbose = FALSE)
+#'}
 state_marker_selection_lmm <- function(dat, state_markers, cluster_col, stim_lab, unstim_lab, REML = FALSE, verbose = FALSE){
   #for debugging
   # dat <- chi11_1k$expr_data

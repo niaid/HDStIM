@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>State (signalling) Marker Selection Using Linear Mixed Effects Modelling — state_marker_selection_lmm • stimcellselector</title>
+<title>SCS Selected Marker Pipeline — scs_selected_markers • stimcellselector</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
@@ -36,13 +36,11 @@
 
 
 
-<meta property="og:title" content="State (signalling) Marker Selection Using Linear Mixed Effects Modelling — state_marker_selection_lmm" />
+<meta property="og:title" content="SCS Selected Marker Pipeline — scs_selected_markers" />
 
-<meta property="og:description" content="Function to select state (signalling) markers that best discriminate
-             stimulated cells from unstimulated cells per stimulation condition.
-             This method is based on a combination of linear mixed effects modelling
-             and ANOVA. The selected list of markers can be used in the multi-marker
-             stim cell selection function." />
+<meta property="og:description" content="Meta function to run stim_cell_selector on
+             the markers selected by state_marker_selection_lmm
+             for each eligible stim type and cluster combination." />
 
 
 
@@ -124,23 +122,22 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>State (signalling) Marker Selection Using Linear Mixed Effects Modelling</h1>
-    <small class="dont-index">Source: <a href='https://github.com/niaid/stimcellselector/blob/master/R/stateMakerSelectionLmm.R'><code>R/stateMakerSelectionLmm.R</code></a></small>
-    <div class="hidden name"><code>state_marker_selection_lmm.Rd</code></div>
+    <h1>SCS Selected Marker Pipeline</h1>
+    <small class="dont-index">Source: <a href='https://github.com/niaid/stimcellselector/blob/master/R/scsSelectedMarkers.R'><code>R/scsSelectedMarkers.R</code></a></small>
+    <div class="hidden name"><code>scs_selected_markers.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Function to select state (signalling) markers that best discriminate
-             stimulated cells from unstimulated cells per stimulation condition.
-             This method is based on a combination of linear mixed effects modelling
-             and ANOVA. The selected list of markers can be used in the multi-marker
-             stim cell selection function.</p>
+    <p>Meta function to run <code>stim_cell_selector</code> on
+             the markers selected by <code>state_marker_selection_lmm</code>
+             for each eligible stim type and cluster combination.</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>state_marker_selection_lmm</span>(<span class='no'>dat</span>, <span class='no'>state_markers</span>, <span class='no'>cluster_col</span>, <span class='no'>stim_lab</span>,
-  <span class='no'>unstim_lab</span>, <span class='kw'>REML</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
+    <pre class="usage"><span class='fu'>scs_selected_markers</span>(<span class='no'>dat</span>, <span class='no'>selected_state_markers</span>, <span class='no'>cluster_col</span>, <span class='no'>stim_lab</span>,
+  <span class='no'>unstim_lab</span>, <span class='no'>path</span>, <span class='kw'>anova_cutoff</span> <span class='kw'>=</span> <span class='fl'>0.05</span>, <span class='kw'>seed_val</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>umap</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>umap_cells</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -151,27 +148,41 @@
 and variables/markers on columns.</p></td>
     </tr>
     <tr>
-      <th>state_markers</th>
-      <td><p>A character vector with the labels of state
-markers from the stimulation panel.</p></td>
+      <th>selected_state_markers</th>
+      <td><p>Output data from <code>state_marker_selection_lmm</code> function.</p></td>
     </tr>
     <tr>
       <th>cluster_col</th>
-      <td><p>Name (character) of the column with cluster/cell population names
-in the input tibble.</p></td>
+      <td><p>Label for the column in the single cell data tibble that has the cluster information per cell.</p></td>
     </tr>
     <tr>
       <th>stim_lab</th>
-      <td><p>A character vector of stim label(s).</p></td>
+      <td><p>A character vector of stim label(s) for the <code>stim_cell_selector</code> function.</p></td>
     </tr>
     <tr>
       <th>unstim_lab</th>
-      <td><p>A character of unstim label(s).</p></td>
+      <td><p>A character of unstim label(s) for the <code>stim_cell_selector</code> function.</p></td>
     </tr>
     <tr>
-      <th>REML</th>
-      <td><p>Logical. To use restricted maximum likely hood estimation
-in model fitting.</p></td>
+      <th>path</th>
+      <td><p>Path to the directory where the output for this meta function will be saved.</p></td>
+    </tr>
+    <tr>
+      <th>anova_cutoff</th>
+      <td><p>FDR cutoff (Default is 0.05) to filter selected markers from <code>state_marker_selection_lmm</code> function.</p></td>
+    </tr>
+    <tr>
+      <th>seed_val</th>
+      <td><p>Seed value (integer; default is NULL) for <code><a href='https://rdrr.io/r/stats/kmeans.html'>kmeans</a></code> clustering in <code>stim_cell_selector_function</code>.</p></td>
+    </tr>
+    <tr>
+      <th>umap</th>
+      <td><p>Boolean (T/F) to carry out UMAP on the selected cells. Default is FALSE to skip UMAP calculation.</p></td>
+    </tr>
+    <tr>
+      <th>umap_cells</th>
+      <td><p>An integer; for calculating UMAPs take a minimum of <code>umap_cells</code> per cluster
+or the total number of cells if the cluster size is smaller than <code>umap_cells</code>. Default is NULL.</p></td>
     </tr>
     <tr>
       <th>verbose</th>
@@ -181,14 +192,18 @@ in model fitting.</p></td>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A tibble with p-value from ANOVA per stim type and state marker.</p>
+    <p>A tibble with all the combinations for stim type
+        and cluster that did not yield more than two
+        state markers for the given anova fdr p-value cutoff.</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
-<span class='no'>selected_state_markers</span> <span class='kw'>&lt;-</span> <span class='fu'>state_marker_selection_lmm</span>(<span class='no'>chi11_1k</span>$<span class='no'>expr_data</span>, <span class='no'>chi11_1k</span>$<span class='no'>state_markers</span>,
-                 <span class='no'>chi11_1k</span>$<span class='no'>cluster_col</span>, <span class='no'>chi11_1k</span>$<span class='no'>stim_label</span>, <span class='no'>chi11_1k</span>$<span class='no'>unstim_label</span>,
-                 <span class='kw'>REML</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
+<span class='no'>no_markers_comb</span> <span class='kw'>&lt;-</span> <span class='fu'>scs_selected_markers</span>(<span class='no'>chi11_1k</span>$<span class='no'>expr_data</span>, <span class='no'>selected_state_markers</span>,
+                                        <span class='no'>chi11_1k</span>$<span class='no'>cluster_col</span>, <span class='no'>chi11_1k</span>$<span class='no'>stim_label</span>,
+                                        <span class='no'>chi11_1k</span>$<span class='no'>unstim_label</span>, <span class='kw'>path</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+                                        <span class='kw'>anova_cutoff</span> <span class='kw'>=</span> <span class='fl'>0.05</span>, <span class='kw'>seed_val</span> <span class='kw'>=</span> <span class='fl'>123</span>,
+                                        <span class='kw'>umap</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>umap_cells</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
 }</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

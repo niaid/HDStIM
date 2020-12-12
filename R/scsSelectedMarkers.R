@@ -22,7 +22,7 @@
 #'         state markers for the given anova fdr p-value cutoff.
 #' @export
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' no_markers_comb <- scs_selected_markers(chi11_1k$expr_data, selected_state_markers,
 #'                                         chi11_1k$cluster_col, chi11_1k$stim_label,
 #'                                         chi11_1k$unstim_label, path = NULL,

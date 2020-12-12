@@ -37,7 +37,9 @@ Function to select state (signalling) markers that best discriminate
              stim cell selection function.
 }
 \examples{
+\dontrun{
 selected_state_markers <- state_marker_selection_lmm(chi11_1k$expr_data, chi11_1k$state_markers,
                  chi11_1k$cluster_col, chi11_1k$stim_label, chi11_1k$unstim_label,
                  REML = FALSE, verbose = FALSE)
+}
 }
