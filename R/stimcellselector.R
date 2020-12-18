@@ -16,6 +16,8 @@
 #' @param umap_cells       An integer; for calculating UMAPs take a minimum of \code{umap_cells} per
 #'                         cluster or the total number of cells if the cluster size
 #'                         is smaller than \code{umap_cells}. Default is NULL.
+#' @param lr               Boolean (T/F) to carry out logistic regression.
+#' @param lr_max_it        Maximum iteration (default = 50) for logistic regression.
 #' @param verbose          Logical. To make function more verbose. Default is FALSE.
 #'
 #' @return A list with tibbles for expression data for the selected cells,
@@ -32,20 +34,23 @@
 #' selected_data <- stim_cell_selector(chi11_1k$expr_data, chi11_1k$state_markers,
 #'                   chi11_1k$cluster_col, chi11_1k$stim_label,
 #'                   chi11_1k$unstim_label, seed_val = 123, umap = FALSE, umap_cells = NULL,
-#'                   verbose = FALSE)
+#'                   lr = FALSE, lr_max_it = 50, verbose = FALSE)
 #'
 stim_cell_selector <- function(dat, state_markers, cluster_col, stim_lab, unstim_lab,
-                               seed_val = NULL, umap = FALSE, umap_cells = NULL, verbose = FALSE){
+                               seed_val = NULL, umap = FALSE, umap_cells = NULL,
+                               lr = FALSE, lr_max_it = 50, verbose = FALSE){
   # For debugging.
-  # dat <- chi11_1k$expr_data
-  # state_markers <- chi11_1k$state_markers
-  # cluster_col <- chi11_1k$cluster_col
-  # stim_lab <- chi11_1k$stim_label
-  # unstim_lab <- chi11_1k$unstim_label
-  # seed_val <- 123
-  # umap <- TRUE
-  # umap_cells <- 50
-  # verbose <- TRUE
+  dat <- chi11_1k$expr_data
+  state_markers <- chi11_1k$state_markers
+  cluster_col <- chi11_1k$cluster_col
+  stim_lab <- chi11_1k$stim_label
+  unstim_lab <- chi11_1k$unstim_label
+  seed_val <- 123
+  umap <- TRUE
+  umap_cells <- 50
+  verbose <- TRUE
+  lr <- TRUE
+  lr_max_it <- 50
 
   # dat <- dat[which(rowSums(dat[state_markers]) != 0),]
 
@@ -78,13 +83,16 @@ stim_cell_selector <- function(dat, state_markers, cluster_col, stim_lab, unstim
     umap_plot_data <- data.frame(matrix(ncol = 7, nrow = 0))
   }
   df_f_fail_out <- data.frame(matrix(ncol = 2, nrow = 0))
+  df_lr_out <- data.frame(matrix(nrow = 0, ncol = 4))
 
   # Set counter for the number of combinations processed.
   counter <- 0
 
   # Main nested for loop.
   for(stim in stim_lab){
+    # stim <- stim_lab[1] # For debugging.
     for(cluster in clusters){
+      # cluster <- clusters[2] # For debugging.
       # Set seed value for the k-means clustering.
       set.seed(seed_val)
       counter <- counter + 1
@@ -184,6 +192,20 @@ stim_cell_selector <- function(dat, state_markers, cluster_col, stim_lab, unstim
 
         # Logistic regression for each marker to test it's contribution in
         # k-means clustering.
+        if(lr == TRUE){
+          dat_for_lr <- mutate(dat_stim_unstim, k_cluster_id = k_results$cluster)
+          dat_for_lr$k_cluster_id <- as.factor(dat_for_lr$k_cluster_id)
+          for(marker in state_markers){
+            # marker <- state_markers[1] # For Debugging.
+            lr_form <- as.formula(paste0("k_cluster_id ~ ", marker))
+            if(verbose == TRUE){message(paste0("Carring out logistic regression for ", marker))}
+            lr_res <- glm(lr_form,family = "binomial", data = dat_for_lr, maxit = lr_max_it)
+            pr_marker <- coefficients(summary(lr_res))[2,4]
+            df_lr_out <- rbind(df_lr_out,
+                               data.frame("stim_type" = stim, "cluster" = cluster,
+                                          "state_marker" = marker, "lr_p_val" = pr_marker))
+          }
+        }
 
         # Generate UMAP on combined stim and unstim cells and colour them
         # accordingly.
@@ -231,20 +253,19 @@ stim_cell_selector <- function(dat, state_markers, cluster_col, stim_lab, unstim
   }
 
   # Generate return list.
-  if(umap){
-    return_list <- list("selected_expr_data" = as_tibble(df_stim_out), "summary" = as_tibble(df_summary_out),
-                        "stacked_bar_plot_data" = as_tibble(stacked_bar_plot_data),
-                        "umap_plot_data" = as_tibble(umap_plot_data),
-                        "state_markers" = state_markers, "cluster_col" = cluster_col,
-                        "stim_label" = stim_lab, "unstim_label" = unstim_lab,
-                        "seed_val" = seed_val, "umap" = umap, "umap_cells" = umap_cells,
-                        "fisher_test_fail" = as_tibble(df_f_fail_out))
-  }else{
-    return_list <- list("selected_expr_data" = as_tibble(df_stim_out), "summary" = as_tibble(df_summary_out),
-                        "stacked_bar_plot_data" = as_tibble(stacked_bar_plot_data),
-                        "state_markers" = state_markers, "cluster_col" = cluster_col,
-                        "stim_label" = stim_lab, "unstim_label" = unstim_lab,
-                        "seed_val" = seed_val, "fisher_test_fail" = as_tibble(df_f_fail_out))
+  return_list <- list("selected_expr_data" = as_tibble(df_stim_out), "summary" = as_tibble(df_summary_out),
+                      "stacked_bar_plot_data" = as_tibble(stacked_bar_plot_data),
+                      "state_markers" = state_markers, "cluster_col" = cluster_col,
+                      "stim_label" = stim_lab, "unstim_label" = unstim_lab,
+                      "seed_val" = seed_val, "fisher_test_fail" = as_tibble(df_f_fail_out))
+  if(umap == TRUE){
+    return_list[["umap_plot_data"]] <- as_tibble(umap_plot_data)
+    return_list[["umap"]] <- umap
+    return_list[["umap_cells"]] <- umap_cells
+  }
+
+  if(lr == TRUE){
+    return_list[["lr_per_marker"]] <- as_tibble(df_lr_out)
   }
 
  if(verbose == TRUE){message(paste("Selection process finished on", date()))}
