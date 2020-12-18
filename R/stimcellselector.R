@@ -182,6 +182,9 @@ stim_cell_selector <- function(dat, state_markers, cluster_col, stim_lab, unstim
                               "stim_clust" = stim_clust, "fold_change" = fc, stacked_data)
         stacked_bar_plot_data <- rbind(stacked_bar_plot_data, stacked_temp)
 
+        # Logistic regression for each marker to test it's contribution in
+        # k-means clustering.
+
         # Generate UMAP on combined stim and unstim cells and colour them
         # accordingly.
         if(umap == TRUE){
