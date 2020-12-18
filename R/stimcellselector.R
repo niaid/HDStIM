@@ -40,17 +40,17 @@ stim_cell_selector <- function(dat, state_markers, cluster_col, stim_lab, unstim
                                seed_val = NULL, umap = FALSE, umap_cells = NULL,
                                lr = FALSE, lr_max_it = 50, verbose = FALSE){
   # For debugging.
-  dat <- chi11_1k$expr_data
-  state_markers <- chi11_1k$state_markers
-  cluster_col <- chi11_1k$cluster_col
-  stim_lab <- chi11_1k$stim_label
-  unstim_lab <- chi11_1k$unstim_label
-  seed_val <- 123
-  umap <- TRUE
-  umap_cells <- 50
-  verbose <- TRUE
-  lr <- TRUE
-  lr_max_it <- 50
+  # dat <- chi11_1k$expr_data
+  # state_markers <- chi11_1k$state_markers
+  # cluster_col <- chi11_1k$cluster_col
+  # stim_lab <- chi11_1k$stim_label
+  # unstim_lab <- chi11_1k$unstim_label
+  # seed_val <- 123
+  # umap <- TRUE
+  # umap_cells <- 50
+  # verbose <- TRUE
+  # lr <- TRUE
+  # lr_max_it <- 50
 
   # dat <- dat[which(rowSums(dat[state_markers]) != 0),]
 
@@ -84,6 +84,7 @@ stim_cell_selector <- function(dat, state_markers, cluster_col, stim_lab, unstim
   }
   df_f_fail_out <- data.frame(matrix(ncol = 2, nrow = 0))
   df_lr_out <- data.frame(matrix(nrow = 0, ncol = 4))
+  df_all_f_out <- data.frame(matrix(nrow = 0, ncol = 7)) # May not be needed in the future.
 
   # Set counter for the number of combinations processed.
   counter <- 0
@@ -139,6 +140,13 @@ stim_cell_selector <- function(dat, state_markers, cluster_col, stim_lab, unstim
       con_tab <-  matrix(c(round(stim_1_ * 100), round(stim_2_ * 100), round(unstim_1_ * 100), round(unstim_2_ * 100)), nrow = 2, ncol = 2, dimnames = list(c("Cluster1", "Cluster2"), c("Stim", "Unstim")))
       f_test <- fisher.test(con_tab) # Fisher's exact test.
       f_p_val <- f_test$p.value
+
+      # Note p-value for all the Fisher's exact tests.
+      df_all_f_out <- rbind(df_all_f_out,
+                            data.frame("stim_type" = stim, "cluster" = cluster,
+                                       "stim_clust1" = con_tab[1,1], "stim_clust2" = con_tab[2,1],
+                                       "unstim_clust1" = con_tab[1,2], "unstim_clust2" = con_tab[2,2],
+                                       "f_p_val" = f_p_val))
 
       # Select cells and save data only for the combinations that pass
       # F-test.
@@ -257,7 +265,8 @@ stim_cell_selector <- function(dat, state_markers, cluster_col, stim_lab, unstim
                       "stacked_bar_plot_data" = as_tibble(stacked_bar_plot_data),
                       "state_markers" = state_markers, "cluster_col" = cluster_col,
                       "stim_label" = stim_lab, "unstim_label" = unstim_lab,
-                      "seed_val" = seed_val, "fisher_test_fail" = as_tibble(df_f_fail_out))
+                      "seed_val" = seed_val, "fisher_test_fail" = as_tibble(df_f_fail_out),
+                      "all_fisher_p_val" = df_all_f_out)
   if(umap == TRUE){
     return_list[["umap_plot_data"]] <- as_tibble(umap_plot_data)
     return_list[["umap"]] <- umap
