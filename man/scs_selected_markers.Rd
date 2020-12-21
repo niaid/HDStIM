@@ -6,7 +6,8 @@
 \usage{
 scs_selected_markers(dat, selected_state_markers, cluster_col, stim_lab,
   unstim_lab, path, anova_cutoff = 0.05, seed_val = NULL,
-  umap = FALSE, umap_cells = NULL, verbose = FALSE)
+  umap = FALSE, umap_cells = NULL, lr = FALSE, lr_max_it = 50,
+  verbose = FALSE)
 }
 \arguments{
 \item{dat}{A tibble with the single cell data. Cells on rows
@@ -30,6 +31,10 @@ and variables/markers on columns.}
 
 \item{umap_cells}{An integer; for calculating UMAPs take a minimum of \code{umap_cells} per cluster
 or the total number of cells if the cluster size is smaller than \code{umap_cells}. Default is NULL.}
+
+\item{lr}{Boolean (T/F) to carry out logistic regression.}
+
+\item{lr_max_it}{Maximum iteration (default = 50) for logistic regression.}
 
 \item{verbose}{Logical. To make function more verbose. Default is FALSE.}
 }

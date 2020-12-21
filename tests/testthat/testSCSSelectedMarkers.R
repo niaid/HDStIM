@@ -5,8 +5,10 @@ test_that("If scs_selected_markers returns 43 combinations with not enough state
 
   no_markers_comb <- scs_selected_markers(chi11_1k$expr_data, selected_state_markers, chi11_1k$cluster_col,
                                           chi11_1k$stim_label, chi11_1k$unstim_label, path = NULL,
-                                          anova_cutoff = 0.05, seed_val = 123, umap = FALSE,
-                                          umap_cells = NULL, verbose = FALSE)
+                                          anova_cutoff = 0.05, seed_val = 123,
+                                          umap = FALSE, umap_cells = NULL,
+                                          lr = TRUE, lr_max_it = 50,
+                                          verbose = FALSE)
 
   expect_equal(nrow(no_markers_comb), 43)
 })
