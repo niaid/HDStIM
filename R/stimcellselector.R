@@ -25,7 +25,7 @@
 #'         parameters passed to the function.
 #' @importFrom tibble as_tibble
 #' @import dplyr ggplot2
-#' @importFrom stats fisher.test kmeans median
+#' @importFrom stats fisher.test kmeans median glm coefficients
 #' @import skmeans
 #' @importFrom uwot umap
 #' @export
@@ -207,7 +207,7 @@ stim_cell_selector <- function(dat, state_markers, cluster_col, stim_lab, unstim
             # marker <- state_markers[1] # For Debugging.
             lr_form <- as.formula(paste0("k_cluster_id ~ ", marker))
             if(verbose == TRUE){message(paste0("Carring out logistic regression for ", marker))}
-            lr_res <- glm(lr_form,family = "binomial", data = dat_for_lr, maxit = lr_max_it)
+            lr_res <- suppressWarnings(glm(lr_form,family = "binomial", data = dat_for_lr, maxit = lr_max_it))
             pr_marker <- coefficients(summary(lr_res))[2,4]
             df_lr_out <- rbind(df_lr_out,
                                data.frame("stim_type" = stim, "cluster" = cluster,

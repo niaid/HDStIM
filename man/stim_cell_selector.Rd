@@ -5,8 +5,8 @@
 \title{Stim Cell Selector}
 \usage{
 stim_cell_selector(dat, state_markers, cluster_col, stim_lab, unstim_lab,
-  seed_val = NULL, umap = FALSE, umap_cells = NULL,
-  verbose = FALSE)
+  seed_val = NULL, umap = FALSE, umap_cells = NULL, lr = FALSE,
+  lr_max_it = 50, verbose = FALSE)
 }
 \arguments{
 \item{dat}{A tibble with the single cell data. Cells on rows
@@ -31,6 +31,10 @@ Default is FALSE to skip UMAP calculation.}
 cluster or the total number of cells if the cluster size
 is smaller than \code{umap_cells}. Default is NULL.}
 
+\item{lr}{Boolean (T/F) to carry out logistic regression.}
+
+\item{lr_max_it}{Maximum iteration (default = 50) for logistic regression.}
+
 \item{verbose}{Logical. To make function more verbose. Default is FALSE.}
 }
 \value{
@@ -46,6 +50,6 @@ Function to select cells from the stimulated samples that
 selected_data <- stim_cell_selector(chi11_1k$expr_data, chi11_1k$state_markers,
                   chi11_1k$cluster_col, chi11_1k$stim_label,
                   chi11_1k$unstim_label, seed_val = 123, umap = FALSE, umap_cells = NULL,
-                  verbose = FALSE)
+                  lr = FALSE, lr_max_it = 50, verbose = FALSE)
 
 }
