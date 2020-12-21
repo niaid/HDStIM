@@ -40,6 +40,7 @@ stim_cell_selector <- function(dat, state_markers, cluster_col, stim_lab, unstim
                                seed_val = NULL, umap = FALSE, umap_cells = NULL,
                                lr = FALSE, lr_max_it = 50, verbose = FALSE){
   # For debugging.
+  # library(tidyverse)
   # dat <- chi11_1k$expr_data
   # state_markers <- chi11_1k$state_markers
   # cluster_col <- chi11_1k$cluster_col
@@ -83,7 +84,7 @@ stim_cell_selector <- function(dat, state_markers, cluster_col, stim_lab, unstim
     umap_plot_data <- data.frame(matrix(ncol = 7, nrow = 0))
   }
   df_f_fail_out <- data.frame(matrix(ncol = 2, nrow = 0))
-  df_lr_out <- data.frame(matrix(nrow = 0, ncol = 4))
+  df_lr_out <- data.frame(matrix(nrow = 0, ncol = 8))
   df_all_f_out <- data.frame(matrix(nrow = 0, ncol = 7)) # May not be needed in the future.
 
   # Set counter for the number of combinations processed.
@@ -208,10 +209,15 @@ stim_cell_selector <- function(dat, state_markers, cluster_col, stim_lab, unstim
             lr_form <- as.formula(paste0("k_cluster_id ~ ", marker))
             if(verbose == TRUE){message(paste0("Carring out logistic regression for ", marker))}
             lr_res <- suppressWarnings(glm(lr_form,family = "binomial", data = dat_for_lr, maxit = lr_max_it))
+            est_marker <- coefficients(summary(lr_res))[2,1]
+            st_er_marker <- coefficients(summary(lr_res))[2,2]
+            z_marker <- coefficients(summary(lr_res))[2,3]
             pr_marker <- coefficients(summary(lr_res))[2,4]
+            lr_aic <- lr_res$aic
             df_lr_out <- rbind(df_lr_out,
-                               data.frame("stim_type" = stim, "cluster" = cluster,
-                                          "state_marker" = marker, "lr_p_val" = pr_marker))
+                               data.frame("stim_type" = stim, "cluster" = cluster, "state_marker" = marker,
+                                          "lr_est" = est_marker, "lr_std_err" = st_er_marker,
+                                          "lr_z_value" = z_marker, "lr_p_val" = pr_marker, "lr_aic" = lr_aic))
           }
         }
 
