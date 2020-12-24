@@ -40,7 +40,9 @@ stim_cell_selector <- function(dat, state_markers, cluster_col, stim_lab, unstim
                                seed_val = NULL, umap = FALSE, umap_cells = NULL,
                                lr = FALSE, lr_max_it = 50, verbose = FALSE){
   # For debugging.
+  # library(stimcellselector)
   # library(tidyverse)
+  # library(Boruta)
   # dat <- chi11_1k$expr_data
   # state_markers <- chi11_1k$state_markers
   # cluster_col <- chi11_1k$cluster_col
@@ -50,7 +52,7 @@ stim_cell_selector <- function(dat, state_markers, cluster_col, stim_lab, unstim
   # umap <- TRUE
   # umap_cells <- 50
   # verbose <- TRUE
-  # lr <- TRUE
+  # lr <- FALSE
   # lr_max_it <- 50
 
   # dat <- dat[which(rowSums(dat[state_markers]) != 0),]
@@ -86,6 +88,7 @@ stim_cell_selector <- function(dat, state_markers, cluster_col, stim_lab, unstim
   df_f_fail_out <- data.frame(matrix(ncol = 2, nrow = 0))
   df_lr_out <- data.frame(matrix(nrow = 0, ncol = 8))
   df_all_f_out <- data.frame(matrix(nrow = 0, ncol = 7)) # May not be needed in the future.
+  k_clust_data <- data.frame(matrix(nrow = 0 , ncol = 3 + length(state_markers)))
 
   # Set counter for the number of combinations processed.
   counter <- 0
@@ -199,28 +202,6 @@ stim_cell_selector <- function(dat, state_markers, cluster_col, stim_lab, unstim
                               "stim_clust" = stim_clust, "fold_change" = fc, stacked_data)
         stacked_bar_plot_data <- rbind(stacked_bar_plot_data, stacked_temp)
 
-        # Logistic regression for each marker to test it's contribution in
-        # k-means clustering.
-        if(lr == TRUE){
-          dat_for_lr <- mutate(dat_stim_unstim, k_cluster_id = k_results$cluster)
-          dat_for_lr$k_cluster_id <- as.factor(dat_for_lr$k_cluster_id)
-          for(marker in state_markers){
-            # marker <- state_markers[1] # For Debugging.
-            lr_form <- as.formula(paste0("k_cluster_id ~ ", marker))
-            if(verbose == TRUE){message(paste0("Carring out logistic regression for ", marker))}
-            lr_res <- suppressWarnings(glm(lr_form,family = "binomial", data = dat_for_lr, maxit = lr_max_it))
-            est_marker <- coefficients(summary(lr_res))[2,1]
-            st_er_marker <- coefficients(summary(lr_res))[2,2]
-            z_marker <- coefficients(summary(lr_res))[2,3]
-            pr_marker <- coefficients(summary(lr_res))[2,4]
-            lr_aic <- lr_res$aic
-            df_lr_out <- rbind(df_lr_out,
-                               data.frame("stim_type" = stim, "cluster" = cluster, "state_marker" = marker,
-                                          "lr_est" = est_marker, "lr_std_err" = st_er_marker,
-                                          "lr_z_value" = z_marker, "lr_p_val" = pr_marker, "lr_aic" = lr_aic))
-          }
-        }
-
         # Generate UMAP on combined stim and unstim cells and colour them
         # accordingly.
         if(umap == TRUE){
@@ -259,6 +240,35 @@ stim_cell_selector <- function(dat, state_markers, cluster_col, stim_lab, unstim
           umap_plot_data$UMAP2 <- as.numeric(umap_plot_data$UMAP2)
         }
 
+        # Logistic regression for each marker to test it's contribution in
+        # k-means clustering.
+        if(lr == TRUE){
+          dat_for_lr <- mutate(dat_stim_unstim, k_cluster_id = k_results$cluster)
+          dat_for_lr$k_cluster_id <- as.factor(dat_for_lr$k_cluster_id)
+          for(marker in state_markers){
+            # marker <- state_markers[1] # For Debugging.
+            lr_form <- as.formula(paste0("k_cluster_id ~ ", marker))
+            if(verbose == TRUE){message(paste0("Carring out logistic regression for ", marker))}
+            lr_res <- suppressWarnings(glm(lr_form,family = "binomial", data = dat_for_lr, maxit = lr_max_it))
+            est_marker <- coefficients(summary(lr_res))[2,1]
+            st_er_marker <- coefficients(summary(lr_res))[2,2]
+            z_marker <- coefficients(summary(lr_res))[2,3]
+            pr_marker <- coefficients(summary(lr_res))[2,4]
+            lr_aic <- lr_res$aic
+            df_lr_out <- rbind(df_lr_out,
+                               data.frame("stim_type" = stim, "cluster" = cluster, "state_marker" = marker,
+                                          "lr_est" = est_marker, "lr_std_err" = st_er_marker,
+                                          "lr_z_value" = z_marker, "lr_p_val" = pr_marker, "lr_aic" = lr_aic))
+          }
+        }
+
+        # Generate data frame with statmarkers and k-means cluster identity per cell.
+        k_temp <- select(dat_stim_unstim, c("stim_type", cluster_col, state_markers)) %>%
+          mutate("k_cluster_id" = k_results$cluster) %>%
+          rename("cluster" = cluster_col) %>%
+          mutate(k_cluster_id = as.factor(k_cluster_id))
+        k_clust_data <- rbind(k_clust_data, k_temp)
+
       } else {
         if(verbose == TRUE){message("Fisher' exact test non-sgnificant. Skipping further steps.")}
         df_f_fail_out <- rbind(df_f_fail_out, data.frame("stim_type" = stim, "cluster" = cluster))
@@ -272,7 +282,7 @@ stim_cell_selector <- function(dat, state_markers, cluster_col, stim_lab, unstim
                       "state_markers" = state_markers, "cluster_col" = cluster_col,
                       "stim_label" = stim_lab, "unstim_label" = unstim_lab,
                       "seed_val" = seed_val, "fisher_test_fail" = as_tibble(df_f_fail_out),
-                      "all_fisher_p_val" = df_all_f_out)
+                      "all_fisher_p_val" = df_all_f_out, "k_clust_data" = k_clust_data)
   if(umap == TRUE){
     return_list[["umap_plot_data"]] <- as_tibble(umap_plot_data)
     return_list[["umap"]] <- umap
