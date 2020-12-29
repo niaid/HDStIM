@@ -88,10 +88,11 @@ stim_cell_selector <- function(dat, state_markers, cluster_col, stim_lab, unstim
   df_f_fail_out <- data.frame(matrix(ncol = 2, nrow = 0))
   df_lr_out <- data.frame(matrix(nrow = 0, ncol = 8))
   df_all_f_out <- data.frame(matrix(nrow = 0, ncol = 7)) # May not be needed in the future.
-  k_clust_data <- data.frame(matrix(nrow = 0 , ncol = 3 + length(state_markers)))
+  k_clust_data <- data.frame(matrix(nrow = 0 , ncol = 4 + length(state_markers)))
 
   # Set counter for the number of combinations processed.
   counter <- 0
+  f_comb_no <- 0
 
   # Main nested for loop.
   for(stim in stim_lab){
@@ -263,10 +264,12 @@ stim_cell_selector <- function(dat, state_markers, cluster_col, stim_lab, unstim
         }
 
         # Generate data frame with statmarkers and k-means cluster identity per cell.
-        k_temp <- select(dat_stim_unstim, c("stim_type", cluster_col, state_markers)) %>%
+        f_comb_no <- f_comb_no + 1
+        k_temp <- select(dat_stim_unstim, c("stim_type", all_of(cluster_col), all_of(state_markers))) %>%
           mutate("k_cluster_id" = k_results$cluster) %>%
           rename("cluster" = cluster_col) %>%
-          mutate(k_cluster_id = as.factor(k_cluster_id))
+          mutate(k_cluster_id = as.factor(k_cluster_id)) %>%
+          mutate("comb_no" = f_comb_no)
         k_clust_data <- rbind(k_clust_data, k_temp)
 
       } else {
