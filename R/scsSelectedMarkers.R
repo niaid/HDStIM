@@ -15,8 +15,6 @@
 #' @param umap                     Boolean (T/F) to carry out UMAP on the selected cells. Default is FALSE to skip UMAP calculation.
 #' @param umap_cells               An integer; for calculating UMAPs take a minimum of \code{umap_cells} per cluster
 #'                                 or the total number of cells if the cluster size is smaller than \code{umap_cells}. Default is NULL.
-#' @param lr                       Boolean (T/F) to carry out logistic regression.
-#' @param lr_max_it                Maximum iteration (default = 50) for logistic regression.
 #' @param verbose                  Logical. To make function more verbose. Default is FALSE.
 #' @importFrom tibble as_tibble
 #' @return A tibble with all the combinations for stim type
@@ -34,7 +32,7 @@
 scs_selected_markers <- function(dat, selected_state_markers, cluster_col, stim_lab, unstim_lab, path,
                                  anova_cutoff = 0.05, seed_val = NULL,
                                  umap = FALSE, umap_cells = NULL,
-                                 lr = FALSE, lr_max_it = 50, verbose = FALSE){
+                                 verbose = FALSE){
 
 
   # For debugging.
@@ -83,7 +81,6 @@ scs_selected_markers <- function(dat, selected_state_markers, cluster_col, stim_
         dat_clust <- dat[dat[[cluster_col]] == clust, ]
         selected_data <-   stim_cell_selector(dat_clust, selected_markers, cluster_col, stim_lab = stim, unstim_lab,
                                               seed_val = seed_val, umap = umap, umap_cells = umap_cells,
-                                              lr = lr, lr_max_it = lr_max_it,
                                               verbose = verbose)
         if(!is.null(path)){
           saveRDS(selected_data, file.path(path, paste0(stim, "_",clust, "_",anova_cutoff, ".rds")))

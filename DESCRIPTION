@@ -23,9 +23,11 @@ Imports:
     uwot,
     dplyr,
     tidyr,
+    tidyselect, 
     ggridges,
     lme4,
-    skmeans
+    skmeans,
+    Boruta
 Suggests: 
     knitr,
     rmarkdown,
