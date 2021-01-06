@@ -16,9 +16,9 @@
 marker_ranking_lr <- function(selected_data, path = NULL, lr_max_it = 50, verbose = FALSE){
 
   # For Debugging
-  # lr_max_it <- 50
-  # verbose <- TRUE
-  # path <- file.path("/Users/farmerr2/sandbox/devel/niaid/figures/LR")
+  lr_max_it <- 50
+  verbose <- TRUE
+  path <- file.path("/Users/farmerr2/sandbox/devel/niaid/figures/LR")
 
   # Bind global variables.
   comb_no <- state_marker <- NULL
