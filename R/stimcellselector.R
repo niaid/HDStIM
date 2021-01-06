@@ -254,6 +254,9 @@ stim_cell_selector <- function(dat, state_markers, cluster_col, stim_lab, unstim
     }
   }
 
+  # Adjust p-values for the Fisher's exact test using all tests.
+  df_all_f_out <- df_all_f_out %>% mutate("f_p_adj" = p.adjust(f_p_val, method = "BH"))
+
   # Generate return list.
   return_list <- list("selected_expr_data" = as_tibble(df_stim_out), "summary" = as_tibble(df_summary_out),
                       "stacked_bar_plot_data" = as_tibble(stacked_bar_plot_data),

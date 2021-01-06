@@ -26,6 +26,7 @@ Imports:
     tidyselect, 
     ggridges,
     lme4,
+    lmtest, 
     skmeans,
     Boruta
 Suggests: 

@@ -4,10 +4,13 @@
 \alias{marker_ranking_lr}
 \title{Marker Ranking ~ Logistic Regression}
 \usage{
-marker_ranking_lr(selected_data, lr_max_it = 50, verbose = FALSE)
+marker_ranking_lr(selected_data, path = NULL, lr_max_it = 50,
+  verbose = FALSE)
 }
 \arguments{
 \item{selected_data}{Selected data from the stim_cell_selector function.}
+
+\item{path}{Path to the folder for the figures.}
 
 \item{lr_max_it}{Maximum iteration (default = 50) for logistic regression.}
 
