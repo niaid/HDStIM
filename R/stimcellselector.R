@@ -241,7 +241,7 @@ stim_cell_selector <- function(dat, state_markers, cluster_col, stim_lab, unstim
 
         # Generate data frame with statmarkers and k-means cluster identity per cell.
         f_comb_no <- f_comb_no + 1
-        k_temp <- select(dat_stim_unstim, c("stim_type", all_of(cluster_col), all_of(state_markers))) %>%
+        k_temp <- select(as_tibble(dat_stim_unstim), c("stim_type", all_of(cluster_col), all_of(state_markers))) %>%
           mutate("k_cluster_id" = as.factor(k_results$cluster)) %>%
           rename("cluster" = cluster_col) %>%
           mutate("comb_no" = f_comb_no)
