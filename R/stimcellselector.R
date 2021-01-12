@@ -41,18 +41,38 @@ stim_cell_selector <- function(dat, state_markers, cluster_col, stim_lab, unstim
   # For debugging.
   # library(stimcellselector)
   # library(tidyverse)
-  # library(Boruta)
   # dat <- chi11_1k$expr_data
   # state_markers <- chi11_1k$state_markers
   # cluster_col <- chi11_1k$cluster_col
   # stim_lab <- chi11_1k$stim_label
   # unstim_lab <- chi11_1k$unstim_label
-  # seed_val <- 123
+  # seed_val <- 777
   # umap <- TRUE
   # umap_cells <- 50
   # verbose <- TRUE
-  # lr <- FALSE
-  # lr_max_it <- 50
+  #
+  # dat <- readRDS(file.path("/Users/farmerr2/sandbox/local_projects/pan-monogenic/results/phospho_v1/dat_all_meta.rds"))
+  # # SCS input paramters.
+  # panel <- read_tsv(file.path("/Users/farmerr2/sandbox/local_projects/pan-monogenic/meta/panel/darius_panel_phospho.txt"))
+  # state_markers <- filter(panel, marker_class == "state") %>%
+  #   select(antigen)
+  # state_markers <- state_markers[["antigen"]]
+  # cluster_col <- "merging1"
+  # stim_lab <- c("A", "L", "T", "I1B", "I2")
+  # unstim_lab <- "U"
+  #
+  # # Take all the conditions/disease except the technical controls (TC).
+  # # TCs only have unstimulated samples.
+  # condition <- as.character(unique(dat$condition))[-2]
+  # dat_cond <- dat[dat$condition == condition[4],]
+  # dat <- dat_cond
+  # rm(dat_cond)
+  # adding a comment so that i can push new changes
+
+
+
+
+
 
   # dat <- dat[which(rowSums(dat[state_markers]) != 0),]
 
@@ -69,6 +89,9 @@ stim_cell_selector <- function(dat, state_markers, cluster_col, stim_lab, unstim
   cols <- colnames(dat)
   cols <- gsub("-", "_", cols)
   colnames(dat) <- cols
+
+  # Convert input data to a tibble.
+  dat <- as_tibble(dat)
 
   # Fetch cluster labels from the expression data frame.
   clusters <- as.character(unique(dat[[cluster_col]]))
@@ -114,9 +137,13 @@ stim_cell_selector <- function(dat, state_markers, cluster_col, stim_lab, unstim
 
       # From dat_stim_unstim data frame select expression values for all the state markers
       # and carry out k-means (k = 2) clustering.
-      if(verbose == TRUE){message(paste("Carrying out k-means clustering NF on cells from", cluster, "-", stim, "+ unstim."))}
+      if(verbose == TRUE){message(paste("Carrying out k-means clustering on cells from", cluster, "-", stim, "+ unstim."))}
       dat_state <- dat_stim_unstim[, state_markers]
-      k_results <- kmeans(dat_state, 2)
+      k_results <- kmeans(dat_state, 2, iter.max = 100, nstart = 2)
+      if (k_results$ifault==4){
+        if(verbose == TRUE){message("Using MacQueen algorithm.")}
+        k_results <- kmeans(dat_state, 2, iter.max = 100, nstart = 2, algorithm="MacQueen")
+      }
 
       # Get cluster IDs for stim and unstim cells.
       clust_stim <- k_results$cluster[stim_idx]
@@ -141,6 +168,7 @@ stim_cell_selector <- function(dat, state_markers, cluster_col, stim_lab, unstim
       unstim_2_ <- unstim_2/total_unstim_count
 
       con_tab <-  matrix(c(round(stim_1_ * 100), round(stim_2_ * 100), round(unstim_1_ * 100), round(unstim_2_ * 100)), nrow = 2, ncol = 2, dimnames = list(c("Cluster1", "Cluster2"), c("Stim", "Unstim")))
+      con_tab[is.na(con_tab)] = 0
       f_test <- fisher.test(con_tab) # Fisher's exact test.
       f_p_val <- f_test$p.value
 
@@ -241,10 +269,10 @@ stim_cell_selector <- function(dat, state_markers, cluster_col, stim_lab, unstim
 
         # Generate data frame with statmarkers and k-means cluster identity per cell.
         f_comb_no <- f_comb_no + 1
-        k_temp <- select(as_tibble(dat_stim_unstim), c("stim_type", all_of(cluster_col), all_of(state_markers))) %>%
-          mutate("k_cluster_id" = as.factor(k_results$cluster)) %>%
-          rename("cluster" = cluster_col) %>%
-          mutate("comb_no" = f_comb_no)
+        k_temp <- dplyr::select(dat_stim_unstim, c("stim_type", all_of(cluster_col), all_of(state_markers))) %>%
+          dplyr::mutate("k_cluster_id" = as.factor(k_results$cluster)) %>%
+          dplyr::rename("cluster" = all_of(cluster_col)) %>%
+          dplyr::mutate("comb_no" = f_comb_no)
         k_clust_data <- rbind(k_clust_data, k_temp)
 
       } else {
