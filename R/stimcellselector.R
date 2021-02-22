@@ -109,7 +109,7 @@ stim_cell_selector <- function(dat, state_markers, cluster_col, stim_lab, unstim
   }
   df_f_fail_out <- data.frame(matrix(ncol = 2, nrow = 0))
   df_all_f_out <- data.frame(matrix(nrow = 0, ncol = 7)) # May not be needed in the future.
-  k_clust_data <- data.frame(matrix(nrow = 0 , ncol = 4 + length(state_markers)))
+  k_clust_data <- data.frame(matrix(nrow = 0 , ncol = 8 + length(state_markers)))
 
   # Set counter for the number of combinations processed.
   counter <- 0
@@ -269,9 +269,11 @@ stim_cell_selector <- function(dat, state_markers, cluster_col, stim_lab, unstim
 
         # Generate data frame with statmarkers and k-means cluster identity per cell.
         f_comb_no <- f_comb_no + 1
-        k_temp <- dplyr::select(dat_stim_unstim, c("stim_type", all_of(cluster_col), all_of(state_markers))) %>%
+        k_temp <- dplyr::select(dat_stim_unstim, c("sample_id", "condition", "patient_id", "stim_type",
+                                                   all_of(cluster_col), all_of(state_markers))) %>%
           dplyr::mutate("k_cluster_id" = as.factor(k_results$cluster)) %>%
           dplyr::rename("cluster" = all_of(cluster_col)) %>%
+          dplyr::mutate("resp_cluster" = stim_clust) %>%
           dplyr::mutate("comb_no" = f_comb_no)
         k_clust_data <- rbind(k_clust_data, k_temp)
 
