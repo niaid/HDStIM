@@ -13,6 +13,7 @@
 #'                           by Boruta.
 #' @import Boruta ggplot2
 #' @importFrom tibble as_tibble
+#' @importFrom dplyr slice_sample
 #' @importFrom grDevices png dev.off rainbow
 #' @importFrom graphics plot
 #' @export
@@ -23,7 +24,7 @@
 #'                                         max_runs = 1000, seed_val = 123,
 #'                                         verbose = FALSE)
 #' }
-marker_ranking_boruta <- function(selected_data, path = NULL, max_runs = 100, seed_val = 123, verbose = 0){
+marker_ranking_boruta <- function(selected_data, path = NULL, n_cells = 5000, max_runs = 100, seed_val = 123, verbose = 0){
 
   # For debugging.
   # library(Boruta)
@@ -48,6 +49,7 @@ marker_ranking_boruta <- function(selected_data, path = NULL, max_runs = 100, se
   for(i in 1:length(split_data)){
     # dat <- split_data[[1]] # For debugging.
     dat <- split_data[[i]]
+    dat <- dat %>% slice_sample(n = n_cells)
 
     set.seed(seed_val)
     res_boruta <- Boruta(form_boruta, data = dat, doTrace = verbose, maxRuns = max_runs)

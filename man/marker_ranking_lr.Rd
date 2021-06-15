@@ -22,6 +22,6 @@ Logistic regression for each marker to test it's contribution in
 }
 \examples{
 \dontrun{
-lr_stats <- marker_ranking_lr(selected_data, lr_max_it = 50, verbose = FALSE)
+lr_stats <- marker_ranking_lr(selected_data, path = NULL, lr_max_it = 50, verbose = FALSE)
 }
 }

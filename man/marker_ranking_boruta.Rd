@@ -4,8 +4,8 @@
 \alias{marker_ranking_boruta}
 \title{Marker Ranking ~ Boruta}
 \usage{
-marker_ranking_boruta(selected_data, path = NULL, max_runs = 100,
-  seed_val = 123, verbose = 0)
+marker_ranking_boruta(selected_data, path = NULL, n_cells = 5000,
+  max_runs = 100, seed_val = 123, verbose = 0)
 }
 \arguments{
 \item{selected_data}{Selected data from the stim_cell_selector function.}
