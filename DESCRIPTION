@@ -23,6 +23,7 @@ Imports:
     uwot,
     dplyr,
     tidyr,
+    broom,
     tidyselect, 
     ggridges,
     lme4,

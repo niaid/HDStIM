@@ -23,6 +23,7 @@
 #'         parameters passed to the function.
 #' @importFrom tibble as_tibble
 #' @importFrom tidyselect all_of
+#' @importFrom broom tidy
 #' @import dplyr ggplot2
 #' @importFrom stats fisher.test kmeans median
 #' @import skmeans
@@ -46,35 +47,11 @@ stim_cell_selector <- function(dat, state_markers, cluster_col, stim_lab, unstim
   # cluster_col <- chi11_1k$cluster_col
   # stim_lab <- chi11_1k$stim_label
   # unstim_lab <- chi11_1k$unstim_label
-  # seed_val <- 777
+  # seed_val <- 123
   # umap <- TRUE
   # umap_cells <- 50
   # verbose <- TRUE
-  #
-  # dat <- readRDS(file.path("/Users/farmerr2/sandbox/local_projects/pan-monogenic/results/phospho_v1/dat_all_meta.rds"))
-  # # SCS input paramters.
-  # panel <- read_tsv(file.path("/Users/farmerr2/sandbox/local_projects/pan-monogenic/meta/panel/darius_panel_phospho.txt"))
-  # state_markers <- filter(panel, marker_class == "state") %>%
-  #   select(antigen)
-  # state_markers <- state_markers[["antigen"]]
-  # cluster_col <- "merging1"
-  # stim_lab <- c("A", "L", "T", "I1B", "I2")
-  # unstim_lab <- "U"
-  #
-  # # Take all the conditions/disease except the technical controls (TC).
-  # # TCs only have unstimulated samples.
-  # condition <- as.character(unique(dat$condition))[-2]
-  # dat_cond <- dat[dat$condition == condition[4],]
-  # dat <- dat_cond
-  # rm(dat_cond)
-  # adding a comment so that i can push new changes
 
-
-
-
-
-
-  # dat <- dat[which(rowSums(dat[state_markers]) != 0),]
 
   # Check argument accuracy.
   if(umap == TRUE & is.null(umap_cells)){
@@ -101,15 +78,17 @@ stim_cell_selector <- function(dat, state_markers, cluster_col, stim_lab, unstim
                  " stimulation types = ", total_combinations,"."))}
 
   # Initialize empty output data frames.
-  df_stim_out <- data.frame(matrix(ncol = length(cols), nrow = 0))
-  df_summary_out <- as_tibble(data.frame(matrix(ncol = 3 + length(state_markers), nrow = 0)))
-  stacked_bar_plot_data <- data.frame(matrix(ncol = 8, nrow = 0))
+  # df_stim_out <- data.frame(matrix(ncol = length(cols), nrow = 0))
+  # df_stim_out <- data.frame()
+  df_main_out <- data.frame()
+  # df_summary_out <- as_tibble(data.frame(matrix(ncol = 3 + length(state_markers), nrow = 0)))
+  stacked_bar_plot_data <- data.frame()
   if(umap){
-    umap_plot_data <- data.frame(matrix(ncol = 7, nrow = 0))
+    umap_plot_data <- data.frame()
   }
-  df_f_fail_out <- data.frame(matrix(ncol = 2, nrow = 0))
-  df_all_f_out <- data.frame(matrix(nrow = 0, ncol = 7)) # May not be needed in the future.
-  k_clust_data <- data.frame(matrix(nrow = 0 , ncol = 8 + length(state_markers)))
+  df_all_f_out <- data.frame()
+  df_all_k_out <- data.frame()
+  # k_clust_data <- data.frame()
 
   # Set counter for the number of combinations processed.
   counter <- 0
@@ -125,13 +104,14 @@ stim_cell_selector <- function(dat, state_markers, cluster_col, stim_lab, unstim
       counter <- counter + 1
       if(verbose == TRUE){message(paste0("## Combination ", counter,"/",total_combinations,"."))}
       # Initialize an empty temporary output data frame.
-      df_out_temp <- data.frame(matrix(ncol = length(cols), nrow = 0))
+      # df_out_temp <- data.frame(matrix(ncol = length(cols), nrow = 0))
+      df_out_temp <- data.frame()
 
-      # For the selected meta cluster, select cells from the selected stim type and un-stimulated cells.
+      # Filter cells for a stim type - cell population combinations + unstimulated cells.
       dat_stim_unstim <- dat[dat$stim_type == stim | dat$stim_type %in% unstim_lab, ]
       dat_stim_unstim <- dat_stim_unstim[dat_stim_unstim[,cluster_col] == cluster,]
 
-      # Identify the index of the stimulated and unstimulated cells in the selected data frame.
+      # Identify the index of the stimulated and unstimulated cells in the filtered data frame.
       stim_idx <- dat_stim_unstim$stim_type == stim
       unstim_idx <- dat_stim_unstim$stim_type %in% unstim_lab
 
@@ -145,6 +125,10 @@ stim_cell_selector <- function(dat, state_markers, cluster_col, stim_lab, unstim
         k_results <- kmeans(dat_state, 2, iter.max = 100, nstart = 2, algorithm="MacQueen")
       }
 
+      # Record k-means summary for all the combinations.
+      df_all_k_out <- rbind(df_all_k_out, cbind(data.frame("stim_type" = stim, "cell_population" = cluster),
+                                                broom::tidy(k_results)))
+
       # Get cluster IDs for stim and unstim cells.
       clust_stim <- k_results$cluster[stim_idx]
       clust_unstim <- k_results$cluster[unstim_idx]
@@ -152,7 +136,7 @@ stim_cell_selector <- function(dat, state_markers, cluster_col, stim_lab, unstim
       # Fisher's Exact Test.
       if(verbose == TRUE){message("Carrying out Fisher's exact test.")}
 
-      # Create a contingency table and carry out F-test.
+      # Create a contingency table and carry out Fisher's exact test.
       # Count the number of stimulated and un-stimulated cells that belong to cluster 1 and 2.
       total_stim_count <- as.numeric(nrow(dat_stim_unstim[stim_idx,]))
       total_unstim_count <- as.numeric(nrow(dat_stim_unstim[unstim_idx,]))
@@ -172,15 +156,14 @@ stim_cell_selector <- function(dat, state_markers, cluster_col, stim_lab, unstim
       f_test <- fisher.test(con_tab) # Fisher's exact test.
       f_p_val <- f_test$p.value
 
-      # Note p-value for all the Fisher's exact tests.
-      df_all_f_out <- rbind(df_all_f_out,
-                            data.frame("stim_type" = stim, "cluster" = cluster,
-                                       "stim_clust1" = con_tab[1,1], "stim_clust2" = con_tab[2,1],
-                                       "unstim_clust1" = con_tab[1,2], "unstim_clust2" = con_tab[2,2],
-                                       "f_p_val" = f_p_val))
+      # Record Fisher's exact test statistics for all the tests.
+      f_stats <- broom::tidy(f_test)
+      df_all_f_out <- rbind(df_all_f_out, cbind(data.frame("stim_type" = stim, "cell_population" = cluster,
+                                                           "stim_clust1" = con_tab[1,1], "stim_clust2" = con_tab[2,1],
+                                                           "unstim_clust1" = con_tab[1,2], "unstim_clust2" = con_tab[2,2]),
+                                                f_stats))
 
-      # Select cells and save data only for the combinations that pass
-      # F-test.
+      # Select cells and save data only for the combinations that pass the Fisher's exact test.
       if(f_p_val < 0.05){
         if(verbose == TRUE){message("Fisher's exact test significant.")}
 
@@ -196,28 +179,41 @@ stim_cell_selector <- function(dat, state_markers, cluster_col, stim_lab, unstim
         }
 
         # Fetch responding stimulated cells from the indentified cluster.
-        stim_cells_resp <- dat_stim_unstim[k_results$cluster == stim_clust,]
-        stim_cells_resp <- stim_cells_resp[stim_cells_resp$stim_type == stim, ]
+        # stim_cells_resp <- dat_stim_unstim[k_results$cluster == stim_clust,]
+        # stim_cells_resp <- stim_cells_resp[stim_cells_resp$stim_type == stim, ]
 
         # Combine responding stimulated cells in the output data frame.
-        df_stim_out <- rbind(df_stim_out, stim_cells_resp)
+        # df_stim_out <- rbind(df_stim_out, stim_cells_resp)
+
+        # Generate data frame with statmarkers and k-means cluster identity per cell.
+        f_comb_no <- f_comb_no + 1
+        df_main_temp <- dat_stim_unstim %>%
+          dplyr::mutate("k_cluster_id" = k_results$cluster) %>%
+          dplyr::rename("cell_population" = all_of(cluster_col)) %>%
+          dplyr::mutate("responding_cluster" = as.integer(stim_clust)) %>%
+          mutate("response_status" = case_when(stim_type == stim & k_cluster_id == responding_cluster ~ "Resp. Stim.",
+                                               stim_type == stim & k_cluster_id != responding_cluster ~ "Non-resp. Stim.",
+                                               stim_type %in% unstim_lab & k_cluster_id == responding_cluster ~ "Resp. Unstim.",
+                                               stim_type %in% unstim_lab & k_cluster_id != responding_cluster ~ "Non-resp. Unstim.")) %>%
+          dplyr::mutate("comb_no" = as.integer(f_comb_no))
+        df_main_out <- rbind(df_main_temp, df_main_out)
 
         # Generate data for the summary table.
         # Select median marker expression for each state marker for the selected stim cells.
-        tm <- stim_cells_resp[stim_cells_resp$stim_type == stim, state_markers]
-        med_exp <- apply(tm, 2, median)
-        med_exp <-  as.data.frame(t(med_exp))
+        # tm <- stim_cells_resp[stim_cells_resp$stim_type == stim, state_markers]
+        # med_exp <- apply(tm, 2, median)
+        # med_exp <-  as.data.frame(t(med_exp))
 
         # Calculate fold change from non-responsive to responsive state for stim cells.
-        if(stim_clust == 1){
-          fc <- round((stim_1/stim_2), digits = 2)
-        }else if(stim_clust == 2){
-          fc <- round((stim_2/stim_1), digits = 2)
-        }
+        # if(stim_clust == 1){
+        #   fc <- round((stim_1/stim_2), digits = 2)
+        # }else if(stim_clust == 2){
+        #   fc <- round((stim_2/stim_1), digits = 2)
+        # }
 
         # Generate a summary table.
-        summary_table <- cbind(cluster = cluster, stim_type = stim, f_p_value = f_p_val, fold_change = fc, med_exp)
-        df_summary_out <- rbind(df_summary_out, summary_table)
+        # summary_table <- cbind(cluster = cluster, stim_type = stim, f_p_value = f_p_val, fold_change = fc, med_exp)
+        # df_summary_out <- rbind(df_summary_out, summary_table)
 
         # Stacked + percent bar plots with stim and unstim on the x-axis and cell counts
         # in k-means clusters on the y-axis.
@@ -225,8 +221,10 @@ stim_cell_selector <- function(dat, state_markers, cluster_col, stim_lab, unstim
                                    k_cluster = c("cluster1", "cluster2", "cluster1", "cluster2"),
                                    count = c(unstim_1_, unstim_2_, stim_1_, stim_2_))
 
-        stacked_temp <- cbind("cluster" = cluster, "stim_type" = stim, "f_p_val" = f_p_val,
-                              "stim_clust" = stim_clust, "fold_change" = fc, stacked_data)
+        # stacked_temp <- cbind("cell_population" = cluster, "stim_type" = stim, "f_p_val" = f_p_val,
+        #                       "stim_clust" = stim_clust, "fold_change" = fc, stacked_data)
+        stacked_temp <- cbind("cell_population" = cluster, "stim_type" = stim, "f_p_val" = f_p_val,
+                              "stim_clust" = stim_clust, stacked_data)
         stacked_bar_plot_data <- rbind(stacked_bar_plot_data, stacked_temp)
 
         # Generate UMAP on combined stim and unstim cells and colour them
@@ -235,72 +233,53 @@ stim_cell_selector <- function(dat, state_markers, cluster_col, stim_lab, unstim
           # Select stimulated cells that are clustered in un-stimulated cells cluster.
           # These are the cells from the simulated samples that likely didn't respond
           # to the stimulant.
-          stim_cells_no_resp <- dat_stim_unstim[k_results$cluster == unstim_clust,]
-          stim_cells_no_resp <- stim_cells_no_resp[stim_cells_no_resp$stim_type == stim, ]
+          no_of_cells <- min(umap_cells, nrow(df_main_temp))
+          set.seed(seed_val)
+          input_umap <-  df_main_temp %>% dplyr::slice_sample(n = no_of_cells, replace = FALSE)
 
-          # Fetch all the unstim cells.
-          unstim_cells <- dat_stim_unstim[dat_stim_unstim$stim_type %in% unstim_lab, ]
-
-          # Label cell types.
-          stim_cells_label <- cbind(stim_cells_resp, "type" = "stim_cells_resp")
-          stim_cells_no_resp_label <- cbind(stim_cells_no_resp, "type" = "stim_cells_no_resp")
-          unstim_cells_label <- cbind(unstim_cells, "type" = "unstim_cells")
-          comb_stim_unstim <- as_tibble(rbind(stim_cells_no_resp_label, stim_cells_label, unstim_cells_label))
-          tot_of_cells <- nrow(comb_stim_unstim)
-
-          # Take a minimum of "umap_cells" cells per cluster or the total no. of cells
-          # if the cluster size is smaller than "umap_cells".
-          no_of_cells <- min(umap_cells, tot_of_cells)
-          comb_stim_unstim <-  sample_n(comb_stim_unstim, no_of_cells, replace = FALSE)
-          input_umap <- comb_stim_unstim[,state_markers]
+          tot_of_cells <- nrow(df_main_temp)
 
           # Run UMAP.
           if(verbose == TRUE){message(paste0("Running UMAP for ", cluster, " - ", stim,"."))}
-          u_res <- uwot::umap(input_umap)
+          u_res <- uwot::umap(dplyr::select(input_umap, all_of(state_markers)))
 
-          umap_temp <- cbind("cluster" = cluster, "stim_type" = stim,
+          umap_temp <- cbind("cell_population" = cluster, "stim_type" = stim,
                              "tot_of_cells" = tot_of_cells, "no_of_cells" = no_of_cells,
                              "UMAP1" = u_res[,1], "UMAP2" = u_res[,2],
-                             "cell_type" = as.character(comb_stim_unstim$type))
+                             "response_status" = as.character(input_umap$response_status))
           umap_plot_data <- rbind(umap_plot_data, umap_temp)
           umap_plot_data$UMAP1 <- as.numeric(umap_plot_data$UMAP1)
           umap_plot_data$UMAP2 <- as.numeric(umap_plot_data$UMAP2)
         }
 
-        # Generate data frame with statmarkers and k-means cluster identity per cell.
-        f_comb_no <- f_comb_no + 1
-        k_temp <- dplyr::select(dat_stim_unstim, c("sample_id", "condition", "patient_id", "stim_type",
-                                                   all_of(cluster_col), all_of(state_markers))) %>%
-          dplyr::mutate("k_cluster_id" = as.factor(k_results$cluster)) %>%
-          dplyr::rename("cluster" = all_of(cluster_col)) %>%
-          dplyr::mutate("resp_cluster" = stim_clust) %>%
-          dplyr::mutate("comb_no" = f_comb_no)
-        k_clust_data <- rbind(k_clust_data, k_temp)
-
       } else {
         if(verbose == TRUE){message("Fisher' exact test non-sgnificant. Skipping further steps.")}
-        df_f_fail_out <- rbind(df_f_fail_out, data.frame("stim_type" = stim, "cluster" = cluster))
       }
     }
   }
 
   # Adjust p-values for the Fisher's exact test using all tests.
-  df_all_f_out <- df_all_f_out %>% mutate("f_p_adj" = p.adjust(f_p_val, method = "BH"))
+  df_all_f_out <- df_all_f_out %>% mutate("f_p_adj" = p.adjust(p.value, method = "BH"))
 
   # Generate return list.
-  return_list <- list("selected_expr_data" = as_tibble(df_stim_out), "summary" = as_tibble(df_summary_out),
-                      "stacked_bar_plot_data" = as_tibble(stacked_bar_plot_data),
+  # return_list <- list("selected_expr_data" = df_main_out, "summary" = as_tibble(df_summary_out),
+  #                     "stacked_bar_plot_data" = as_tibble(stacked_bar_plot_data),
+  #                     "state_markers" = state_markers, "cluster_col" = cluster_col,
+  #                     "stim_label" = stim_lab, "unstim_label" = unstim_lab,
+  #                     "seed_val" = seed_val, "fisher_test_fail" = as_tibble(df_f_fail_out),
+  #                     "all_fisher_p_val" = df_all_f_out, "k_clust_data" = k_clust_data)
+  return_list <- list("response_mapping_main" = df_main_out, "stacked_bar_plot_data" = as_tibble(stacked_bar_plot_data),
                       "state_markers" = state_markers, "cluster_col" = cluster_col,
                       "stim_label" = stim_lab, "unstim_label" = unstim_lab,
-                      "seed_val" = seed_val, "fisher_test_fail" = as_tibble(df_f_fail_out),
-                      "all_fisher_p_val" = df_all_f_out, "k_clust_data" = k_clust_data)
+                      "seed_val" = seed_val, "all_fisher_p_val" = df_all_f_out,
+                      "all_k_means_data" = df_all_k_out)
   if(umap == TRUE){
     return_list[["umap_plot_data"]] <- as_tibble(umap_plot_data)
     return_list[["umap"]] <- umap
     return_list[["umap_cells"]] <- umap_cells
   }
 
- if(verbose == TRUE){message(paste("Selection process finished on", date()))}
+ if(verbose == TRUE){message(paste("Response mapping process finished on", date()))}
  return(return_list)
 }
 
