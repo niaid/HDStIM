@@ -24,10 +24,10 @@ plot_umap <- function(selected_data, path, verbose = FALSE){
   }
 
   # Bind global variables.
-  UMAP1 <- UMAP2 <- cell_type <- cluster  <- stim_type <- NULL
+  UMAP1 <- UMAP2 <- cell_type <- cell_population  <- stim_type <- NULL
 
   # Group data according to clusters and stimulation type.
-  group_data <- group_by(selected_data$umap_plot_data, cluster, stim_type)
+  group_data <- group_by(selected_data$umap_plot_data, cell_population, stim_type)
 
   # Split groups into a list of individual tables.
   split_groups <- group_split(group_data)
@@ -37,15 +37,15 @@ plot_umap <- function(selected_data, path, verbose = FALSE){
 
   # Create ggplot for a single group.
   for(i in 1:length(split_groups)){
-    clust <- unique(split_groups[[i]]$cluster)
+    clust <- unique(split_groups[[i]]$cell_population)
     stim <- unique(split_groups[[i]]$stim_type)
-    if(verbose){message(paste("Plotting for the cluster", clust, "and the stim type", stim))}
+    if(verbose){message(paste("Plotting for the cell population", clust, "and stimulation", stim))}
 
-    umap_plot <- ggplot(split_groups[[i]], aes(x = UMAP1, y = UMAP2, color = cell_type)) +
+    umap_plot <- ggplot(split_groups[[i]], aes(x = UMAP1, y = UMAP2, color = response_status)) +
     geom_point(size = 1) +
     scale_colour_manual(values=cbPalette) +
-    labs(color = "Cell Type", title = paste0("Cluster: ", clust,
-                                             "; Stim: ", stim,
+    labs(color = "Response Status", title = paste0("Cell Population: ", clust,
+                                             "; Stimulation: ", stim,
                                              "\nTotal No. Cells: ", unique(split_groups[[i]]$tot_of_cells),
                                              "; No. of Cells Plotted: ", unique(split_groups[[i]]$no_of_cells))) +
     scale_x_continuous("UMAP1") +

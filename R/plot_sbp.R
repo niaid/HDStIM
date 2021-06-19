@@ -21,69 +21,39 @@ plot_sbp <- function(selected_data, path, verbose = FALSE){
   # Define colors.
   cbPalette <- c("#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
 
-  # Check if the input data is from single or multi marker selection.
-  # Single marker if TRUE.
-  if("state_marker" %in% colnames(selected_data$selected_expr_data)){
-    # Bind global variables.
-    cluster <- k_cluster <- stim_status <- stim_type <- state_marker <- NULL
+  # Bind global variables.
+  cell_population <- k_cluster <- stim_status <- stim_type <- NULL
 
-    # Group data according to clusters and stimulation type.
-    group_data <- group_by(selected_data$stacked_bar_plot_data, cluster, stim_type, state_marker)
+  # Group data according to clusters and stimulation type.
+  group_data <- group_by(selected_data$stacked_bar_plot_data, cell_population, stim_type)
 
-    # Split groups into a list of individual tables.
-    split_groups <- group_split(group_data)
+  # Split groups into a list of individual tables.
+  split_groups <- group_split(group_data)
 
-    # Create ggplot for a single group.
-    for(i in 1:length(split_groups)){
-      clust <- unique(split_groups[[i]]$cluster)
-      stim <- unique(split_groups[[i]]$stim_type)
-      state <- unique(split_groups[[i]]$state_marker)
-      if(verbose){message(paste("Plotting for the cluster", clust, ", the stim type", stim, ", and the state", state))}
-      stacked_plot <- ggplot(split_groups[[i]], aes(fill = k_cluster, y=count, x=stim_status)) +
-        geom_bar(position="fill", stat="identity") +
-        scale_fill_manual(values=cbPalette) +
-        labs(title=paste0("Cluster: ", clust,
-                         "; Stim type: ", stim,
-                         "; State marker: ", state,
-                         "\nFisher's p-value: ", round(unique(split_groups[[i]]$f_p_val),3),
-                         "; Stim cluster: ",unique(split_groups[[i]]$stim_clust),
-                         "; Fold change: ", unique(split_groups[[i]]$fold_change)),
-             x ="Stim Status", y = "Cell Count %", fill = "K-means Cluster")
+  # Create ggplot for a single group.
+  for(i in 1:length(split_groups)){
+    clust <- unique(split_groups[[i]]$cell_population)
+    stim <- unique(split_groups[[i]]$stim_type)
+    if(verbose){message(paste("Plotting for the cell population", clust, "and stimulation", stim))}
+    stacked_plot <- ggplot(split_groups[[i]], aes(fill = k_cluster, y=count, x=stim_status)) +
+      geom_bar(position="fill", stat="identity") +
+      scale_fill_manual(values=cbPalette) +
+      labs(title=paste0("Cell Population: ", clust,
+                        "; Stimulation: ", stim,
+                        "\nFisher's P-value: ", round(unique(split_groups[[i]]$f_p_val),3),
+                        "; Stim. Cluster: ",unique(split_groups[[i]]$stim_clust)),
+           x ="Stim. Status", y = "Cell Count %", fill = "K-means Cluster")
 
-      if(!is.null(path)){
-        ggsave(paste0("plot_sbp_",clust,"_", stim, "_",state,".png"),
-               plot = stacked_plot, device = "png", path = file.path(path), width = 6, height = 4, dpi = 300)
-      }
-    }
-  } else {
-    # Bind global variables.
-    cluster <- k_cluster <- stim_status <- stim_type <- NULL
-
-    # Group data according to clusters and stimulation type.
-    group_data <- group_by(selected_data$stacked_bar_plot_data, cluster, stim_type)
-
-    # Split groups into a list of individual tables.
-    split_groups <- group_split(group_data)
-
-    # Create ggplot for a single group.
-    for(i in 1:length(split_groups)){
-      clust <- unique(split_groups[[i]]$cluster)
-      stim <- unique(split_groups[[i]]$stim_type)
-      if(verbose){message(paste("Plotting for the cluster", clust, "and the stim type", stim))}
-      stacked_plot <- ggplot(split_groups[[i]], aes(fill = k_cluster, y=count, x=stim_status)) +
-        geom_bar(position="fill", stat="identity") +
-        scale_fill_manual(values=cbPalette) +
-        labs(title=paste0("Cluster: ", clust,
-                         "; Stim type: ", stim,
-                         "\nFisher's p-value: ", round(unique(split_groups[[i]]$f_p_val),3),
-                         "; Stim cluster: ",unique(split_groups[[i]]$stim_clust),
-                         "; Fold change: ", unique(split_groups[[i]]$fold_change)),
-             x ="Stim Status", y = "Cell Count %", fill = "K-means Cluster")
-
-      if(!is.null(path)){
-        ggsave(paste0("plot_sbp_",clust,"_", stim, ".png"),
-               plot = stacked_plot, device = "png", path = file.path(path), width = 6, height = 4, dpi = 300)
-      }
+    if (!is.null(path)) {
+      ggsave(
+        paste0("plot_sbp_", clust, "_", stim, ".png"),
+        plot = stacked_plot,
+        device = "png",
+        path = file.path(path),
+        width = 6,
+        height = 4,
+        dpi = 300
+      )
     }
   }
   return(0)

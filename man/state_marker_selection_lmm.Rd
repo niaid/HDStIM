@@ -4,8 +4,15 @@
 \alias{state_marker_selection_lmm}
 \title{State (signalling) Marker Selection Using Linear Mixed Effects Modelling}
 \usage{
-state_marker_selection_lmm(dat, state_markers, cluster_col, stim_lab,
-  unstim_lab, REML = FALSE, verbose = FALSE)
+state_marker_selection_lmm(
+  dat,
+  state_markers,
+  cluster_col,
+  stim_lab,
+  unstim_lab,
+  REML = FALSE,
+  verbose = FALSE
+)
 }
 \arguments{
 \item{dat}{A tibble with the single cell data. Cells on rows

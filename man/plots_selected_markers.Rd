@@ -4,8 +4,12 @@
 \alias{plots_selected_markers}
 \title{SCS Selected Marker Plots Pipeline}
 \usage{
-plots_selected_markers(original_data, selected_data_path, figure_path,
-  verbose = FALSE)
+plots_selected_markers(
+  original_data,
+  selected_data_path,
+  figure_path,
+  verbose = FALSE
+)
 }
 \arguments{
 \item{original_data}{Original tibble/data.frame what was used in \code{\link{scs_selected_markers}} for

@@ -4,9 +4,17 @@
 \alias{stim_cell_selector}
 \title{Stim Cell Selector}
 \usage{
-stim_cell_selector(dat, state_markers, cluster_col, stim_lab, unstim_lab,
-  seed_val = NULL, umap = FALSE, umap_cells = NULL,
-  verbose = FALSE)
+stim_cell_selector(
+  dat,
+  state_markers,
+  cluster_col,
+  stim_lab,
+  unstim_lab,
+  seed_val = NULL,
+  umap = FALSE,
+  umap_cells = NULL,
+  verbose = FALSE
+)
 }
 \arguments{
 \item{dat}{A tibble with the single cell data. Cells on rows

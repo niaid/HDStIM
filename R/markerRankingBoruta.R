@@ -32,58 +32,99 @@ marker_ranking_boruta <- function(selected_data, path = NULL, n_cells = 5000, ma
   # max_runs <- 100
   # verbose <- 2
   # seed_val <- 123
-  # path <- file.path("/Users/farmerr2/sandbox/devel/niaid/figures/boruta")
+  # n_cells = 5000
+  # path <- file.path("/Users/farmerr2/sandbox/devel/niaid/figures/boruta_jun_18_21")
+
+  # Check if path exists; if not then create it.
+  if(!is.null(path)){
+    if(!dir.exists(path)){
+      if(verbose){message(paste("Creating %s folder", path))}
+      dir.create(path, recursive = TRUE)
+    } else {
+      if(verbose){message(paste(path, "folder already exists. Output will be over written."))}
+    }
+  }
 
   # Bind global variables.
   comb_no <- maxImp <- medianImp <- minImp <- normHits <- state_marker <- NULL
 
   state_markers <- selected_data$state_markers
-  dat_boruta <- selected_data$k_clust_data
+  dat_boruta <- selected_data$response_mapping_main
   form_boruta <- as.formula(paste0("k_cluster_id ~ ",paste0(state_markers, collapse = " + ")))
 
   grouped <- group_by(dat_boruta, comb_no)
   split_data <- group_split(grouped)
 
-  df_stats_out <- data.frame(matrix(nrow = 0, ncol = 9))
+  df_stats_out <- data.frame()
 
   for(i in 1:length(split_data)){
     # dat <- split_data[[1]] # For debugging.
     dat <- split_data[[i]]
     dat <- dat %>% slice_sample(n = n_cells)
 
+    stim <- as.character(unique(dat$stim_type)[unique(dat$stim_type) %in% selected_data$stim_label])
+    clust <- as.character(unique(dat$cell_population))
+
+    # Run Boruta.
     set.seed(seed_val)
     res_boruta <- Boruta(form_boruta, data = dat, doTrace = verbose, maxRuns = max_runs)
     att_stats <- attStats(res_boruta)
-    att_stats <- rownames_to_column(att_stats, var = "state_marker")
 
-    stim <- as.character(unique(dat$stim_type)[unique(dat$stim_type) %in% selected_data$stim_label])
-    clust <- as.character(unique(dat$cluster))
-    att_stats <- cbind("stim_type" = stim, "cluster" = clust, att_stats)
-    df_stats_out <- rbind(df_stats_out, att_stats)
+    # Estimate variable importance and generate output data frame.
+    df_imp <- tibble::rownames_to_column(att_stats, "state_marker")
+    df_imp <- df_imp[order(df_imp$medianImp),]
+    df_imp$state_marker <- factor(df_imp$state_marker, levels = df_imp$state_marker)
+    df_imp$decision <- as.character(df_imp$decision)
+    df_imp <- cbind("stim_type" = stim, "cell_population" = clust, df_imp)
+    df_stats_out <- rbind(df_stats_out, df_imp)
 
-    # Plot attribute plot.
-    file_name = file.path(path, paste0("imp_", stim, "_", clust, ".png"))
-    plot_title = paste0("Stim Type: ", stim, "; Cluster: ", clust)
+    # Plot
+    plot_title <- paste0("Stimulation: ", stim,"\nCell Population: ", clust)
+    my_cols <- c("Confirmed" = "darkgreen", "Tentative" = "darkblue", "Rejected" = "darkred")
 
-    png(filename = file_name, res = 300, width = 7, height = 5, units = "in")
-    plot(res_boruta, las = 2, cex.axis = 0.7, cex.lab = 0.8, main = plot_title)
-    dev.off()
-
-    # Plot attributes using ggplot.
-    plot_data <- att_stats[order(att_stats$medianImp),]
-    plot_data$state_marker <- factor(plot_data$state_marker, levels = plot_data$state_marker)
-    att_plot <- ggplot(plot_data, aes(x = state_marker, y = medianImp, col = normHits)) +
+    att_plot <- ggplot(df_imp, aes(x = state_marker, y = medianImp, col = decision)) +
       geom_point() +
       geom_errorbar(aes(ymin=minImp, ymax=maxImp), width = 0.2) +
-      labs(x = "State Marker", y = "Importance", col = "Selection Hits",
-           title = plot_title) +
+      labs(x = "State Marker", y = "Importance", title = plot_title, col = "Decision") +
       theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
-      scale_colour_gradientn(colours=rainbow(7), values = c(0,0.25, 0.5,0.75,1))
+      scale_colour_manual(values = my_cols)
 
-    att_file <- paste0("rank_",stim, "_", clust, ".png")
-    ggsave(att_file, plot = att_plot, path = path,
-           device = "png", dpi = 300, width = 7, height = 6, units = "in")
+    if(!is.null(path)){
+      att_file <- paste0("imp_", stim, "_", clust, ".png")
+      ggsave(att_file, plot = att_plot, path = path,
+             device = "png", dpi = 300, width = 7, height = 6, units = "in")
+    }
+
+    # att_stats <- rownames_to_column(att_stats, var = "state_marker")
+    #
+    # stim <- as.character(unique(dat$stim_type)[unique(dat$stim_type) %in% selected_data$stim_label])
+    # clust <- as.character(unique(dat$cell_population))
+    # att_stats <- cbind("stim_type" = stim, "cell_population" = clust, att_stats)
+    # df_stats_out <- rbind(df_stats_out, att_stats)
+    #
+    #
+    # # Plot attribute plot.
+    # file_name = file.path(path, paste0("imp_", stim, "_", clust, ".png"))
+    # plot_title = paste0("Stimulation: ", stim, "\nCell Population: ", clust)
+    #
+    # png(filename = file_name, res = 300, width = 7, height = 5, units = "in")
+    # plot(res_boruta, las = 2, cex.axis = 0.7, cex.lab = 0.8, main = plot_title)
+    # dev.off()
+    #
+    # # Plot attributes using ggplot.
+    # plot_data <- att_stats[order(att_stats$medianImp),]
+    # plot_data$state_marker <- factor(plot_data$state_marker, levels = plot_data$state_marker)
+    # att_plot <- ggplot(plot_data, aes(x = state_marker, y = medianImp, col = normHits)) +
+    #   geom_point() +
+    #   geom_errorbar(aes(ymin=minImp, ymax=maxImp), width = 0.2) +
+    #   labs(x = "State Marker", y = "Importance", col = "Selection Hits",
+    #        title = plot_title) +
+    #   theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+    #   scale_colour_gradientn(colours=rainbow(7), values = c(0,0.25, 0.5,0.75,1))
+    #
+    # att_file <- paste0("rank_",stim, "_", clust, ".png")
+    # ggsave(att_file, plot = att_plot, path = path,
+    #        device = "png", dpi = 300, width = 7, height = 6, units = "in")
   }
-
   return(as_tibble(df_stats_out))
 }

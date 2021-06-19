@@ -4,8 +4,15 @@
 \alias{stim_cell_selector_single_marker}
 \title{Stim Cell Selector Single Marker}
 \usage{
-stim_cell_selector_single_marker(dat, state_markers, cluster_col, stim_lab,
-  unstim_lab, seed_val = NULL, verbose = FALSE)
+stim_cell_selector_single_marker(
+  dat,
+  state_markers,
+  cluster_col,
+  stim_lab,
+  unstim_lab,
+  seed_val = NULL,
+  verbose = FALSE
+)
 }
 \arguments{
 \item{dat}{A tibble with the single cell data. Cells on rows

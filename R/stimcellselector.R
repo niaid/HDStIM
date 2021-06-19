@@ -26,7 +26,6 @@
 #' @importFrom broom tidy
 #' @import dplyr ggplot2
 #' @importFrom stats fisher.test kmeans median
-#' @import skmeans
 #' @importFrom uwot umap
 #' @export
 #'

@@ -4,9 +4,19 @@
 \alias{scs_selected_markers}
 \title{SCS Selected Marker Pipeline}
 \usage{
-scs_selected_markers(dat, selected_state_markers, cluster_col, stim_lab,
-  unstim_lab, path, anova_cutoff = 0.05, seed_val = NULL,
-  umap = FALSE, umap_cells = NULL, verbose = FALSE)
+scs_selected_markers(
+  dat,
+  selected_state_markers,
+  cluster_col,
+  stim_lab,
+  unstim_lab,
+  path,
+  anova_cutoff = 0.05,
+  seed_val = NULL,
+  umap = FALSE,
+  umap_cells = NULL,
+  verbose = FALSE
+)
 }
 \arguments{
 \item{dat}{A tibble with the single cell data. Cells on rows
