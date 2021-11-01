@@ -28,7 +28,8 @@ Imports:
     ggridges,
     lme4,
     lmtest, 
-    Boruta
+    Boruta,
+    parallel
 Suggests: 
     knitr,
     rmarkdown,

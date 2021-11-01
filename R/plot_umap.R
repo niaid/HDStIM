@@ -24,7 +24,7 @@ plot_umap <- function(selected_data, path, verbose = FALSE){
   }
 
   # Bind global variables.
-  UMAP1 <- UMAP2 <- cell_type <- cell_population  <- stim_type <- NULL
+  UMAP1 <- UMAP2 <- cell_type <- cell_population  <- stim_type <- response_status <- NULL
 
   # Group data according to clusters and stimulation type.
   group_data <- group_by(selected_data$umap_plot_data, cell_population, stim_type)
@@ -33,7 +33,7 @@ plot_umap <- function(selected_data, path, verbose = FALSE){
   split_groups <- group_split(group_data)
 
   # Define colors.
-  cbPalette <- c("#009E73", "#E69F00", "#56B4E9", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
+  cbPalette <- c("#009E73", "#0072B2", "#E69F00", "#CC79A7")
 
   # Create ggplot for a single group.
   for(i in 1:length(split_groups)){
@@ -41,13 +41,16 @@ plot_umap <- function(selected_data, path, verbose = FALSE){
     stim <- unique(split_groups[[i]]$stim_type)
     if(verbose){message(paste("Plotting for the cell population", clust, "and stimulation", stim))}
 
-    umap_plot <- ggplot(split_groups[[i]], aes(x = UMAP1, y = UMAP2, color = response_status)) +
+    plot_dat <- split_groups[[i]]
+    plot_dat$response_status <- factor(plot_dat$response_status, levels=c("Resp. Stim.", "Resp. Unstim.",
+                                                              "Non-resp. Stim.", "Non-resp. Unstim."))
+    umap_plot <- ggplot(plot_dat, aes(x = UMAP1, y = UMAP2, color = response_status)) +
     geom_point(size = 1) +
     scale_colour_manual(values=cbPalette) +
     labs(color = "Response Status", title = paste0("Cell Population: ", clust,
                                              "; Stimulation: ", stim,
-                                             "\nTotal No. Cells: ", unique(split_groups[[i]]$tot_of_cells),
-                                             "; No. of Cells Plotted: ", unique(split_groups[[i]]$no_of_cells))) +
+                                             "\nTotal Cells: ", unique(split_groups[[i]]$tot_of_cells),
+                                             "; Cells Plotted: ", unique(split_groups[[i]]$no_of_cells))) +
     scale_x_continuous("UMAP1") +
     scale_y_continuous("UMAP2")
 

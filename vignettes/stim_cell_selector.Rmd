@@ -52,12 +52,10 @@ attributes(selected_data)
 bar plots to visualize the k-means and Fisher's exact test results and data to plot the optional UMAPs. 
 
 ```{r head_expr}
-head(selected_data$selected_expr_data)
+head(selected_data$response_mapping_main)
 ```
 
-```{r head_summary}
-head(selected_data$summary)
-```
+
 ```{r head_stacked}
 head(selected_data$stacked_bar_plot_data)
 ```
@@ -86,25 +84,25 @@ or use the backend code below to plot only for the combinations of interest or w
 aesthetics. The code below only plots the first combination.
 
 ```{r stacked_plot, fig.width = 6, fig.height = 4}
-# Group data according to clusters and stimulation type.
-group_data <- group_by(selected_data$stacked_bar_plot_data, cluster, stim_type)
-
-# Split groups into a list of individual tables.
-split_groups <- group_split(group_data)
-
-# Create ggplot for a single group.
-cbPalette <- c("#E69F00", "#56B4E9")
-stacked_plot <- ggplot(split_groups[[1]], aes(fill = k_cluster, y=count, x=stim_status)) +
-  geom_bar(position="fill", stat="identity") +
-  scale_fill_manual(values=cbPalette) +
-  labs(title=paste("Cluster:", unique(split_groups[[1]]$cluster), 
-                   "; Stim type:", unique(split_groups[[1]]$stim_type), 
-                   "\nFisher's p-value:", round(unique(split_groups[[1]]$f_p_val),3),
-                   "; Stim cluster:",unique(split_groups[[1]]$stim_clust), 
-                   "; Fold change:", unique(split_groups[[1]]$fold_change) ,  sep=" "),
-       x ="Stim Status", y = "Cell Count %", fill = "K-means Cluster")
-
-plot(stacked_plot)
+# # Group data according to clusters and stimulation type.
+# group_data <- group_by(selected_data$stacked_bar_plot_data, cell_population, stim_type)
+# 
+# # Split groups into a list of individual tables.
+# split_groups <- group_split(group_data)
+# 
+# # Create ggplot for a single group.
+# cbPalette <- c("#E69F00", "#56B4E9")
+# stacked_plot <- ggplot(split_groups[[1]], aes(fill = k_cluster, y=count, x=stim_status)) +
+#   geom_bar(position="fill", stat="identity") +
+#   scale_fill_manual(values=cbPalette) +
+#   labs(title=paste("Cluster:", unique(split_groups[[1]]$cell_population), 
+#                    "; Stim type:", unique(split_groups[[1]]$stim_type), 
+#                    "\nFisher's p-value:", round(unique(split_groups[[1]]$f_p_val),3),
+#                    "; Stim cluster:",unique(split_groups[[1]]$stim_clust), 
+#                    "; Fold change:", unique(split_groups[[1]]$fold_change) ,  sep=" "),
+#        x ="Stim Status", y = "Cell Count %", fill = "K-means Cluster")
+# 
+# plot(stacked_plot)
 ```
 
 #### UMAP Plots to Visually Inspect Responding and Non-Responding Cell Selection
@@ -127,24 +125,24 @@ or use the backend code below to plot only for the combinations of interest or w
 aesthetics. The code below plots a UMAP for first combination using the output above.
 
 ```{r umap_plot, fig.width = 7, fig.height = 5}
-# Group data according to clusters and stimulation type.
-group_data <- group_by(selected_data$umap_plot_data, cluster, stim_type)
-
-# Split groups into a list of individual tables.
-split_groups <- group_split(group_data)
-
-# Create ggplot for a single group.
-cbPalette <- c("#009E73", "#E69F00", "#56B4E9")
-umap_plot <- ggplot(split_groups[[1]], aes(x = UMAP1, y = UMAP2, color = cell_type)) +
-    geom_point(size = 1) +
-    scale_colour_manual(values=cbPalette) +
-    labs(color = "Cell Type", title = paste0("Cluster: ", split_groups[[1]]$cluster, 
-                                           "; Stim: ", split_groups[[1]]$stim_type,
-                                            "\nTotal No. Cells: ", split_groups[[1]]$tot_of_cells,
-                                            "; No. of Cells Plotted: ", split_groups[[1]]$no_of_cells)) +
-  scale_x_continuous("UMAP1") +
-  scale_y_continuous("UMAP2")
-plot(umap_plot)
+# # Group data according to clusters and stimulation type.
+# group_data <- group_by(selected_data$umap_plot_data, cell_population, stim_type)
+# 
+# # Split groups into a list of individual tables.
+# split_groups <- group_split(group_data)
+# 
+# # Create ggplot for a single group.
+# cbPalette <- c("#009E73", "#E69F00", "#56B4E9")
+# umap_plot <- ggplot(split_groups[[1]], aes(x = UMAP1, y = UMAP2, color = cell_type)) +
+#     geom_point(size = 1) +
+#     scale_colour_manual(values=cbPalette) +
+#     labs(color = "Cell Type", title = paste0("Cluster: ", split_groups[[1]]$cluster, 
+#                                            "; Stim: ", split_groups[[1]]$stim_type,
+#                                             "\nTotal No. Cells: ", split_groups[[1]]$tot_of_cells,
+#                                             "; No. of Cells Plotted: ", split_groups[[1]]$no_of_cells)) +
+#   scale_x_continuous("UMAP1") +
+#   scale_y_continuous("UMAP2")
+# plot(umap_plot)
 ```
 
 #### Distribution plots for Individual State Marker before and after Selection
@@ -158,55 +156,55 @@ or use the backend code below to plot only for the combinations of interest or w
 aesthetics. The code below plots a distribution plot for the first combination using the output above.
 
 ```{r umap_kde, fig.width = 16, fig.height = 9}
-library(tidyr)
-library(ggridges)
-
-# Convert the pre k-means data from wide to long form for the state markers.
-original_data <- chi11_1k$expr_data
-cluster_col <- chi11_1k$cluster_col
-state_markers <- chi11_1k$state_markers
-original_data <- original_data[, c(cluster_col, "stim_type", state_markers)]
-gather_ori_dat <- as_tibble(data.frame(matrix(nrow = 0, ncol = 5)))
-for(state in state_markers){
-  temp_df <- original_data[c(cluster_col, "stim_type")]
-  marker_dat <- gather(as_tibble(original_data[state]), key = "state_marker", value = "marker_exp")
-  temp_df <- cbind(temp_df, marker_dat, "distribution" = "original")
-  gather_ori_dat <- rbind(gather_ori_dat, temp_df)
-}
-gather_ori_dat <- rename(as_tibble(gather_ori_dat), "cluster" = cluster_col)
-
-# Convert the post k-means data from wide to long form for the state markers.
-selec_data <- selected_data$selected_expr_data
-selec_data <- selec_data[, c(cluster_col, "stim_type", state_markers)]
-gather_selec_dat <- as_tibble(data.frame(matrix(nrow = 0, ncol = 5)))
-for(state in state_markers){
-  temp_df <- selec_data[c(cluster_col, "stim_type")]
-  marker_dat <- gather(as_tibble(selec_data[state]), key = "state_marker", value = "marker_exp")
-  temp_df <- cbind(temp_df, marker_dat, "distribution" = "selected")
-  gather_selec_dat <- rbind(gather_selec_dat, temp_df)
-}
-gather_selec_dat <- rename(as_tibble(gather_selec_dat), "cluster" = cluster_col)
-
-summary <- selected_data$summary
-for(i in 1:nrow(summary)[1]){
-  # Plot KDE of original (pre-k-means clustering) distribution overlaid
-  # by the KDE of the k-selected distribution.
-  cl <- as.character(summary[[i,1]])
-  st <- as.character(summary[[i,2]])
-
-    clust_stim_k <- gather_selec_dat[gather_selec_dat$cluster == cl & gather_selec_dat$stim_type == st, ]
-    clust_stim_ori <- gather_ori_dat[gather_ori_dat$cluster == cl & gather_ori_dat$stim_type == st, ]
-    clust_unstim_ori <- gather_ori_dat[gather_ori_dat$cluster == cl & gather_ori_dat$stim_type == selected_data$unstim_label, ]
-    clust_unstim_ori$distribution <- "unstim"
-    clust_stim <- as_tibble(rbind(clust_stim_k, clust_stim_ori, clust_unstim_ori))
-    cbPalette <- c("#E69F00", "#009E73", "#56B4E9")
-    p <- ggplot(data = clust_stim, aes(x = marker_exp , y = distribution)) +
-      geom_density_ridges(aes(fill = distribution), scale = 1) +
-      scale_fill_manual(values=cbPalette) +
-      labs(x = "marker expression", title = paste0("Cluster: ", cl, "; Stim Type: ", st))
-
-    kde_plot <- p + facet_wrap( ~ state_marker, nrow = 3, ncol = 4) +
-      theme_set(theme_grey(base_size = 20))
-}
-plot(kde_plot)
+# library(tidyr)
+# library(ggridges)
+# 
+# # Convert the pre k-means data from wide to long form for the state markers.
+# original_data <- chi11_1k$expr_data
+# cluster_col <- chi11_1k$cluster_col
+# state_markers <- chi11_1k$state_markers
+# original_data <- original_data[, c(cluster_col, "stim_type", state_markers)]
+# gather_ori_dat <- as_tibble(data.frame(matrix(nrow = 0, ncol = 5)))
+# for(state in state_markers){
+#   temp_df <- original_data[c(cluster_col, "stim_type")]
+#   marker_dat <- gather(as_tibble(original_data[state]), key = "state_marker", value = "marker_exp")
+#   temp_df <- cbind(temp_df, marker_dat, "distribution" = "original")
+#   gather_ori_dat <- rbind(gather_ori_dat, temp_df)
+# }
+# gather_ori_dat <- rename(as_tibble(gather_ori_dat), "cluster" = cluster_col)
+# 
+# # Convert the post k-means data from wide to long form for the state markers.
+# selec_data <- selected_data$selected_expr_data
+# selec_data <- selec_data[, c(cluster_col, "stim_type", state_markers)]
+# gather_selec_dat <- as_tibble(data.frame(matrix(nrow = 0, ncol = 5)))
+# for(state in state_markers){
+#   temp_df <- selec_data[c(cluster_col, "stim_type")]
+#   marker_dat <- gather(as_tibble(selec_data[state]), key = "state_marker", value = "marker_exp")
+#   temp_df <- cbind(temp_df, marker_dat, "distribution" = "selected")
+#   gather_selec_dat <- rbind(gather_selec_dat, temp_df)
+# }
+# gather_selec_dat <- rename(as_tibble(gather_selec_dat), "cluster" = cluster_col)
+# 
+# summary <- selected_data$summary
+# for(i in 1:nrow(summary)[1]){
+#   # Plot KDE of original (pre-k-means clustering) distribution overlaid
+#   # by the KDE of the k-selected distribution.
+#   cl <- as.character(summary[[i,1]])
+#   st <- as.character(summary[[i,2]])
+# 
+#     clust_stim_k <- gather_selec_dat[gather_selec_dat$cluster == cl & gather_selec_dat$stim_type == st, ]
+#     clust_stim_ori <- gather_ori_dat[gather_ori_dat$cluster == cl & gather_ori_dat$stim_type == st, ]
+#     clust_unstim_ori <- gather_ori_dat[gather_ori_dat$cluster == cl & gather_ori_dat$stim_type == selected_data$unstim_label, ]
+#     clust_unstim_ori$distribution <- "unstim"
+#     clust_stim <- as_tibble(rbind(clust_stim_k, clust_stim_ori, clust_unstim_ori))
+#     cbPalette <- c("#E69F00", "#009E73", "#56B4E9")
+#     p <- ggplot(data = clust_stim, aes(x = marker_exp , y = distribution)) +
+#       geom_density_ridges(aes(fill = distribution), scale = 1) +
+#       scale_fill_manual(values=cbPalette) +
+#       labs(x = "marker expression", title = paste0("Cluster: ", cl, "; Stim Type: ", st))
+# 
+#     kde_plot <- p + facet_wrap( ~ state_marker, nrow = 3, ncol = 4) +
+#       theme_set(theme_grey(base_size = 20))
+# }
+# plot(kde_plot)
 ```

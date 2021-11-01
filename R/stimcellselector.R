@@ -27,6 +27,7 @@
 #' @import dplyr ggplot2
 #' @importFrom stats fisher.test kmeans median
 #' @importFrom uwot umap
+#' @importFrom parallel detectCores
 #' @export
 #'
 #' @examples
@@ -240,9 +241,11 @@ stim_cell_selector <- function(dat, state_markers, cluster_col, stim_lab, unstim
 
           # Run UMAP.
           if(verbose == TRUE){message(paste0("Running UMAP for ", cluster, " - ", stim,"."))}
-          u_res <- uwot::umap(dplyr::select(input_umap, all_of(state_markers)))
 
-          umap_temp <- cbind("cell_population" = cluster, "stim_type" = stim,
+          n_threads <- parallel::detectCores() - 1
+          u_res <- uwot::umap(dplyr::select(input_umap, all_of(state_markers)), n_threads = n_threads)
+
+          umap_temp <- cbind("cell_population" = cluster, "stim_type" = stim, "condition" = as.character(input_umap$condition),
                              "tot_of_cells" = tot_of_cells, "no_of_cells" = no_of_cells,
                              "UMAP1" = u_res[,1], "UMAP2" = u_res[,2],
                              "response_status" = as.character(input_umap$response_status))

@@ -42,7 +42,7 @@ plot_sbp <- function(selected_data, path, verbose = FALSE){
                         "; Stimulation: ", stim,
                         "\nFisher's P-value: ", round(unique(split_groups[[i]]$f_p_val),3),
                         "; Stim. Cluster: ",unique(split_groups[[i]]$stim_clust)),
-           x ="Stim. Status", y = "Cell Count %", fill = "K-means Cluster")
+           x ="Stimulation Status", y = "Cell Count %", fill = "K-means Cluster")
 
     if (!is.null(path)) {
       ggsave(

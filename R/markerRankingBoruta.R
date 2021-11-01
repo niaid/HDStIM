@@ -46,7 +46,7 @@ marker_ranking_boruta <- function(selected_data, path = NULL, n_cells = 5000, ma
   }
 
   # Bind global variables.
-  comb_no <- maxImp <- medianImp <- minImp <- normHits <- state_marker <- NULL
+  comb_no <- maxImp <- medianImp <- minImp <- normHits <- state_marker <- decision <- NULL
 
   state_markers <- selected_data$state_markers
   dat_boruta <- selected_data$response_mapping_main
