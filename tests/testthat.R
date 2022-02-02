@@ -1,4 +1,4 @@
 library(testthat)
-library(stimcellselector)
+library(HDStIM)
 
-test_check("stimcellselector")
+test_check("HDStIM")

@@ -10,9 +10,9 @@
 #' @importFrom ggridges geom_density_ridges
 #' @return This function generates plots in the specified folder and returns 0 upon successful completion.
 #' @export
-#' @example
+#' @examples
 #' \dontrun{
-#' plot_exprs(mapped_data, path, verbose = FALSE){
+#' plot_exprs(mapped_data, path, verbose = FALSE)
 #' }
 plot_exprs <- function(mapped_data, path, verbose = FALSE){
   # Check if path exists; if not then create it.

@@ -3,7 +3,7 @@
 #' @description A \code{list} with the CyTOF stimulation assay data.
 #'
 #' @format A list with one \code{tibble} containig CyTOF expression data.
-#'         And four \code{character vectors} for arguments in the \code{\link{stim_cell_selector}} function.
+#'         And four \code{character vectors} for arguments in the \code{\link{HDStIM}} function.
 #' \describe{
 #' \item{chi11_1k$expr_data}{A 70,000 X 36 \code{tibble}. Cells are on the rows
 #'                          and variables on the columns. The first 6 columns contain

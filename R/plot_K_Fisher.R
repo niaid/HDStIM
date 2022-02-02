@@ -6,7 +6,7 @@
 #'
 #' @return This function generates figures in the specified path folder and returns 0.
 #' @export
-#' @example
+#' @examples
 #' \dontrun{
 #' plot_K_Fisher(mapped_data, path, verbose = FALSE)
 #' }

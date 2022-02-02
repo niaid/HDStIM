@@ -6,12 +6,11 @@
 #'
 #' @return  This function generates figures in the specified path folder and returns 0.
 #' @export
-#' @example
+#' @examples
 #' \dontrun{
 #' plot_umap(mapped_data, path, verbose = FALSE)
 #' }
 plot_umap <- function(mapped_data, path, verbose = FALSE){
-
   # Check if the list contains data from UMAPSs.
   if(is.null(mapped_data$umap_plot_data)){
     stop("No UMAP data in the list.")

@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_K_Fisher.R
 \name{plot_K_Fisher}
 \alias{plot_K_Fisher}
-\title{Diagnostic plots explaining K-means clustering and Fisher's Exact test}
+\title{Diagnostic plots explaining K-means clustering and Fisher's exact test carried out by HDStIM.}
 \usage{
 plot_K_Fisher(mapped_data, path, verbose = FALSE)
 }
@@ -17,5 +17,10 @@ plot_K_Fisher(mapped_data, path, verbose = FALSE)
 This function generates figures in the specified path folder and returns 0.
 }
 \description{
-Diagnostic plots explaining K-means clustering and Fisher's Exact test
+Diagnostic plots explaining K-means clustering and Fisher's exact test carried out by HDStIM.
+}
+\examples{
+\dontrun{
+plot_K_Fisher(mapped_data, path, verbose = FALSE)
+}
 }

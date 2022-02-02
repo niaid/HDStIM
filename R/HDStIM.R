@@ -41,7 +41,7 @@ HDStIM <- function(dat, state_markers, cellpop_col, stim_lab, unstim_lab,
                    seed_val = NULL, umap = FALSE, umap_cells = NULL,
                    verbose = FALSE){
   # For debugging.
-  # library(HDStIM)
+  #library(HDStIM)
   # library(tidyverse)
   # dat <- chi11_1k$expr_data
   # state_markers <- chi11_1k$state_markers
@@ -55,8 +55,8 @@ HDStIM <- function(dat, state_markers, cellpop_col, stim_lab, unstim_lab,
 
   # mapped_data <- HDStIM(chi11_1k$expr_data, chi11_1k$state_markers,
   #                   chi11_1k$cluster_col, chi11_1k$stim_label,
-  #                   chi11_1k$unstim_label, seed_val = 123, umap = FALSE, umap_cells = NULL,
-  #                   verbose = FALSE)
+  #                   chi11_1k$unstim_label, seed_val = 123, umap = TRUE, umap_cells = 100,
+  #                   verbose = TRUE)
 
   # Check argument accuracy.
   if(umap == TRUE & is.null(umap_cells)){
