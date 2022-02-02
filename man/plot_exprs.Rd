@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_exprs.R
 \name{plot_exprs}
 \alias{plot_exprs}
-\title{Diagnostic plots showing individual marker distribution before and after mapping by HDStIM.}
+\title{Diagnostic plots showing individual marker distribution before and after mapping by HDStIM}
 \usage{
 plot_exprs(mapped_data, path, verbose = FALSE)
 }
@@ -17,5 +17,10 @@ plot_exprs(mapped_data, path, verbose = FALSE)
 This function generates plots in the specified folder and returns 0 upon successful completion.
 }
 \description{
-Diagnostic plots showing individual marker distribution before and after mapping by HDStIM.
+Diagnostic plots showing individual marker distribution before and after mapping by HDStIM
+}
+\examples{
+\dontrun{
+plot_exprs(mapped_data, path, verbose = FALSE)
+}
 }

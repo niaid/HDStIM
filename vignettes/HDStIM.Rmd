@@ -52,7 +52,7 @@ attributes(mapped_data)
 bar plots to visualize the k-means and Fisher's exact test results and data to plot the optional UMAPs. 
 
 ```{r head_expr}
-head(selected_data$response_mapping_main)
+head(mapped_data$response_mapping_main)
 ```
 
 

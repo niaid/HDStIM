@@ -1,6 +1,5 @@
-#' @title HDStIM: High Dimensional Stimulation Immune Mapping.
-#' @description Function to select cells from the stimulated samples that
-#'              have likely responded to the stimulant.
+#' @title HDStIM: High Dimensional Stimulation Immune Mapping
+#' @description Function to select cells from the stimulated samples that have likely responded to the stimulant.
 #'
 #' @param dat              A tibble with the single cell data. Cells on rows
 #'                         and variables/markers on columns.
@@ -24,8 +23,8 @@
 #' @importFrom tibble as_tibble
 #' @importFrom tidyselect all_of
 #' @importFrom broom tidy
-#' @import dplyr ggplot2
-#' @importFrom stats fisher.test kmeans median
+#' @import dplyr
+#' @importFrom stats fisher.test kmeans median p.adjust
 #' @importFrom uwot umap
 #' @importFrom parallel detectCores
 #' @export
@@ -65,6 +64,9 @@ HDStIM <- function(dat, state_markers, cellpop_col, stim_lab, unstim_lab,
 
   if(verbose == TRUE){message(paste("Mapping started on", date()))}
 
+  # Bind global variables
+  p.value <- NULL
+
   # Standardize column names and state marker labels.
   if(verbose == TRUE){message("Relacing - with _ in state marker labels and expression data column names.")}
   state_markers <- gsub("-", "_", state_markers)
@@ -97,9 +99,7 @@ HDStIM <- function(dat, state_markers, cellpop_col, stim_lab, unstim_lab,
 
   # Main nested for loop.
   for(stim in stim_lab){
-    #stim <- stim_lab[1] # For debugging.
     for(cellpop in cellpops){
-      #cellpop <- cellpops[2] # For debugging.
       # Set seed value for the k-means clustering.
       set.seed(seed_val)
       counter <- counter + 1

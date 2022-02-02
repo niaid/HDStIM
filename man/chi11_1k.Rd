@@ -3,7 +3,7 @@
 \docType{data}
 \name{chi11_1k}
 \alias{chi11_1k}
-\title{Sample Dataset for CyTOF Stimulation Assay}
+\title{Sample data set for CyTOF Stimulation Assay}
 \format{
 A list with one \code{tibble} containig CyTOF expression data.
         And four \code{character vectors} for arguments in the \code{\link{HDStIM}} function.

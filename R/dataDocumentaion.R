@@ -1,4 +1,4 @@
-#' @title Sample Dataset for CyTOF Stimulation Assay
+#' @title Sample data set for CyTOF Stimulation Assay
 #'
 #' @description A \code{list} with the CyTOF stimulation assay data.
 #'

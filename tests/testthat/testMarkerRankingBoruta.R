@@ -6,7 +6,7 @@ if(R.Version()$major == "4"){
                                         umap = FALSE)
 
     attribute_stats <- marker_ranking_boruta(mapped_data, path = NULL,
-                                             max_runs = 20, seed_val = 123,
+                                             n_cells = 5000, max_runs = 20, seed_val = 123,
                                              verbose = FALSE)
 
     expect_equal(nrow(attribute_stats), 350)

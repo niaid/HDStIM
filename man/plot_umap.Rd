@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_umap.R
 \name{plot_umap}
 \alias{plot_umap}
-\title{Diagnostic UMAP plots showing the partitioning of cells into responding and non-responding groups by HDStIM.}
+\title{Diagnostic UMAP plots showing the partitioning of cells into responding and non-responding groups by HDStIM}
 \usage{
 plot_umap(mapped_data, path, verbose = FALSE)
 }
@@ -17,7 +17,7 @@ plot_umap(mapped_data, path, verbose = FALSE)
 This function generates figures in the specified path folder and returns 0.
 }
 \description{
-Diagnostic UMAP plots showing the partitioning of cells into responding and non-responding groups by HDStIM.
+Diagnostic UMAP plots showing the partitioning of cells into responding and non-responding groups by HDStIM
 }
 \examples{
 \dontrun{

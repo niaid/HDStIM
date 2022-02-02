@@ -27,10 +27,9 @@ Imports:
     broom,
     tidyselect, 
     ggridges,
-    lme4,
-    lmtest, 
     Boruta,
-    parallel
+    parallel,
+    scales
 Suggests: 
     knitr,
     rmarkdown,

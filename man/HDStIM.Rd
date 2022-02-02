@@ -2,7 +2,7 @@
 % Please edit documentation in R/HDStIM.R
 \name{HDStIM}
 \alias{HDStIM}
-\title{HDStIM: High Dimensional Stimulation Immune Mapping.}
+\title{HDStIM: High Dimensional Stimulation Immune Mapping}
 \usage{
 HDStIM(
   dat,
@@ -47,8 +47,7 @@ A list with tibbles for expression data for the selected cells,
         parameters passed to the function.
 }
 \description{
-Function to select cells from the stimulated samples that
-             have likely responded to the stimulant.
+Function to select cells from the stimulated samples that have likely responded to the stimulant.
 }
 \examples{
 \dontrun{
