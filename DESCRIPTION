@@ -14,7 +14,7 @@ Description: The goal of this package is to identify response to a stimulant in
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 7.1.1
+RoxygenNote: 7.1.2
 URL: https://github.com/niaid/HDStIM
 BugReports: https://github.com/niaid/HDStIM/issues
 Depends: R (>= 3.5.0)

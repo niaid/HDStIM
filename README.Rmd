@@ -16,9 +16,7 @@ knitr::opts_chunk$set(
 
 
 <!-- badges: start -->
-[![Actions Status](https://github.com/niaid/stimcellselector/workflows/R-CMD-check/badge.svg)](https://github.com/niaid/stimcellselector/actions?query=workflow%3AR-CMD-check)
-[![Codecov test coverage](https://codecov.io/gh/rohitfarmer/stimcellselector/branch/master/graph/badge.svg?token=IXR3EVFLXA)](https://codecov.io/gh/rohitfarmer/stimcellselector?branch=master)
-[![](https://img.shields.io/github/languages/code-size/rohitfarmer/stimcellselector.svg)](https://github.com/niaid/stimcellselector)
+[![Actions Status](https://github.com/niaid/HDStIM/workflows/R-CMD-check/badge.svg)](https://github.com/niaid/stimcellselector/actions?query=workflow%3AR-CMD-check)
 <!-- badges: end -->
 
 The goal of this package is to identify response to a stimulant in CyTOF/Flow cytometry stimulation assays by labeling cells as responded or not based on an unsupervised high dimensional approach. Starting from the annotated cell populations either through automated clustering such as FlowSOM or traditional cell gating, the primary function `HDStIM()` follows a heuristic approach to label cells as responding or non-responding. 

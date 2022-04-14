@@ -50,7 +50,9 @@ marker_ranking_boruta <- function(mapped_data, path = NULL, n_cells = NULL, max_
     # dat <- split_data[[1]] # For debugging.
     dat <- split_data[[i]]
     if(!is.null(n_cells)){
-      dat <- dat %>% slice_sample(n = n_cells)
+      if(n_cells < nrow(dat)){
+        dat <- dat %>% dplyr::slice_sample(n = n_cells)
+      }
     }
 
     stim <- as.character(unique(dat$stim_type)[unique(dat$stim_type) %in% mapped_data$stim_label])
