@@ -1,21 +1,22 @@
-Package: stimcellselector
+Package: HDStIM
 Type: Package
-Title: Selects Stimulated Cells
+Title: HDStIM: High Dimensional Stimulation Immune Mapping.
 Version: 0.1.0
 Author: Rohit Farmer
 Maintainer: Rohit Farmer <rohit.farmer@nih.gov>
-Description: The goal of this package is to select cells from stimulated 
-             samples that have responded to the stimulant in CyTOF/Flow cytometry 
-             stimulation assays. Starting from the identified cell populations 
-             either through automated clustering such as FlowSOM or traditional 
-             cell gating, the primary function `stim_cell_selector()` follows a 
-             heuristic approach to group cells into responding and non-responding.
+Description: The goal of this package is to identify response to a stimulant in
+             CyTOF/Flow cytometry stimulation assays by labeling cells as responded
+             or not based on an unsupervised high dimensional approach. Starting from
+             the annotated cell populations either through automated clustering such
+             as FlowSOM or traditional cell gating, the primary function `HDStIM()`
+             follows a heuristic approach to label cells as responding or
+             non-responding
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.1.1
-URL: https://github.com/niaid/stimcellselector
-BugReports: https://github.com/niaid/stimcellselector/issues
+URL: https://github.com/niaid/HDStIM
+BugReports: https://github.com/niaid/HDStIM/issues
 Depends: R (>= 3.5.0)
 Imports: 
     tibble,
@@ -26,10 +27,9 @@ Imports:
     broom,
     tidyselect, 
     ggridges,
-    lme4,
-    lmtest, 
     Boruta,
-    parallel
+    parallel,
+    scales
 Suggests: 
     knitr,
     rmarkdown,
