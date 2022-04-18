@@ -35,7 +35,6 @@ function.
 library(HDStIM)
 suppressMessages(library(dplyr))
 suppressMessages(library(tibble))
-suppressMessages(library(ggplot2))
 
 mapped_data <-  HDStIM(chi11_1k$expr_data, chi11_1k$state_markers,
                   chi11_1k$cluster_col, chi11_1k$stim_label,
