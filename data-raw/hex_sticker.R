@@ -17,12 +17,12 @@ state_marker <- "pSTAT3"
 one_marker <- one_group[state_marker]
 
 p <- ggplot(one_marker, aes(x = !!ensym(state_marker))) +
-  geom_density(color="#0F3B13", fill="#486144")
+  geom_density(color="#FDDA0D", fill="#FFFF8F")
 p <- p + theme_void() + theme_transparent()
 
 s <- sticker(p, package="HDStIM", p_size=20.5, p_family = font, p_x = 1, p_y = 1.45,
              s_x=1, s_y=.8, s_width=1, s_height=0.9,
-             h_fill="#E47833", h_color="#f39c12", h_size = 1, dpi = 300,
+             h_fill="#6B6966", h_color="#010203", h_size = 1, dpi = 300,
              filename=file.path("man","figures","sticker.png"))
 
 # https://www.december.com/html/spec/color1.html
