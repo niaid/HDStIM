@@ -1,15 +1,12 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# HDStIM <a href='https://github.com/niaid/HDStIM'><img src='man/figures/sticker.png' align="right" height="200" /></a>
+# HDStIM <a href='https://github.com/niaid/HDStIM'><img src='man/figures/sticker.png' align="right" height = 200/></a>
 
 <!-- badges: start -->
 
 [![Actions
-Status](https://github.com/niaid/stimcellselector/workflows/R-CMD-check/badge.svg)](https://github.com/niaid/stimcellselector/actions?query=workflow%3AR-CMD-check)
-[![Codecov test
-coverage](https://codecov.io/gh/rohitfarmer/stimcellselector/branch/master/graph/badge.svg?token=IXR3EVFLXA)](https://codecov.io/gh/rohitfarmer/stimcellselector?branch=master)
-[![](https://img.shields.io/github/languages/code-size/rohitfarmer/stimcellselector.svg)](https://github.com/niaid/stimcellselector)
+Status](https://github.com/niaid/HDStIM/workflows/R-CMD-check/badge.svg)](https://github.com/niaid/stimcellselector/actions?query=workflow%3AR-CMD-check)
 <!-- badges: end -->
 
 The goal of this package is to identify response to a stimulant in
