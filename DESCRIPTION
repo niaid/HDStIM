@@ -1,6 +1,6 @@
 Package: HDStIM
 Type: Package
-Title: HDStIM: High Dimensional Stimulation Immune Mapping.
+Title: HDStIM: High Dimensional Stimulation Immune Mapping
 Version: 0.1.0
 Author: Rohit Farmer
 Maintainer: Rohit Farmer <rohit.farmer@nih.gov>
@@ -10,10 +10,11 @@ Description: The goal of this package is to identify response to a stimulant in
              the annotated cell populations either through automated clustering such
              as FlowSOM or traditional cell gating, the primary function `HDStIM()`
              follows a heuristic approach to label cells as responding or
-             non-responding
+             non-responding.
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
+LazyDataCompression: bzip2
 RoxygenNote: 7.1.2
 URL: https://github.com/niaid/HDStIM,
     https://niaid.github.io/HDStIM/
