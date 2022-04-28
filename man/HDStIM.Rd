@@ -51,9 +51,9 @@ Function to select cells from the stimulated samples that have likely responded 
 }
 \examples{
 \dontrun{
-mapped_data <- HDStIM(chi11_1k$expr_data, chi11_1k$state_markers,
-                  chi11_1k$cluster_col, chi11_1k$stim_label,
-                  chi11_1k$unstim_label, seed_val = 123, umap = FALSE, umap_cells = NULL,
+mapped_data <- HDStIM(chi11$expr_data, chi11$state_markers,
+                  chi11$cluster_col, chi11$stim_label,
+                  chi11$unstim_label, seed_val = 123, umap = FALSE, umap_cells = NULL,
                   verbose = FALSE)
 }
 }

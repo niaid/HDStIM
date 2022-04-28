@@ -1,9 +1,23 @@
 Package: HDStIM
 Type: Package
-Title: HDStIM: High Dimensional Stimulation Immune Mapping
+Title: High Dimensional Stimulation Immune Mapping (HDStIM)
 Version: 0.1.0
-Author: Rohit Farmer
-Maintainer: Rohit Farmer <rohit.farmer@nih.gov>
+Authors@R: 
+    c(person(given = "Rohit",
+             family = "Farmer",
+             role = c("aut", "cre"),
+             email = "rohit.farmer@gmail.com",
+             comment = c(ORCID = "0000-0003-4197-3047")),
+      person(given = "Richard",
+             family = "Apps",
+             role = "aut",
+             email = "richard.apps@nih.gov",
+             comment = c(ORCID = "0000-0001-5140-0141")),
+      person(given = "John",
+             family = "Tsang",
+             role = "pdr",
+             email = "john.tsang@nih.gov",
+             comment = c(ORCID = "0000-0003-3186-3047")))
 Description: The goal of this package is to identify response to a stimulant in
              CyTOF/Flow cytometry stimulation assays by labeling cells as responded
              or not based on an unsupervised high dimensional approach. Starting from
@@ -11,10 +25,10 @@ Description: The goal of this package is to identify response to a stimulant in
              as FlowSOM or traditional cell gating, the primary function `HDStIM()`
              follows a heuristic approach to label cells as responding or
              non-responding.
-License: GPL-3
+License: BSD_3_clause + file LICENSE | file LICENSE
 Encoding: UTF-8
 LazyData: true
-LazyDataCompression: bzip2
+LazyDataCompression: xz
 RoxygenNote: 7.1.2
 URL: https://github.com/niaid/HDStIM,
     https://niaid.github.io/HDStIM/
@@ -30,11 +44,10 @@ Imports:
     tidyselect, 
     ggridges,
     Boruta,
-    parallel,
     scales
 Suggests: 
     knitr,
     rmarkdown,
-    testthat,
-    covr
-VignetteBuilder: knitr
+    testthat
+VignetteBuilder: knitr, rmarkdown
+Language: en-US

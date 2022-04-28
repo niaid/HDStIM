@@ -11,3 +11,5 @@
 ^pkgdown$
 ^\.github/workflows$
 ^\.github$
+^comments\.md$
+

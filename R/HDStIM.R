@@ -31,9 +31,9 @@
 #'
 #' @examples
 #' \dontrun{
-#' mapped_data <- HDStIM(chi11_1k$expr_data, chi11_1k$state_markers,
-#'                   chi11_1k$cluster_col, chi11_1k$stim_label,
-#'                   chi11_1k$unstim_label, seed_val = 123, umap = FALSE, umap_cells = NULL,
+#' mapped_data <- HDStIM(chi11$expr_data, chi11$state_markers,
+#'                   chi11$cluster_col, chi11$stim_label,
+#'                   chi11$unstim_label, seed_val = 123, umap = FALSE, umap_cells = NULL,
 #'                   verbose = FALSE)
 #'}
 HDStIM <- function(dat, state_markers, cellpop_col, stim_lab, unstim_lab,
@@ -42,20 +42,15 @@ HDStIM <- function(dat, state_markers, cellpop_col, stim_lab, unstim_lab,
   # For debugging.
   #library(HDStIM)
   # library(tidyverse)
-  # dat <- chi11_1k$expr_data
-  # state_markers <- chi11_1k$state_markers
-  # cellpop_col <- chi11_1k$cluster_col
-  # stim_lab <- chi11_1k$stim_label
-  # unstim_lab <- chi11_1k$unstim_label
+  # dat <- chi11$expr_data
+  # state_markers <- chi11$state_markers
+  # cellpop_col <- chi11$cluster_col
+  # stim_lab <- chi11$stim_label
+  # unstim_lab <- chi11$unstim_label
   # seed_val <- 123
   # umap <- TRUE
   # umap_cells <- 50
   # verbose <- TRUE
-
-  # mapped_data <- HDStIM(chi11_1k$expr_data, chi11_1k$state_markers,
-  #                   chi11_1k$cluster_col, chi11_1k$stim_label,
-  #                   chi11_1k$unstim_label, seed_val = 123, umap = TRUE, umap_cells = 100,
-  #                   verbose = TRUE)
 
   # Check argument accuracy.
   if(umap == TRUE & is.null(umap_cells)){

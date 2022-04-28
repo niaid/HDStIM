@@ -1,15 +1,15 @@
 if(R.Version()$major == "4"){
   test_that("Test Boruta output.",{
-    mapped_data <- HDStIM(chi11_1k$expr_data, chi11_1k$state_markers,
-                                        chi11_1k$cluster_col, chi11_1k$stim_label,
-                                        chi11_1k$unstim_label, seed_val = 123,
+    mapped_data <- HDStIM(chi11$expr_data, chi11$state_markers,
+                                        chi11$cluster_col, chi11$stim_label,
+                                        chi11$unstim_label, seed_val = 123,
                                         umap = FALSE)
 
     attribute_stats <- marker_ranking_boruta(mapped_data, path = NULL,
-                                             n_cells = 5000, max_runs = 20, seed_val = 123,
+                                             n_cells = 1000, max_runs = 20, seed_val = 123,
                                              verbose = FALSE)
 
-    expect_equal(nrow(attribute_stats), 350)
+    expect_equal(nrow(attribute_stats), 100)
 
   })
 }
