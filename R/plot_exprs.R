@@ -8,13 +8,13 @@
 #' @importFrom dplyr select filter
 #' @import ggplot2
 #' @importFrom ggridges geom_density_ridges
-#' @return This function generates plots in the specified folder and returns 0 upon successful completion.
+#' @return               A list of ggplot objects. If the path is not NULL, PNG files of the plots are saved in the specified folder.
 #' @export
 #' @examples
 #' \dontrun{
-#' plot_exprs(mapped_data, path, verbose = FALSE)
+#' plot_exprs(mapped_data, path = NULL, verbose = FALSE)
 #' }
-plot_exprs <- function(mapped_data, path, verbose = FALSE){
+plot_exprs <- function(mapped_data, path = NULL, verbose = FALSE){
   # Check if path exists; if not then create it.
   if(!is.null(path)){
     if(!dir.exists(path)){
@@ -73,6 +73,7 @@ plot_exprs <- function(mapped_data, path, verbose = FALSE){
   comb_f_sig <- mapped_data$all_fisher_p_val %>%
     dplyr::filter(p.value < 0.05)
 
+  allplots <- list()
   for(i in 1:nrow(comb_f_sig)){
     # Plot KDE of original (pre-k-means clustering) distribution overlaid
     # by the KDE of the k-mapped distribution.
@@ -97,19 +98,13 @@ plot_exprs <- function(mapped_data, path, verbose = FALSE){
            fill = "Distribution")
 
     kde_plot <- p + facet_wrap( ~ state_marker, nrow = n_row, ncol = n_col)
-      #theme(plot.title = element_text(face = "bold"))
-    # theme(axis.text.x = element_text( size = 20 ),
-      #       axis.text.y = element_text( size = 20 ),
-      #       axis.title = element_text( size = 20 ),
-      #       strip.text = element_text(size = 20),
-      #       legend.text = element_text(size = 20),
-      #       legend.title = element_text(size = 20),
-      #       plot.title = element_text(size=22, face = "bold"))
+
+    allplots[[i]] <- kde_plot
     if(!is.null(path)){
       ggsave(paste0("exprs_", cl, "_", st, ".png"), plot = kde_plot, device = "png",
            path = path, width = n_col * 4, height = n_row * 3, dpi = 300)
     }
   }
 
-  return(0)
+  return(allplots)
 }

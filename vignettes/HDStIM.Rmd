@@ -16,97 +16,107 @@ knitr::opts_chunk$set(
 )
 ```
 
-The primary function `HDStIM()` in `HDStIM` package follows a heuristic approach to group cells into responding and non-responding. For a combination of cell population and stimulation type (e.g., CD127+ T-helper cells and interferon-alpha), `HDStIM()` starts by performing k-means clustering on the combined set of cells from stimulated and unstimulated samples. K-means clustering is performed on expression data of all the state markers combined. Upon clustering using a contingency table as drawn below, a Fisher's exact test determines the effect size and the statistical significance of partitioning. Cells form the combinations that pass the Fisher's exact test are considered as responding. An optional UMAP plot can also be generated to verify the cell partitioning in responding and non-responding groups visually.
+The primary function `HDStIM()` in the `HDStIM` package follows a heuristic approach to group cells into responding and non-responding. For a combination of cell population and stimulation type (e.g., CD127+ T-helper cells and interferon-alpha), `HDStIM()` starts by performing K-means clustering on the combined set of cells from stimulated and unstimulated samples. K-means clustering is performed on combined expression data of all the state (signaling/intracellular) markers. Upon clustering using a contingency table as shown below, a Fisher's exact test determines the effect size and the statistical significance of partitioning. Cells from the combinations that pass the Fisher's exact test (p-value < 0.05) are considered responding. An optional UMAP can also be calculated to visually verify the cell partitioning in responding and non-responding groups by using auxiliary plotting scripts provided in the package.
 
+In addition to an auxiliary script to plot UMAPs, the package also comes with two other plotting scripts for K-means clustering and Fisher’s exact test and state marker density before and after mapping.
+
+**An example of the contingency table used for Fisher's exact test.**
 ```{r con_table}
 matrix(c(60, 40, 20, 80),nrow = 2, ncol = 2, 
        dimnames = list(c("Cluster1", "Cluster2"), c("Stim", "Unstim")))
 ```
 
-An optional UMAP plot can also be generated to verify the cell partitioning in responding and non-responding groups visually.
+# To Run The Main HDStIM Function
 
-## Example
+As stated above, `HDStIM()` is the primary function of the `HDStIM` package. We will use the example data set  `chi11` (from mass cytometry) included in the package.
 
-An example using the sample CyTOF data set `chi11` included in the package. 
-`suppressMessages()` is used to reduce the verbosity of the `HDStIM`
-function.
+*Note:`chi11` is a minimal dataset included for unit testing only. Therefore, it does not represent a typical mass/flow cytometry assay.*
 
 ```{r example}
 library(HDStIM)
-suppressMessages(library(dplyr))
-suppressMessages(library(tibble))
 
 mapped_data <-  HDStIM(chi11$expr_data, chi11$state_markers,
-                  chi11$cluster_col, chi11$stim_label,
-                  chi11$unstim_label, seed_val = 123, umap = TRUE, umap_cells = 500, verbose = FALSE)
+                       chi11$cluster_col, chi11$stim_label,
+                       chi11$unstim_label, seed_val = 123, 
+                       umap = TRUE, umap_cells = 500, 
+                       verbose = FALSE)
 
 class(mapped_data)
 
 attributes(mapped_data)
 ```
 
-### Output
+## Output
 
-`HDStIM()` returns a list with the mapped expression data, data to plot stacked 
-bar plots to visualize the k-means and Fisher's exact test results and data to plot the optional UMAPs. 
+`HDStIM()` returns a list with the mapped expression data, data to plot stacked bar plots to visualize the K-means and Fisher's exact test results, and data to plot the optional UMAPs. The list also includes tables containing statistical information from K-means and Fisher's exact test and other information passed as the function attributes.
 
 ```{r head_expr}
 head(mapped_data$response_mapping_main)
 ```
 
-
 ```{r head_stacked}
 head(mapped_data$stacked_bar_plot_data)
 ```
+
 ```{r head_umap}
 head(mapped_data$umap_plot_data)
 ```
 
-### Figures
-
-#### Plots Explaining k-means Clustering, Fisher's Exact Test, and Fold Change
-Using the `stacked_bar_plot_data`, bar plots can be plotted that shows for a given
-cluster and stimulation type the percentage of cells from the
-stimulated and unstimulated samples that are clustered in the two k-means clusters.
-`stacked_bar_plot_data` is returned for those combinations that pass the Fisher's
-exact test after the k-means clustering. For each combination plot data also contains 
-p-value for the Fisher's exact test and the fold change of the cells from the stimulated
-samples that responded.
-
-You can either use the function `plot_K_Fisher` provided in the package to plot for all the
-combinations of cluster and stimulation types in a specified folder like below
-
-```r
-plot_K_Fisher(mapped_data, path, verbose = FALSE)
+```{r head_all_F}
+head(mapped_data$all_fisher_p_val)
 ```
-or use the backend code below to plot only for the combinations of interest or with custom
-aesthetics. The code below only plots the first combination.
 
-#### UMAP Plots to Visually Inspect Responding and Non-Responding Cell Selection
-Note: You can only generate these plot if you have asked UMAPs to be calcualted in 
-the `HDStIM()` function.
-
-UMAP plots can be useful for visually inspecting how well selection method has 
-separated responding and non-responding cells for a cluster and stimulation type
-combination. The plots below shows all the cells from the unstimulated samples that fell in the
-unstim cluster and responding and non-responding cells from the stimulated 
-samples that fell in the stim and unstim clusters respectively. 
-
-You can either use the function `plot_umap` provided in the package to plot for all the
-combinations of cluster and stimulation types in a specified folder like below
-
-```r
-plot_umap(mapped_data, path, verbose = FALSE)
+```{r head_all_K}
+head(mapped_data$all_k_means_data)
 ```
-or use the backend code below to plot only for the combinations of interest or with custom
-aesthetics. The code below plots a UMAP for first combination using the output above.
 
-#### Distribution plots for Individual State Marker before and after Selection
-You can either use the function `plot_exprs` provided in the package to plot for all the
-combinations of cluster and stimulation types in a specified folder like below
+# To Plot Diagnostic Figures
 
-```r
-plot_exprs(original_data, mapped_data, path,verbose = FALSE)
+## Plots Explaining K-means Clustering And Fisher's Exact Test
+
+Using the `stacked_bar_plot_data`, `plot_K_Fisher()` generates bar plots showing the percentage of cells from the stimulated and unstimulated samples clustered in the two K-means clusters a given cell population and stimulation type. 
+
+`plot_K_Fisher()` returns a list of ggplot objects. If the path is specified, it can also render and save the plots in PNG format.
+
+```{r k_plots, fig.width = 4, fig.align = "center", dpi = 150}
+k_plots <- plot_K_Fisher(mapped_data, path = NULL, verbose = FALSE)
+k_plots[[1]]
 ```
-or use the backend code below to plot only for the combinations of interest or with custom
-aesthetics. The code below plots a distribution plot for the first combination using the output above.
+
+## UMAP Plots To Visually Inspect Responding and Non-Responding Cell Mapping
+
+*Note: You can only generate these plots if you have asked UMAPs to be calculated in 
+the `HDStIM()` function.*
+
+UMAP plots can be helpful for visually inspecting how well `HDStIM()` has mapped responding vs. non-responding cells for a cell population and stimulation type. `plot_umap()` also returns a list of ggplot objects and if the path is specified, it will render and save the plots in PNG format. 
+
+```{r u_plots, fig.width = 4, fig.align = "center", dpi = 150}
+u_plots <- plot_umap(mapped_data, path = NULL, verbose = FALSE)
+u_plots[[1]]
+```
+
+## Distribution Plots for Individual State Marker before And After Mapping
+
+For each state/signaling markers distribution plots shows the kernel density estimation of the pre `HDStIM()` data from both stimulated and unstimulated samples along with the density from cells from stimulated samples mapped as responding. `plot_exprs()` also returns a list of ggplot objects and if the path is specified, it will render and save the plots in PNG format. 
+
+```{r e_plots, fig.width = 7, fig.height = 5, fig.align = "center"}
+e_plots <- plot_exprs(mapped_data, path = NULL,verbose = FALSE)
+library(ggplot2)
+e_plots[[1]] +
+    theme(text = element_text(size = 11))
+```
+
+# To Rank State/Signaling Markers According To Their Contribution To The Response
+
+`marker_ranking_boruta()` function runs Boruta on the stimulation - cell population combinations that passed the Fisher's exact test to rank the markers according to their contribution to the response. The function returns a list with a tibble containing attribute statistics calculated by Boruta and ggplot objects. If the path is not NULL, plots are also rendered and saved in the specified folder in PNG format. 
+
+```{r m_ranks, fig.width = 7, fig.height = 6, fig.align = "center"}
+m_ranks <- marker_ranking_boruta(mapped_data, path = NULL, n_cells = NULL,
+                                 max_runs = 100, seed_val = 123,
+                                 verbose = FALSE)
+
+head(m_ranks$attribute_stats)
+
+m_ranks$plots[[1]]
+```
+

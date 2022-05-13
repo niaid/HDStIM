@@ -27,9 +27,7 @@ marker_ranking_boruta(
 \item{verbose}{0, 1, or 2. Default is 0.}
 }
 \value{
-This function generates figures in the specified path folder
-                        and returns a tibble with attributes statistics calculated
-                        by Boruta.
+A list with a tibble containing attribute statistics calculated by Boruta and ggplot objects. If the path is not NULL, plots are also rendered and saved in the specified folder in PNG format.
 }
 \description{
 Function to run Boruta on the stimulation - cell population combinations that passed the Fisher's exact test to rank the markers according to their contribution to the response.

@@ -6,9 +6,7 @@
 #' @param max_runs         Maximum number of runs for the random forest algorithm. Default is 100.
 #' @param seed_val         Seed value for Boruta. Default is 123.
 #' @param verbose          0, 1, or 2. Default is 0.
-#' @return                 This function generates figures in the specified path folder
-#'                         and returns a tibble with attributes statistics calculated
-#'                         by Boruta.
+#' @return                 A list with a tibble containing attribute statistics calculated by Boruta and ggplot objects. If the path is not NULL, plots are also rendered and saved in the specified folder in PNG format.
 #' @import Boruta ggplot2
 #' @importFrom tibble as_tibble
 #' @importFrom dplyr slice_sample
@@ -46,6 +44,7 @@ marker_ranking_boruta <- function(mapped_data, path = NULL, n_cells = NULL, max_
 
   df_stats_out <- data.frame()
 
+  allplots <- list()
   for(i in 1:length(split_data)){
     # dat <- split_data[[1]] # For debugging.
     dat <- split_data[[i]]
@@ -82,11 +81,14 @@ marker_ranking_boruta <- function(mapped_data, path = NULL, n_cells = NULL, max_
       theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
       scale_colour_manual(values = my_cols)
 
+    allplots[[i]] <- att_plot
+
     if(!is.null(path)){
       att_file <- paste0("imp_", stim, "_", clust, ".png")
       ggsave(att_file, plot = att_plot, path = path,
              device = "png", dpi = 300, width = 7, height = 6, units = "in")
     }
   }
-  return(as_tibble(df_stats_out))
+  return(list("attribute_stats" = as_tibble(df_stats_out),
+         "plots" = allplots))
 }

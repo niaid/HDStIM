@@ -4,7 +4,7 @@
 \alias{plot_exprs}
 \title{Diagnostic plots showing individual marker distribution before and after mapping by HDStIM}
 \usage{
-plot_exprs(mapped_data, path, verbose = FALSE)
+plot_exprs(mapped_data, path = NULL, verbose = FALSE)
 }
 \arguments{
 \item{mapped_data}{List output of the \code{\link{HDStIM}} function.}
@@ -14,13 +14,13 @@ plot_exprs(mapped_data, path, verbose = FALSE)
 \item{verbose}{Logical. To make function more verbose. Default is FALSE.}
 }
 \value{
-This function generates plots in the specified folder and returns 0 upon successful completion.
+A list of ggplot objects. If the path is not NULL, PNG files of the plots are saved in the specified folder.
 }
 \description{
 Diagnostic plots showing individual marker distribution before and after mapping by HDStIM
 }
 \examples{
 \dontrun{
-plot_exprs(mapped_data, path, verbose = FALSE)
+plot_exprs(mapped_data, path = NULL, verbose = FALSE)
 }
 }

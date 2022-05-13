@@ -4,7 +4,7 @@
 \alias{plot_umap}
 \title{Diagnostic UMAP plots showing the partitioning of cells into responding and non-responding groups by HDStIM}
 \usage{
-plot_umap(mapped_data, path, verbose = FALSE)
+plot_umap(mapped_data, path = NULL, verbose = FALSE)
 }
 \arguments{
 \item{mapped_data}{Returned list from the \code{\link{HDStIM}} function.}
@@ -14,13 +14,13 @@ plot_umap(mapped_data, path, verbose = FALSE)
 \item{verbose}{Logical. To make function more verbose. Default is FALSE.}
 }
 \value{
-This function generates figures in the specified path folder and returns 0.
+A list of ggplot objects. If the path is not NULL, PNG files of the plots are saved in the specified folder.
 }
 \description{
 Diagnostic UMAP plots showing the partitioning of cells into responding and non-responding groups by HDStIM
 }
 \examples{
 \dontrun{
-plot_umap(mapped_data, path, verbose = FALSE)
+plot_umap(mapped_data, path = NULL, verbose = FALSE)
 }
 }
