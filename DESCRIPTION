@@ -18,8 +18,8 @@ Authors@R:
              role = c("aut","pdr"),
              email = "john.tsang@nih.gov",
              comment = c(ORCID = "0000-0003-3186-3047")))
-Description: A high dimensional and end-to-end unsupervised method for identifying responses to a stimulant in mass or flow cytometry stimulation assay. Starting from the annotated cell populations either through automated clustering or traditional gating for a combined set of stimulated and unstimulated samples, HDStIM() labels cells as responding or non-responding. Besides cell labeling, the package also provides auxiliary functions to rank signaling markers based on their contribution to identifying responses and plot diagnostic plots.
-License: BSD_3_clause + file LICENSE | file LICENSE
+Description: A method for identifying responses to experimental stimulation in mass or flow cytometry that uses high dimensional analysis of measured parameters and can be performed with an end-to-end unsupervised approach. In the context of in vitro stimulation assays where high-parameter cytometry was used to monitor intracellular response markers, using cell populations annotated either through automated clustering or manual gating for a combined set of stimulated and unstimulated samples, HDStIM labels cells as responding or non-responding. The package also provides auxiliary functions to rank intracellular markers based on their contribution to identifying responses and generating diagnostic plots.
+License: CC0 | file LICENSE
 Encoding: UTF-8
 LazyData: true
 LazyDataCompression: xz
