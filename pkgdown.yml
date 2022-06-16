@@ -3,7 +3,7 @@ pkgdown: 2.0.4
 pkgdown_sha: ~
 articles:
   HDStIM: HDStIM.html
-last_built: 2022-06-14T18:49Z
+last_built: 2022-06-16T14:40Z
 urls:
   reference: https://niaid.github.io/HDStIM/reference
   article: https://niaid.github.io/HDStIM/articles
