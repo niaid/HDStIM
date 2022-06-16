@@ -26,3 +26,13 @@ If the option to update Roxygen2 documentation is enabled in Rstudio settings th
 If changes are made to README.Rmd or vignettes, build pkgdown website before pushing the code to GitHub.
 
 `pkgdown::build_site_github_pages()`
+
+## Win Builder 
+```
+devtools::check_win_release()
+```
+
+# Submit to CRAN
+```
+devtools::submit_cran()
+```
