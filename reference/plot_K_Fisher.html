@@ -77,9 +77,12 @@
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in"><span class="fu">plot_K_Fisher</span><span class="op">(</span><span class="va">mapped_data</span>, path <span class="op">=</span> <span class="cn">NULL</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">}</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">mapped_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="HDStIM.html">HDStIM</a></span><span class="op">(</span><span class="va">chi11</span><span class="op">$</span><span class="va">expr_data</span>, <span class="va">chi11</span><span class="op">$</span><span class="va">state_markers</span>,</span>
+<span class="r-in">                  <span class="va">chi11</span><span class="op">$</span><span class="va">cluster_col</span>, <span class="va">chi11</span><span class="op">$</span><span class="va">stim_label</span>,</span>
+<span class="r-in">                  <span class="va">chi11</span><span class="op">$</span><span class="va">unstim_label</span>, seed_val <span class="op">=</span> <span class="fl">123</span>, umap <span class="op">=</span> <span class="cn">FALSE</span>, umap_cells <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span class="r-in">                  verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span class="r-in"></span>
+<span class="r-in"><span class="va">pk</span> <span class="op">&lt;-</span> <span class="fu">plot_K_Fisher</span><span class="op">(</span><span class="va">mapped_data</span>, path <span class="op">=</span> <span class="cn">NULL</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
@@ -91,7 +94,7 @@
 </div>
 
 <div class="pkgdown-footer-right">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
     </footer></div>
