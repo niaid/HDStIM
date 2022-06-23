@@ -30,12 +30,10 @@
 #' @export
 #'
 #' @examples
-#' \dontrun{
 #' mapped_data <- HDStIM(chi11$expr_data, chi11$state_markers,
 #'                   chi11$cluster_col, chi11$stim_label,
 #'                   chi11$unstim_label, seed_val = 123, umap = FALSE, umap_cells = NULL,
 #'                   verbose = FALSE)
-#'}
 HDStIM <- function(dat, state_markers, cellpop_col, stim_lab, unstim_lab,
                    seed_val = NULL, umap = FALSE, umap_cells = NULL,
                    verbose = FALSE){

@@ -7,8 +7,13 @@
 #' @return                 A list of ggplot objects. If the path is not NULL, PNG files of the plots are saved in the specified folder.
 #' @export
 #' @examples
-#' \dontrun{
-#' plot_umap(mapped_data, path = NULL, verbose = FALSE)
+#' \donttest{
+#' mapped_data <- HDStIM(chi11$expr_data, chi11$state_markers,
+#'                       chi11$cluster_col, chi11$stim_label,
+#'                       chi11$unstim_label, seed_val = 123, umap = TRUE, 
+#'                       umap_cells = 50, verbose = FALSE)
+#'
+#' pu <- plot_umap(mapped_data, path = NULL, verbose = FALSE)
 #' }
 plot_umap <- function(mapped_data, path = NULL, verbose = FALSE){
   # Check if the list contains data from UMAPSs.

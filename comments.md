@@ -31,7 +31,11 @@ If changes are made to README.Rmd or vignettes, build pkgdown website before pus
 ```
 devtools::check_win_release()
 ```
-
+## Check as CRAN
+```
+devtools::check(args = c('--as-cran'))
+devtools::check(args = c('--as-cran'), env_vars = c(NOT_CRAN = "true", "_R_CHECK_LIMIT_CORES_" = TRUE))
+```
 # Submit to CRAN
 ```
 devtools::submit_cran()

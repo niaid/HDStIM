@@ -50,10 +50,8 @@ A list with tibbles for expression data for the selected cells,
 Function to select cells from the stimulated samples that have likely responded to the stimulant.
 }
 \examples{
-\dontrun{
 mapped_data <- HDStIM(chi11$expr_data, chi11$state_markers,
                   chi11$cluster_col, chi11$stim_label,
                   chi11$unstim_label, seed_val = 123, umap = FALSE, umap_cells = NULL,
                   verbose = FALSE)
-}
 }

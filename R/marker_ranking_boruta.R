@@ -16,19 +16,24 @@
 #' @export
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
+#' mapped_data <- HDStIM(chi11$expr_data, chi11$state_markers,
+#'                       chi11$cluster_col, chi11$stim_label,
+#'                       chi11$unstim_label, seed_val = 123, umap = FALSE, umap_cells = NULL,
+#'                       verbose = FALSE)
+#'
 #' attribute_stats <- marker_ranking_boruta(mapped_data, path = NULL, n_cells = NULL,
 #'                                         max_runs = 1000, seed_val = 123,
-#'                                         verbose = FALSE)
+#'                                         verbose = 0)
 #' }
 marker_ranking_boruta <- function(mapped_data, path = NULL, n_cells = NULL, max_runs = 100, seed_val = 123, verbose = 0){
   # Check if path exists; if not then create it.
   if(!is.null(path)){
     if(!dir.exists(path)){
-      if(verbose){message(paste("Creating %s folder", path))}
+      if(verbose > 0){message(paste("Creating %s folder", path))}
       dir.create(path, recursive = TRUE)
     } else {
-      if(verbose){message(paste(path, "folder already exists. Output will be over written."))}
+      if(verbose > 0){message(paste(path, "folder already exists. Output will be over written."))}
     }
   }
 

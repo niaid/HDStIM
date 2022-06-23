@@ -1,6 +1,6 @@
 Package: HDStIM
 Type: Package
-Title: High Dimensional Stimulation Immune Mapping (HDStIM)
+Title: High Dimensional Stimulation Immune Mapping ('HDStIM')
 Version: 0.1.0
 Authors@R: 
     c(person(given = "Rohit",
@@ -18,7 +18,7 @@ Authors@R:
              role = c("aut","pdr"),
              email = "john.tsang@nih.gov",
              comment = c(ORCID = "0000-0003-3186-3047")))
-Description: A method for identifying responses to experimental stimulation in mass or flow cytometry that uses high dimensional analysis of measured parameters and can be performed with an end-to-end unsupervised approach. In the context of in vitro stimulation assays where high-parameter cytometry was used to monitor intracellular response markers, using cell populations annotated either through automated clustering or manual gating for a combined set of stimulated and unstimulated samples, HDStIM labels cells as responding or non-responding. The package also provides auxiliary functions to rank intracellular markers based on their contribution to identifying responses and generating diagnostic plots.
+Description: A method for identifying responses to experimental stimulation in mass or flow cytometry that uses high dimensional analysis of measured parameters and can be performed with an end-to-end unsupervised approach. In the context of in vitro stimulation assays where high-parameter cytometry was used to monitor intracellular response markers, using cell populations annotated either through automated clustering or manual gating for a combined set of stimulated and unstimulated samples, 'HDStIM' labels cells as responding or non-responding. The package also provides auxiliary functions to rank intracellular markers based on their contribution to identifying responses and generating diagnostic plots.
 License: CC0 | file LICENSE
 Encoding: UTF-8
 LazyData: true
