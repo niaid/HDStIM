@@ -55,6 +55,7 @@ marker_ranking_boruta <- function(mapped_data, path = NULL, n_cells = NULL, max_
     dat <- split_data[[i]]
     if(!is.null(n_cells)){
       if(n_cells < nrow(dat)){
+        set.seed(seed_val)
         dat <- dat %>% dplyr::slice_sample(n = n_cells)
       }
     }

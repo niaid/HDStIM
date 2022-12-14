@@ -1,7 +1,7 @@
 Package: HDStIM
 Type: Package
 Title: High Dimensional Stimulation Immune Mapping ('HDStIM')
-Version: 0.1.0
+Version: 0.1.1
 Authors@R: 
     c(person(given = "Rohit",
              family = "Farmer",
@@ -23,7 +23,7 @@ License: CC0 | file LICENSE
 Encoding: UTF-8
 LazyData: true
 LazyDataCompression: xz
-RoxygenNote: 7.1.2
+RoxygenNote: 7.2.2
 URL: https://github.com/niaid/HDStIM,
     https://niaid.github.io/HDStIM/
 BugReports: https://github.com/niaid/HDStIM/issues
