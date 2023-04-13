@@ -23,7 +23,7 @@ License: CC0 | file LICENSE
 Encoding: UTF-8
 LazyData: true
 LazyDataCompression: xz
-RoxygenNote: 7.2.2
+RoxygenNote: 7.2.3
 URL: https://github.com/niaid/HDStIM,
     https://niaid.github.io/HDStIM/
 BugReports: https://github.com/niaid/HDStIM/issues

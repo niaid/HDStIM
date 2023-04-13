@@ -10,6 +10,7 @@ HDStIM(
   cellpop_col,
   stim_lab,
   unstim_lab,
+  p_value = 0.05,
   seed_val = NULL,
   umap = FALSE,
   umap_cells = NULL,
@@ -28,6 +29,8 @@ markers from the stimulation panel.}
 \item{stim_lab}{A character vector of stim label(s).}
 
 \item{unstim_lab}{A character of unstim label(s).}
+
+\item{p_value}{The P-value for Fisher's exact test. Default is 0.05.}
 
 \item{seed_val}{Seed value (integer) for \code{\link{kmeans}} clustering.
 Default is NULL for no seed value.}

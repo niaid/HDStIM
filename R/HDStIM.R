@@ -8,6 +8,7 @@
 #' @param cellpop_col      Column in the tibble with the cell population IDs.
 #' @param stim_lab         A character vector of stim label(s).
 #' @param unstim_lab       A character of unstim label(s).
+#' @param p_value          The P-value for Fisher's exact test. Default is 0.05.
 #' @param seed_val         Seed value (integer) for \code{\link{kmeans}} clustering.
 #'                         Default is NULL for no seed value.
 #' @param umap             Boolean (T/F) to carry out UMAP on the selected cells.
@@ -35,7 +36,7 @@
 #'                   chi11$unstim_label, seed_val = 123, umap = FALSE, umap_cells = NULL,
 #'                   verbose = FALSE)
 HDStIM <- function(dat, state_markers, cellpop_col, stim_lab, unstim_lab,
-                   seed_val = NULL, umap = FALSE, umap_cells = NULL,
+                   p_value = 0.05, seed_val = NULL, umap = FALSE, umap_cells = NULL,
                    verbose = FALSE){
   # For debugging.
   #library(HDStIM)
@@ -159,7 +160,7 @@ HDStIM <- function(dat, state_markers, cellpop_col, stim_lab, unstim_lab,
                                                 f_stats))
 
       # Select cells and save data only for the combinations that pass the Fisher's exact test.
-      if(f_p_val < 0.05){
+      if(f_p_val < p_value){
         if(verbose == TRUE){message("Fisher's exact test significant.")}
 
         # Identify responding stimulated cells cluster.
