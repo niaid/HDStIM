@@ -39,7 +39,7 @@ mapped_data <- HDStIM(chi11$expr_data, chi11$state_markers,
                       chi11$unstim_label, seed_val = 123, umap = FALSE, umap_cells = NULL,
                       verbose = FALSE)
 
-attribute_stats <- marker_ranking_boruta(mapped_data, path = NULL, n_cells = NULL,
+marker_ranking <- marker_ranking_boruta(mapped_data, path = NULL, n_cells = NULL,
                                         max_runs = 1000, seed_val = 123,
                                         verbose = 0)
 }

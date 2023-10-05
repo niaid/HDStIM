@@ -5,11 +5,14 @@ if(R.Version()$major == "4"){
                                         chi11$unstim_label, seed_val = 123,
                                         umap = FALSE)
 
-    attribute_stats <- marker_ranking_boruta(mapped_data, path = NULL,
+    marker_ranking <- marker_ranking_boruta(mapped_data, path = NULL,
                                              n_cells = 1000, max_runs = 20, seed_val = 123,
                                              verbose = FALSE)
 
-    expect_type(attribute_stats, "list")
+    pht <- plot_marker_ranking_heatmap(marker_ranking)
+
+    expect_type(marker_ranking, "list")
+    expect_type(pht, "S4")
 
   })
 }

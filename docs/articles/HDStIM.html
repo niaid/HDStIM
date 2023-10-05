@@ -26,7 +26,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">HDStIM</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -69,7 +69,7 @@
                         <h4 data-toc-skip class="author">Rohit
 Farmer</h4>
             
-            <h4 data-toc-skip class="date">2023-04-13</h4>
+            <h4 data-toc-skip class="date">2023-10-05</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/niaid/HDStIM/blob/HEAD/vignettes/HDStIM.Rmd" class="external-link"><code>vignettes/HDStIM.Rmd</code></a></small>
       <div class="d-none name"><code>HDStIM.Rmd</code></div>
@@ -142,46 +142,45 @@ attributes.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">mapped_data</span><span class="op">$</span><span class="va">response_mapping_main</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 × 41</span></span></span>
-<span><span class="co">#&gt;   cluster_id sample…¹ condi…² patie…³ stim_…⁴ cell_…⁵  CD45   CD7    CD19 pPLCg2</span></span>
-<span><span class="co">#&gt;        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span>         79 CHI-011… CHI     CHI-011 G       CD11c …  3.48 1.83  0        0.123</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span>         69 CHI-011… CHI     CHI-011 G       CD11c …  2.22 0.549 0        0    </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span>         69 CHI-011… CHI     CHI-011 G       CD11c …  3.03 0.320 0        1.06 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span>         79 CHI-011… CHI     CHI-011 G       CD11c …  2.82 1.57  0        0.289</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span>         69 CHI-011… CHI     CHI-011 G       CD11c …  2.07 2.06  0.002<span style="text-decoration: underline;">67</span>  0.164</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span>         69 CHI-011… CHI     CHI-011 G       CD11c …  3.39 0.877 0        1.19 </span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># … with 31 more variables: CD4 &lt;dbl&gt;, IgD &lt;dbl&gt;, CD20 &lt;dbl&gt;, CD25 &lt;dbl&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   pSTAT5 &lt;dbl&gt;, CD123 &lt;dbl&gt;, AKT &lt;dbl&gt;, pSTAT1 &lt;dbl&gt;, CD27 &lt;dbl&gt;, pP38 &lt;dbl&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   CD24 &lt;dbl&gt;, pSTAT3 &lt;dbl&gt;, CD11c &lt;dbl&gt;, CD14 &lt;dbl&gt;, CD56 &lt;dbl&gt;, IkBa &lt;dbl&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   pCREB &lt;dbl&gt;, CD16 &lt;dbl&gt;, CD38 &lt;dbl&gt;, CD8 &lt;dbl&gt;, CD45RA &lt;dbl&gt;, CD3 &lt;dbl&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   pERK1_2 &lt;dbl&gt;, HLA_DR &lt;dbl&gt;, pS6 &lt;dbl&gt;, CD127 &lt;dbl&gt;, ncount &lt;int&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   k_cluster_id &lt;int&gt;, responding_cluster &lt;int&gt;, response_status &lt;chr&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   comb_no &lt;int&gt;, and abbreviated variable names ¹​sample_id, ²​condition, …</span></span></span></code></pre></div>
+<span><span class="co">#&gt;   cluster_id sample_id      condition patient_id stim_type cell_population  CD45</span></span>
+<span><span class="co">#&gt;        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span>         79 CHI-011_1_2_G  CHI       CHI-011    G         CD11c CD14 CD38  3.48</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span>         69 CHI-011_2_4_G  CHI       CHI-011    G         CD11c CD14 CD38  2.22</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span>         69 CHI-011_4_13_G CHI       CHI-011    G         CD11c CD14 CD38  3.03</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span>         79 CHI-011_4_11_G CHI       CHI-011    G         CD11c CD14 CD38  2.82</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span>         69 CHI-011_2_5_G  CHI       CHI-011    G         CD11c CD14 CD38  2.07</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span>         69 CHI-011_1_1_G  CHI       CHI-011    G         CD11c CD14 CD38  3.39</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 34 more variables: CD7 &lt;dbl&gt;, CD19 &lt;dbl&gt;, pPLCg2 &lt;dbl&gt;, CD4 &lt;dbl&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   IgD &lt;dbl&gt;, CD20 &lt;dbl&gt;, CD25 &lt;dbl&gt;, pSTAT5 &lt;dbl&gt;, CD123 &lt;dbl&gt;, AKT &lt;dbl&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   pSTAT1 &lt;dbl&gt;, CD27 &lt;dbl&gt;, pP38 &lt;dbl&gt;, CD24 &lt;dbl&gt;, pSTAT3 &lt;dbl&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   CD11c &lt;dbl&gt;, CD14 &lt;dbl&gt;, CD56 &lt;dbl&gt;, IkBa &lt;dbl&gt;, pCREB &lt;dbl&gt;, CD16 &lt;dbl&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   CD38 &lt;dbl&gt;, CD8 &lt;dbl&gt;, CD45RA &lt;dbl&gt;, CD3 &lt;dbl&gt;, pERK1_2 &lt;dbl&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   HLA_DR &lt;dbl&gt;, pS6 &lt;dbl&gt;, CD127 &lt;dbl&gt;, ncount &lt;int&gt;, k_cluster_id &lt;int&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   responding_cluster &lt;int&gt;, response_status &lt;chr&gt;, comb_no &lt;int&gt;</span></span></span></code></pre></div>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">mapped_data</span><span class="op">$</span><span class="va">stacked_bar_plot_data</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 × 7</span></span></span>
-<span><span class="co">#&gt;   cell_population              stim_t…¹  f_p_val stim_…² stim_…³ k_clu…⁴ cell_…⁵</span></span>
-<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                        <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> CD11c CD14 CD38              A        3.05<span style="color: #949494;">e</span><span style="color: #BB0000;">-26</span>       1 unstim  cluste…      11</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> CD11c CD14 CD38              A        3.05<span style="color: #949494;">e</span><span style="color: #BB0000;">-26</span>       1 unstim  cluste…      89</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> CD11c CD14 CD38              A        3.05<span style="color: #949494;">e</span><span style="color: #BB0000;">-26</span>       1 stim    cluste…      83</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> CD11c CD14 CD38              A        3.05<span style="color: #949494;">e</span><span style="color: #BB0000;">-26</span>       1 stim    cluste…      17</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> CD19 CD20 CD45RA HLA-DR CD24 A        5.56<span style="color: #949494;">e</span><span style="color: #BB0000;">-18</span>       2 unstim  cluste…      83</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> CD19 CD20 CD45RA HLA-DR CD24 A        5.56<span style="color: #949494;">e</span><span style="color: #BB0000;">-18</span>       2 unstim  cluste…      17</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># … with abbreviated variable names ¹​stim_type, ²​stim_clust, ³​stim_status,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   ⁴​k_cluster, ⁵​cell_count_perc</span></span></span></code></pre></div>
+<span><span class="co">#&gt;   cell_population            stim_type  f_p_val stim_clust stim_status k_cluster</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> CD11c CD14 CD38            A         3.05<span style="color: #949494;">e</span><span style="color: #BB0000;">-26</span>          1 unstim      cluster1 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> CD11c CD14 CD38            A         3.05<span style="color: #949494;">e</span><span style="color: #BB0000;">-26</span>          1 unstim      cluster2 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> CD11c CD14 CD38            A         3.05<span style="color: #949494;">e</span><span style="color: #BB0000;">-26</span>          1 stim        cluster1 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> CD11c CD14 CD38            A         3.05<span style="color: #949494;">e</span><span style="color: #BB0000;">-26</span>          1 stim        cluster2 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> CD19 CD20 CD45RA HLA-DR C… A         5.56<span style="color: #949494;">e</span><span style="color: #BB0000;">-18</span>          2 unstim      cluster1 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> CD19 CD20 CD45RA HLA-DR C… A         5.56<span style="color: #949494;">e</span><span style="color: #BB0000;">-18</span>          2 unstim      cluster2 </span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 1 more variable: cell_count_perc &lt;dbl&gt;</span></span></span></code></pre></div>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">mapped_data</span><span class="op">$</span><span class="va">umap_plot_data</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 × 8</span></span></span>
-<span><span class="co">#&gt;   cell_population stim_type condition tot_of_cells no_of…¹  UMAP1  UMAP2 respo…²</span></span>
-<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> CD11c CD14 CD38 A         CHI       200          200      0.938 -<span style="color: #BB0000;">0.149</span> Non-re…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> CD11c CD14 CD38 A         CHI       200          200      1.92   1.09  Non-re…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> CD11c CD14 CD38 A         CHI       200          200     -<span style="color: #BB0000;">1.91</span>  -<span style="color: #BB0000;">0.812</span> Resp. …</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> CD11c CD14 CD38 A         CHI       200          200      0.773  0.447 Non-re…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> CD11c CD14 CD38 A         CHI       200          200      1.24   0.926 Non-re…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> CD11c CD14 CD38 A         CHI       200          200     -<span style="color: #BB0000;">1.48</span>   1.08  Resp. …</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># … with abbreviated variable names ¹​no_of_cells, ²​response_status</span></span></span></code></pre></div>
+<span><span class="co">#&gt;   cell_population stim_type condition tot_of_cells no_of_cells  UMAP1  UMAP2</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> CD11c CD14 CD38 A         CHI       200          200          0.938 -<span style="color: #BB0000;">0.149</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> CD11c CD14 CD38 A         CHI       200          200          1.92   1.09 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> CD11c CD14 CD38 A         CHI       200          200         -<span style="color: #BB0000;">1.91</span>  -<span style="color: #BB0000;">0.812</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> CD11c CD14 CD38 A         CHI       200          200          0.773  0.447</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> CD11c CD14 CD38 A         CHI       200          200          1.24   0.926</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> CD11c CD14 CD38 A         CHI       200          200         -<span style="color: #BB0000;">1.48</span>   1.08 </span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 1 more variable: response_status &lt;chr&gt;</span></span></span></code></pre></div>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">mapped_data</span><span class="op">$</span><span class="va">all_fisher_p_val</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   stim_type              cell_population stim_clust1 stim_clust2 unstim_clust1</span></span>
@@ -310,16 +309,15 @@ format.</p>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">m_ranks</span><span class="op">$</span><span class="va">attribute_stats</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 × 9</span></span></span>
-<span><span class="co">#&gt;   stim_type cell_populat…¹ state…² meanImp media…³ minImp maxImp normH…⁴ decis…⁵</span></span>
-<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> A         CD11c CD14 CD… pP38     0.060<span style="text-decoration: underline;">6</span>   0.109 -<span style="color: #BB0000;">1.46</span>    2.07  0.010<span style="text-decoration: underline;">1</span> Reject…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> A         CD11c CD14 CD… AKT      0.042<span style="text-decoration: underline;">0</span>   0.197 -<span style="color: #BB0000;">1.87</span>    1.60  0.010<span style="text-decoration: underline;">1</span> Reject…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> A         CD11c CD14 CD… pERK1_2  2.50     2.66  -<span style="color: #BB0000;">0.690</span>   4.92  0.596  Tentat…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> A         CD11c CD14 CD… pPLCg2   2.87     2.80   0.719   5.10  0.717  Confir…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> A         CD11c CD14 CD… pS6      2.75     2.90   0.229   4.99  0.667  Confir…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> A         CD11c CD14 CD… pCREB    4.52     4.44   2.04    7.26  0.929  Confir…</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># … with abbreviated variable names ¹​cell_population, ²​state_marker,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   ³​medianImp, ⁴​normHits, ⁵​decision</span></span></span>
+<span><span class="co">#&gt;   stim_type cell_population state_marker meanImp medianImp minImp maxImp</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> A         CD11c CD14 CD38 pP38          0.060<span style="text-decoration: underline;">6</span>     0.109 -<span style="color: #BB0000;">1.46</span>    2.07</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> A         CD11c CD14 CD38 AKT           0.042<span style="text-decoration: underline;">0</span>     0.197 -<span style="color: #BB0000;">1.87</span>    1.60</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> A         CD11c CD14 CD38 pERK1_2       2.50       2.66  -<span style="color: #BB0000;">0.690</span>   4.92</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> A         CD11c CD14 CD38 pPLCg2        2.87       2.80   0.719   5.10</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> A         CD11c CD14 CD38 pS6           2.75       2.90   0.229   4.99</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> A         CD11c CD14 CD38 pCREB         4.52       4.44   2.04    7.26</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 2 more variables: normHits &lt;dbl&gt;, decision &lt;chr&gt;</span></span></span>
 <span></span>
 <span><span class="va">m_ranks</span><span class="op">$</span><span class="va">plots</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span></code></pre></div>
 <p><img src="HDStIM_files/figure-html/m_ranks-1.png" width="672" style="display: block; margin: auto;"></p>
