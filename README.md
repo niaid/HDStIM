@@ -7,7 +7,6 @@
 
 [![Actions
 Status](https://github.com/niaid/HDStIM/workflows/R-CMD-check/badge.svg)](https://github.com/niaid/HDStIM/actions?query=workflow%3AR-CMD-check)
-[![pkgdown](https://github.com/niaid/HDStIM/workflows/pkgdown/badge.svg)](https://github.com/niaid/HDStIM/actions?query=workflow%3Apkgdown)
 <!-- badges: end -->
 
 The goal of this package is to identify response to a stimulant in

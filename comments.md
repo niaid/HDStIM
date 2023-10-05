@@ -23,7 +23,8 @@ If the option to update Roxygen2 documentation is enabled in Rstudio settings th
 `devtools::document()`
 
 ## Pkgdown Website
-If changes are made to README.Rmd or vignettes, build pkgdown website before pushing the code to GitHub.
+If changes are made to README.Rmd or vignettes, build pkgdown website before pushing the code to GitHub.  
+[https://pkgdown.r-lib.org/reference/build_site_github_pages.html](https://pkgdown.r-lib.org/reference/build_site_github_pages.html). 
 
 `pkgdown::build_site_github_pages()`
 
